@@ -141,7 +141,6 @@ public class OpenGLRenderer implements Renderer {
         glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 0.5f);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
-
         // синий треугольник
         glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
         glDrawArrays(GL_TRIANGLES, 3, 3);

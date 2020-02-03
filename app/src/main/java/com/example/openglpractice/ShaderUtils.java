@@ -15,15 +15,19 @@ import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glShaderSource;
 
+
 public class ShaderUtils {
 
     public static int createProgram(int vertexShaderId, int fragmentShaderId) {
+
         final int programId = glCreateProgram();
         if (programId == 0) {
             return 0;
         }
+
         glAttachShader(programId, vertexShaderId);
         glAttachShader(programId, fragmentShaderId);
+
         glLinkProgram(programId);
         final int[] linkStatus = new int[1];
         glGetProgramiv(programId, GL_LINK_STATUS, linkStatus, 0);
@@ -32,10 +36,12 @@ public class ShaderUtils {
             return 0;
         }
         return programId;
+
     }
 
     static int createShader(Context context, int type, int shaderRawId) {
-        String shaderText = FileUtils.readTextFromRaw(context, shaderRawId);
+        String shaderText = FileUtils
+                .readTextFromRaw(context, shaderRawId);
         return ShaderUtils.createShader(type, shaderText);
     }
 
@@ -54,4 +60,6 @@ public class ShaderUtils {
         }
         return shaderId;
     }
+
+
 }

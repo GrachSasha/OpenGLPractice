@@ -1,8 +1,8 @@
 package com.example.openglpractice;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
+import android.os.SystemClock;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -12,46 +12,47 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
-import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINES;
-import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
-import static android.opengl.GLES20.glLineWidth;
 import static android.opengl.GLES20.glUniform4f;
-import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static android.opengl.GLES20.glViewport;
+import static android.opengl.GLES20.glUniformMatrix4fv;
+import static android.opengl.GLES20.GL_TRIANGLES;
+import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
+import static android.opengl.GLES20.GL_DEPTH_TEST;
+import static android.opengl.GLES20.glEnable;
+import static android.opengl.GLES20.glLineWidth;
 
 public class OpenGLRenderer implements Renderer {
 
-    //Counts attribute for dots
     private final static int POSITION_COUNT = 3;
+    private final static long TIME = 1000L;
 
     private Context context;
 
+    private FloatBuffer vertexData;
+
+    private int uColorLocation;
+    private int uMatrixLocation;
     private int programId;
 
-    private FloatBuffer vertexData;
-    private int uColorLocation;
-    private int aPositionLocation;
-    private int uMatrixLocation;
-
     private float[] mProjectionMatrix = new float[16];
+    private float[] mViewMatrix = new float[16];
+    private float[] mModelMatrix = new float[16];
+    private float[] mMatrix = new float[16];
 
     public OpenGLRenderer(Context context) {
         this.context = context;
-        prepareData();
     }
 
     @Override
@@ -62,29 +63,38 @@ public class OpenGLRenderer implements Renderer {
         int fragmentShaderId = ShaderUtils.createShader(context, GL_FRAGMENT_SHADER, R.raw.fragment_shader);
         programId = ShaderUtils.createProgram(vertexShaderId, fragmentShaderId);
         glUseProgram(programId);
+        createViewMatrix();
+        prepareData();
         bindData();
-
     }
 
     @Override
     public void onSurfaceChanged(GL10 arg0, int width, int height) {
         glViewport(0, 0, width, height);
-        bindMatrix(width, height);
+        createProjectionMatrix(width, height);
+        bindMatrix();
     }
 
     private void prepareData() {
-        float z1 = -1.5f, z2 = -3.0f;
 
         float[] vertices = {
-                // первый треугольник
-                -0.7f, -0.5f, z1,
-                0.3f, -0.5f, z1,
-                -0.2f, 0.3f, z1,
 
-                // второй треугольник
-                -0.3f, -0.4f, z2,
-                0.7f, -0.4f, z2,
-                0.2f, 0.4f, z2,
+                // треугольник
+                -1, -0.5f, 0.5f,
+                1, -0.5f, 0.5f,
+                0, 0.5f, 0.5f,
+
+                // ось X
+                -3f, 0, 0,
+                3f, 0, 0,
+
+                // ось Y
+                0, -3f, 0,
+                0, 3f, 0,
+
+                // ось Z
+                0, 0, -3f,
+                0, 0, 3f
         };
 
         vertexData = ByteBuffer
@@ -92,11 +102,12 @@ public class OpenGLRenderer implements Renderer {
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
         vertexData.put(vertices);
+
     }
 
     private void bindData() {
-        // координаты
-        aPositionLocation = glGetAttribLocation(programId, "a_Position");
+        // примитивы
+        int aPositionLocation = glGetAttribLocation(programId, "a_Position");
         vertexData.position(0);
         glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
                 false, 0, vertexData);
@@ -105,18 +116,18 @@ public class OpenGLRenderer implements Renderer {
         // цвет
         uColorLocation = glGetUniformLocation(programId, "u_Color");
 
-        //матрица
-        uMatrixLocation = glGetUniformLocation(programId, "uMatrix");
+        // матрица
+        uMatrixLocation = glGetUniformLocation(programId, "u_Matrix");
     }
 
-    private void bindMatrix(int width, int height) {
-        float ratio = 1.0f;
-        float left = -1.0f;
-        float right = 1.0f;
-        float bottom = -1.0f;
-        float top = 1.0f;
-        float near = 1.0f;
-        float far = 8.0f;
+    private void createProjectionMatrix(int width, int height) {
+        float ratio = 1;
+        float left = -1;
+        float right = 1;
+        float bottom = -1;
+        float top = 1;
+        float near = 2;
+        float far = 12;
         if (width > height) {
             ratio = (float) width / height;
             left *= ratio;
@@ -126,24 +137,74 @@ public class OpenGLRenderer implements Renderer {
             bottom *= ratio;
             top *= ratio;
         }
-        //Matrix.orthoM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
-        glUniformMatrix4fv(uMatrixLocation, 1, false, mProjectionMatrix, 0);
+    }
+
+    private void createViewMatrix() {
+        // точка положения камеры
+        float eyeX = 2;
+        float eyeY = 2;
+        float eyeZ = 3;
+
+        // точка направления камеры
+        float centerX = 0;
+        float centerY = 0;
+        float centerZ = 0;
+
+        // up-вектор
+        float upX = 0;
+        float upY = 1;
+        float upZ = 0;
+
+        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+    }
+
+
+    private void bindMatrix() {
+        Matrix.multiplyMM(mMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+        Matrix.multiplyMM(mMatrix, 0, mProjectionMatrix, 0, mMatrix, 0);
+        glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
     }
 
     @Override
     public void onDrawFrame(GL10 arg0) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // оси
+        drawAxes();
 
-            // зеленый треугольник
-            glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 0.5f);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-
-            // синий треугольник
-            glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
-            glDrawArrays(GL_TRIANGLES, 3, 3);
-
+        // треугольник
+        drawTriangle();
     }
 
+    private void drawAxes() {
+        Matrix.setIdentityM(mModelMatrix, 0);
+        bindMatrix();
+
+        glLineWidth(3);
+        glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_LINES, 3, 2);
+
+        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+        glDrawArrays(GL_LINES, 5, 2);
+
+        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_LINES, 7, 2);
+    }
+
+    private void drawTriangle() {
+        Matrix.setIdentityM(mModelMatrix, 0);
+        setModelMatrix();
+        bindMatrix();
+
+        glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
+
+
+    private void setModelMatrix() {
+        float angle = (float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
+        Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 1);
+    }
 }

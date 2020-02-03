@@ -17,8 +17,6 @@ import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINES;
-import static android.opengl.GLES20.GL_LINE_LOOP;
-import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glClear;
@@ -135,15 +133,17 @@ public class OpenGLRenderer implements Renderer {
 
     @Override
     public void onDrawFrame(GL10 arg0) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // зеленый треугольник
-        glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 0.5f);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // синий треугольник
-        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
-        glDrawArrays(GL_TRIANGLES, 3, 3);
+            // зеленый треугольник
+            glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 0.5f);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+
+            // синий треугольник
+            glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+            glDrawArrays(GL_TRIANGLES, 3, 3);
+
     }
 
 }

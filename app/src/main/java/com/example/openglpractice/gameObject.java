@@ -1,6 +1,9 @@
 package com.example.openglpractice;
 
 public class gameObject {
+
+    float[] vertices = new float[100];
+
     //init
     static int gameObjectCounter = 0;
     static gameObject gameObjectPool[] = new gameObject[physicForObject.MAXOBJECTS];
@@ -18,6 +21,13 @@ public class gameObject {
         objectId = this.hashCode();
         addToPool(this);
     }
+
+    public gameObject(float[] vertices){
+        this.vertices = vertices;
+        objectId = this.hashCode();
+        addToPool(this);
+    }
+    public float[] getVertices(){return vertices;}
 
     //or inner class
 

@@ -40,7 +40,7 @@ public class OpenGLRenderer implements Renderer {
 
     private Context context;
 
-    private FloatBuffer vertexData;
+    private FloatBuffer anotherVertexData;
 
     private int uColorLocation;
     private int uMatrixLocation;
@@ -53,64 +53,60 @@ public class OpenGLRenderer implements Renderer {
 
     public OpenGLRenderer(Context context) {
         this.context = context;
+
     }
 
     @Override
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
+        //чистит экран
         glClearColor(0f, 0f, 0f, 1f);
+
+        //разрешает проекции
         glEnable(GL_DEPTH_TEST);
+
+        //берет шейдер файлы
         int vertexShaderId = ShaderUtils.createShader(context, GL_VERTEX_SHADER, R.raw.vertex_shader);
         int fragmentShaderId = ShaderUtils.createShader(context, GL_FRAGMENT_SHADER, R.raw.fragment_shader);
+
+        //создает ид рендера
         programId = ShaderUtils.createProgram(vertexShaderId, fragmentShaderId);
         glUseProgram(programId);
+
+        //создает камеру
         createViewMatrix();
-        prepareData();
+
+        //берет переменные из шейдера
         bindData();
     }
 
     @Override
     public void onSurfaceChanged(GL10 arg0, int width, int height) {
         glViewport(0, 0, width, height);
+
+        //создает проекцию
         createProjectionMatrix(width, height);
+
+        //биндит матрицу
         bindMatrix();
     }
 
-    private void prepareData() {
+    @Override
+    public void onDrawFrame(GL10 arg0) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float[] vertices = {
+        // оси
+        drawAxes();
 
-                // треугольник
-                -1, -0.5f, 0.5f,
-                1, -0.5f, 0.5f,
-                0, 0.5f, 0.5f,
-
-                // ось X
-                -3f, 0, 0,
-                3f, 0, 0,
-
-                // ось Y
-                0, -3f, 0,
-                0, 3f, 0,
-
-                // ось Z
-                0, 0, -3f,
-                0, 0, 3f
-        };
-
-        vertexData = ByteBuffer
-                .allocateDirect(vertices.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        vertexData.put(vertices);
-
+        // треугольник
+        drawTriangle();
     }
 
     private void bindData() {
         // примитивы
         int aPositionLocation = glGetAttribLocation(programId, "a_Position");
-        vertexData.position(0);
+        anotherVertexData.position(0);
         glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
-                false, 0, vertexData);
+                false, 0, anotherVertexData);
         glEnableVertexAttribArray(aPositionLocation);
 
         // цвет
@@ -138,7 +134,8 @@ public class OpenGLRenderer implements Renderer {
             top *= ratio;
         }
 
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        Matrix.orthoM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        //Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
     private void createViewMatrix() {
@@ -167,15 +164,12 @@ public class OpenGLRenderer implements Renderer {
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
     }
 
-    @Override
-    public void onDrawFrame(GL10 arg0) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // оси
-        drawAxes();
-
-        // треугольник
-        drawTriangle();
+    public void getModels(gameObject gObject) {
+        anotherVertexData =  ByteBuffer
+                .allocateDirect(gObject.getVertices().length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        anotherVertexData.put(gObject.getVertices());
     }
 
     private void drawAxes() {
@@ -202,9 +196,10 @@ public class OpenGLRenderer implements Renderer {
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-
     private void setModelMatrix() {
         float angle = (float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
         Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 1);
+
+
     }
 }

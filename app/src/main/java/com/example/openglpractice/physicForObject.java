@@ -26,6 +26,7 @@ public class physicForObject {
             objectPhysicPool[objectCounter] = objPhysic;
             objectCounter++;
         }
+
     }
 
     //in thread

@@ -1,5 +1,6 @@
 package com.example.openglpractice;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -20,10 +21,32 @@ public class MainActivity extends Activity {
             finish();
             return;
         }
+        float[] vertices = {
+                // треугольник
+                -0.5f, -0.25f, 0.25f,
+                0.5f, -0.25f, 0.25f,
+                0, 0.25f, 0.25f,
+
+                // ось X
+                -3f, 0, 0,
+                3f, 0, 0,
+
+                // ось Y
+                0, -3f, 0,
+                0, 3f, 0,
+
+                // ось Z
+                0, 0, -3f,
+                0, 0, 3f};
+        gameObject gObject = new gameObject(vertices);
+
         glSurfaceView = new GLSurfaceView(this);
         glSurfaceView.setEGLContextClientVersion(2);
-        glSurfaceView.setRenderer(new OpenGLRenderer(this));
+        OpenGLRenderer render = new OpenGLRenderer(this);
+        render.getModels(gObject);
+        glSurfaceView.setRenderer(render);
         setContentView(glSurfaceView);
+
     }
 
     @Override

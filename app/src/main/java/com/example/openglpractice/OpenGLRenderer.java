@@ -2,7 +2,9 @@ package com.example.openglpractice;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
+import android.os.ParcelUuid;
 import android.os.SystemClock;
+import android.view.MotionEvent;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -50,12 +52,11 @@ public class OpenGLRenderer implements Renderer {
     private float[] mViewMatrix = new float[16];
     private float[] mModelMatrix = new float[16];
     private float[] mMatrix = new float[16];
+    private boolean mooved;
 
     public OpenGLRenderer(Context context) {
         this.context = context;
-
     }
-
     @Override
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
         //чистит экран
@@ -71,6 +72,7 @@ public class OpenGLRenderer implements Renderer {
         //создает ид рендера
         programId = ShaderUtils.createProgram(vertexShaderId, fragmentShaderId);
         glUseProgram(programId);
+
 
         //создает камеру
         createViewMatrix();
@@ -101,6 +103,7 @@ public class OpenGLRenderer implements Renderer {
         drawTriangle();
     }
 
+
     private void bindData() {
         // примитивы
         int aPositionLocation = glGetAttribLocation(programId, "a_Position");
@@ -117,13 +120,16 @@ public class OpenGLRenderer implements Renderer {
     }
 
     private void createProjectionMatrix(int width, int height) {
-        float ratio = 1;
+
         float left = -1;
         float right = 1;
         float bottom = -1;
         float top = 1;
+
         float near = 2;
         float far = 12;
+
+        float ratio = 1;
         if (width > height) {
             ratio = (float) width / height;
             left *= ratio;
@@ -164,7 +170,7 @@ public class OpenGLRenderer implements Renderer {
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
     }
 
-    public void getModels(gameObject gObject) {
+    public void prepareModels(gameObject gObject) {
         anotherVertexData =  ByteBuffer
                 .allocateDirect(gObject.getVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -188,18 +194,26 @@ public class OpenGLRenderer implements Renderer {
     }
 
     private void drawTriangle() {
-        Matrix.setIdentityM(mModelMatrix, 0);
-        setModelMatrix();
-        bindMatrix();
-
+        if (!mooved) {
+            Matrix.setIdentityM(mModelMatrix, 0);
+            setModelMatrix();
+            bindMatrix();
+        }
         glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
     private void setModelMatrix() {
-        float angle = (float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
-        Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 1);
+//        float angle = (float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
+//        Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 1);
 
+        Matrix.translateM(mModelMatrix, 0, 1.0f, 1.0f, 1.0f);
+    }
 
+    public void dragTriangle(float x){
+        Matrix.setIdentityM(mModelMatrix,0);
+        Matrix.translateM(mModelMatrix, 0,  x, x, x);
+        bindMatrix();
+        mooved = true;
     }
 }

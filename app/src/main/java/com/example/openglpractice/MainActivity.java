@@ -18,6 +18,8 @@ public class MainActivity extends Activity {
             0.5f, -0.25f, 0.25f,
             0, 0.25f, 0.25f,
 
+    };
+    float[] staticObj = {
             // ось X
             -3f, 0, 0,
             3f, 0, 0,
@@ -28,9 +30,13 @@ public class MainActivity extends Activity {
 
             // ось Z
             0, 0, -3f,
-            0, 0, 3f};
+            0, 0, 3f
+    };
+
     gameObject gObject = new gameObject(vertices);
+    gameObject staticObjects = new gameObject(staticObj);
     OpenGLRenderer render;
+    float step= 0;
 //===================================================
 
     @Override
@@ -45,7 +51,8 @@ public class MainActivity extends Activity {
         glSurfaceView = new GLSurfaceView(this);
         glSurfaceView.setEGLContextClientVersion(2);
         render = new OpenGLRenderer(this);
-        render.prepareModels(gObject);
+        render.prepareDynamicModels(gObject);
+        render.prepareStaticModels(staticObjects);
         glSurfaceView.setRenderer(render);
         setContentView(glSurfaceView);
 
@@ -65,11 +72,12 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        //float x = e.getX();
-        //float y = e.getY();
-        float i =0.5f;
-        render.dragTriangle(i);
-        i++;
+
+        gObject.vertices = new float[]{-0.5f +step, -0.25f+step, 0.25f+step,
+                                        0.5f+step, -0.25f+step, 0.25f+step,
+                                        0+step, 0.25f+step, 0.25f+step,};
+        step = step+0.1f;
+        render.prepareDynamicModels(gObject);
         return true;
     }
 

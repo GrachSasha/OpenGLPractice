@@ -2,9 +2,6 @@ package com.example.openglpractice;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
-import android.os.ParcelUuid;
-import android.os.SystemClock;
-import android.view.MotionEvent;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -42,7 +39,9 @@ public class OpenGLRenderer implements Renderer {
 
     private Context context;
 
-    private FloatBuffer anotherVertexData;
+    private FloatBuffer dynamicObjects;
+    private FloatBuffer staticObjects;
+
 
     private int uColorLocation;
     private int uMatrixLocation;
@@ -52,13 +51,15 @@ public class OpenGLRenderer implements Renderer {
     private float[] mViewMatrix = new float[16];
     private float[] mModelMatrix = new float[16];
     private float[] mMatrix = new float[16];
-    private boolean mooved;
+    public boolean mooved;
+
 
     public OpenGLRenderer(Context context) {
         this.context = context;
     }
     @Override
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
+
         //чистит экран
         glClearColor(0f, 0f, 0f, 1f);
 
@@ -73,16 +74,14 @@ public class OpenGLRenderer implements Renderer {
         programId = ShaderUtils.createProgram(vertexShaderId, fragmentShaderId);
         glUseProgram(programId);
 
-
         //создает камеру
         createViewMatrix();
 
-        //берет переменные из шейдера
-        bindData();
     }
 
     @Override
     public void onSurfaceChanged(GL10 arg0, int width, int height) {
+        //full screen
         glViewport(0, 0, width, height);
 
         //создает проекцию
@@ -96,20 +95,26 @@ public class OpenGLRenderer implements Renderer {
     public void onDrawFrame(GL10 arg0) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // оси
-        drawAxes();
+        //Сцена
+        //Берем переменные шейдера, передаем массив данных для текущих объектов
+        bindData(staticObjects);
+        drawScene();
 
-        // треугольник
+        //Треугольник
+        //Берем переменные шейдера, передаем массив данных для текущих объектов
+        bindData(dynamicObjects);
         drawTriangle();
     }
 
 
-    private void bindData() {
+    private void bindData(FloatBuffer floatBuffer) {
         // примитивы
         int aPositionLocation = glGetAttribLocation(programId, "a_Position");
-        anotherVertexData.position(0);
+        floatBuffer.position(0);
+
+        // из какого массива брать данные и по каким правилам
         glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
-                false, 0, anotherVertexData);
+                false, 0, floatBuffer);
         glEnableVertexAttribArray(aPositionLocation);
 
         // цвет
@@ -117,6 +122,21 @@ public class OpenGLRenderer implements Renderer {
 
         // матрица
         uMatrixLocation = glGetUniformLocation(programId, "u_Matrix");
+    }
+
+    private void drawScene() {
+        Matrix.setIdentityM(mModelMatrix, 0);
+        bindMatrix();
+
+        glLineWidth(3);
+        glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_LINES, 0, 2);
+
+        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+        glDrawArrays(GL_LINES, 2, 2);
+
+        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_LINES, 4, 2);
     }
 
     private void createProjectionMatrix(int width, int height) {
@@ -170,44 +190,36 @@ public class OpenGLRenderer implements Renderer {
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
     }
 
-    public void prepareModels(gameObject gObject) {
-        anotherVertexData =  ByteBuffer
+    public void prepareDynamicModels(gameObject gObject) {
+        dynamicObjects =  ByteBuffer
                 .allocateDirect(gObject.getVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        anotherVertexData.put(gObject.getVertices());
+        dynamicObjects.put(gObject.getVertices()).position(0);
     }
 
-    private void drawAxes() {
-        Matrix.setIdentityM(mModelMatrix, 0);
-        bindMatrix();
-
-        glLineWidth(3);
-        glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_LINES, 3, 2);
-
-        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
-        glDrawArrays(GL_LINES, 5, 2);
-
-        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_LINES, 7, 2);
+    public void prepareStaticModels(gameObject gObject){
+        staticObjects = ByteBuffer
+                .allocateDirect(gObject.getVertices().length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        staticObjects.put(gObject.getVertices()).position(0);
     }
 
     private void drawTriangle() {
-        if (!mooved) {
-            Matrix.setIdentityM(mModelMatrix, 0);
-            setModelMatrix();
-            bindMatrix();
-        }
+        Matrix.setIdentityM(mModelMatrix, 0);
+        setModelMatrix();
+        //if(mooved){dragTriangle();}
+        bindMatrix();
+
         glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    private void setModelMatrix() {
-//        float angle = (float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
-//        Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 1);
 
-        Matrix.translateM(mModelMatrix, 0, 1.0f, 1.0f, 1.0f);
+    public void dragTriangle(){
+        Matrix.translateM(mModelMatrix, 0, 1f, 1f, 1f);
+        mooved = false;
     }
 
     public void dragTriangle(float x){
@@ -215,5 +227,11 @@ public class OpenGLRenderer implements Renderer {
         Matrix.translateM(mModelMatrix, 0,  x, x, x);
         bindMatrix();
         mooved = true;
+    }
+    private void setModelMatrix() {
+//        float angle = (float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
+//        Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 1);
+
+        Matrix.translateM(mModelMatrix, 0, 1.0f, 1.0f, 1.0f);
     }
 }

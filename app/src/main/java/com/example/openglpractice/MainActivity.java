@@ -12,6 +12,17 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 //=================================================
     private GLSurfaceView glSurfaceView;
+    float[]gamePadVertices = {
+            1.0f, -0.3f, 0f,
+            1.0f, -0.5f, 0f,
+
+            1.0f, -0.3f, 0f,
+            0.9f, -0.35f, 0,
+
+            1.0f, -0.3f, 0f,
+            1.1f, -0.35f, 0,
+    };
+
     float[] vertices = {
             // треугольник
             -0.5f, -0.25f, 0.25f,
@@ -35,8 +46,10 @@ public class MainActivity extends Activity {
 
     gameObject gObject = new gameObject(vertices);
     gameObject staticObjects = new gameObject(staticObj);
+    //переделать в гейм-пад
+    gameObject gamePad = new gameObject(gamePadVertices);
     OpenGLRenderer render;
-    float step= 0;
+    float step= 0f;
 //===================================================
 
     @Override
@@ -53,6 +66,7 @@ public class MainActivity extends Activity {
         render = new OpenGLRenderer(this);
         render.prepareDynamicModels(gObject);
         render.prepareStaticModels(staticObjects);
+        render.prepareGamePad(gamePad);
         glSurfaceView.setRenderer(render);
         setContentView(glSurfaceView);
 
@@ -73,10 +87,17 @@ public class MainActivity extends Activity {
     @Override
     public boolean onTouchEvent(MotionEvent e) {
 
-        gObject.vertices = new float[]{-0.5f +step, -0.25f+step, 0.25f+step,
-                                        0.5f+step, -0.25f+step, 0.25f+step,
-                                        0+step, 0.25f+step, 0.25f+step,};
-        step = step+0.1f;
+        step = 0.1f;
+        float xPos = e.getX();
+        float yPos = e.getY();
+        if((xPos> 270f && xPos<285f)&&(163f<yPos && yPos < 188f)) {
+            gObject.vertices[0] += step;
+            gObject.vertices[3] += step;
+            gObject.vertices[6] += step;
+        }
+//        gObject.vertices = new float[]{-0.5f +step, -0.25f, 0.25f,
+//                                        0.5f+step, -0.25f, 0.25f,
+//                                        0+step, 0.25f, 0.25f,};
         render.prepareDynamicModels(gObject);
         return true;
     }

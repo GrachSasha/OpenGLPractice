@@ -2,6 +2,7 @@ package com.example.openglpractice;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
+import android.os.SystemClock;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -41,7 +42,7 @@ public class OpenGLRenderer implements Renderer {
 
     private FloatBuffer dynamicObjects;
     private FloatBuffer staticObjects;
-
+    private FloatBuffer gamePad;
 
     private int uColorLocation;
     private int uMatrixLocation;
@@ -51,6 +52,13 @@ public class OpenGLRenderer implements Renderer {
     private float[] mViewMatrix = new float[16];
     private float[] mModelMatrix = new float[16];
     private float[] mMatrix = new float[16];
+
+    //Доп матрица
+    private float[] mdefaultView= new float[16];
+    private float[] mdefaultProjection= new float[16];
+    private float[] mdefaultModelMatrix = new float[16];
+    private float[] mdefaultMatrix = new float[16];
+
     public boolean mooved;
 
 
@@ -95,6 +103,10 @@ public class OpenGLRenderer implements Renderer {
     public void onDrawFrame(GL10 arg0) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        //Гейм - пад
+        bindData(gamePad);
+        drawGamePad();
+
         //Сцена
         //Берем переменные шейдера, передаем массив данных для текущих объектов
         bindData(staticObjects);
@@ -104,6 +116,7 @@ public class OpenGLRenderer implements Renderer {
         //Берем переменные шейдера, передаем массив данных для текущих объектов
         bindData(dynamicObjects);
         drawTriangle();
+
     }
 
 
@@ -136,6 +149,31 @@ public class OpenGLRenderer implements Renderer {
         glDrawArrays(GL_LINES, 2, 2);
 
         glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_LINES, 4, 2);
+    }
+
+    private void drawTriangle() {
+        Matrix.setIdentityM(mModelMatrix, 0);
+        setModelMatrix();
+        bindMatrix();
+
+        glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
+
+    private void drawGamePad() {
+        Matrix.setIdentityM(mModelMatrix, 0);
+        //Matrix.setIdentityM(mdefaultModelMatrix, 0);
+        //bindDefaultMatrix();
+        glLineWidth(2);
+
+        glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.0f);
+        glDrawArrays(GL_LINES, 0, 2);
+
+        glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.0f);
+        glDrawArrays(GL_LINES, 2, 2);
+
+        glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.0f);
         glDrawArrays(GL_LINES, 4, 2);
     }
 
@@ -190,6 +228,41 @@ public class OpenGLRenderer implements Renderer {
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
     }
 
+//    private void bindDefaultMatrix(){
+//        // точка положения камеры
+//        float eyeX = 0;
+//        float eyeY = 1;
+//        float eyeZ = 1;
+//
+//        // точка направления камеры
+//        float centerX = 0;
+//        float centerY = 1;
+//        float centerZ = 0;
+//
+//        // up-вектор
+//        float upX = 0;
+//        float upY = 1;
+//        float upZ = 0;
+//
+//        Matrix.setLookAtM(mdefaultView, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+//
+//        float left = -1;
+//        float right = 1;
+//        float bottom = -1;
+//        float top = 1;
+//
+//        float near = 2;
+//        float far = 5;
+//
+//        float ratio = 1;
+//
+//        Matrix.orthoM(mdefaultProjection, 0, left, right, bottom, top, near, far);
+//
+//        Matrix.multiplyMM(mdefaultMatrix, 0, mdefaultView, 0, mdefaultModelMatrix, 0);
+//        Matrix.multiplyMM(mdefaultMatrix, 0, mdefaultProjection, 0, mdefaultMatrix, 0);
+//        glUniformMatrix4fv(uMatrixLocation, 1, false, mdefaultMatrix, 0);
+//    }
+
     public void prepareDynamicModels(gameObject gObject) {
         dynamicObjects =  ByteBuffer
                 .allocateDirect(gObject.getVertices().length * 4)
@@ -206,28 +279,15 @@ public class OpenGLRenderer implements Renderer {
         staticObjects.put(gObject.getVertices()).position(0);
     }
 
-    private void drawTriangle() {
-        Matrix.setIdentityM(mModelMatrix, 0);
-        setModelMatrix();
-        //if(mooved){dragTriangle();}
-        bindMatrix();
-
-        glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+    public void prepareGamePad(gameObject gObject){
+        gamePad = ByteBuffer
+                .allocateDirect(gObject.getVertices().length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        gamePad.put(gObject.getVertices()).position(0);
     }
 
 
-    public void dragTriangle(){
-        Matrix.translateM(mModelMatrix, 0, 1f, 1f, 1f);
-        mooved = false;
-    }
-
-    public void dragTriangle(float x){
-        Matrix.setIdentityM(mModelMatrix,0);
-        Matrix.translateM(mModelMatrix, 0,  x, x, x);
-        bindMatrix();
-        mooved = true;
-    }
     private void setModelMatrix() {
 //        float angle = (float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
 //        Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 1);

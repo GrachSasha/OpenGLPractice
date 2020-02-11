@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -25,9 +26,9 @@ public class MainActivity extends Activity {
 
     float[] vertices = {
             // треугольник
-            -0.5f, -0.25f, 0.25f,
-            0.5f, -0.25f, 0.25f,
-            0, 0.25f, 0.25f,
+            -3f, -3f, 0.25f,
+            -2.5f, -3f, 0.25f,
+            -2.75f, -2.75f, 0.25f,
 
     };
     float[] staticObj = {
@@ -88,13 +89,13 @@ public class MainActivity extends Activity {
     public boolean onTouchEvent(MotionEvent e) {
 
         step = 0.1f;
-        float xPos = e.getX();
-        float yPos = e.getY();
-        if((xPos> 270f && xPos<285f)&&(163f<yPos && yPos < 188f)) {
+//        float xPos = e.getX();
+//        float yPos = e.getY();
+//        if((xPos> 270f && xPos<285f)&&(163f<yPos && yPos < 188f)) {
             gObject.vertices[0] += step;
             gObject.vertices[3] += step;
             gObject.vertices[6] += step;
-        }
+//        }
 //        gObject.vertices = new float[]{-0.5f +step, -0.25f, 0.25f,
 //                                        0.5f+step, -0.25f, 0.25f,
 //                                        0+step, 0.25f, 0.25f,};

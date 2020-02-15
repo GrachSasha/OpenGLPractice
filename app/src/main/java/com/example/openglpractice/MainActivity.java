@@ -6,13 +6,30 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 //=================================================
     private GLSurfaceView glSurfaceView;
+
+    float[] vertices = {
+            // треугольник
+            // x   y    z
+            -3f, -2f, 0.25f,//2 V0
+            -2.5f, -2f, 0.25f,//5  V1
+            -2.75f, -1.75f, 0.25f,//8  V2
+
+    };
+    float[] platform = {
+           // x   y   z
+            -3f, -3f, 0,//2  V0
+            -2f, -3f, 0,//5   V1
+            -3f, -2.75f,0,//8  V2
+            -2f, -2.75f, 0//11  V3
+    };
+
+
     float[]gamePadVertices = {
             1.0f, -0.3f, 0f,
             1.0f, -0.5f, 0f,
@@ -24,13 +41,6 @@ public class MainActivity extends Activity {
             1.1f, -0.35f, 0,
     };
 
-    float[] vertices = {
-            // треугольник
-            -3f, -3f, 0.25f,
-            -2.5f, -3f, 0.25f,
-            -2.75f, -2.75f, 0.25f,
-
-    };
     float[] staticObj = {
             // ось X
             -3f, 0, 0,
@@ -45,11 +55,19 @@ public class MainActivity extends Activity {
             0, 0, 3f
     };
 
-    gameObject gObject = new gameObject(vertices);
+
+    //init render
+    static OpenGLRenderer render;
+
+    //init Игрока с физикой и контроллер
+    gameObject triangle = new gameObject(vertices);
+    gameController controller = new gameController(triangle);
+
+    //init объектов
+    gameObject platformObj = new gameObject(platform);
     gameObject staticObjects = new gameObject(staticObj);
-    //переделать в гейм-пад
     gameObject gamePad = new gameObject(gamePadVertices);
-    OpenGLRenderer render;
+
     float step= 0f;
 //===================================================
 
@@ -62,12 +80,18 @@ public class MainActivity extends Activity {
             return;
         }
 
+        //Инициализация рендера
         glSurfaceView = new GLSurfaceView(this);
         glSurfaceView.setEGLContextClientVersion(2);
         render = new OpenGLRenderer(this);
-        render.prepareDynamicModels(gObject);
+
+        //Грузим корды объектов
+        render.prepareDynamicModels(triangle);
         render.prepareStaticModels(staticObjects);
         render.prepareGamePad(gamePad);
+        render.preparePlatform(platformObj);
+
+        //Рендер на весь экран
         glSurfaceView.setRenderer(render);
         setContentView(glSurfaceView);
 
@@ -86,20 +110,12 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent e) {
+    public boolean onTouchEvent(MotionEvent event) {
 
         step = 0.1f;
-//        float xPos = e.getX();
-//        float yPos = e.getY();
-//        if((xPos> 270f && xPos<285f)&&(163f<yPos && yPos < 188f)) {
-            gObject.vertices[0] += step;
-            gObject.vertices[3] += step;
-            gObject.vertices[6] += step;
-//        }
-//        gObject.vertices = new float[]{-0.5f +step, -0.25f, 0.25f,
-//                                        0.5f+step, -0.25f, 0.25f,
-//                                        0+step, 0.25f, 0.25f,};
-        render.prepareDynamicModels(gObject);
+//        controller.walk();
+
+        controller.jump();
         return true;
     }
 

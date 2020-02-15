@@ -14,6 +14,8 @@ import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINES;
+import static android.opengl.GLES20.GL_TRIANGLE_FAN;
+import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
@@ -42,6 +44,7 @@ public class OpenGLRenderer implements Renderer {
     private FloatBuffer dynamicObjects;
     private FloatBuffer staticObjects;
     private FloatBuffer gamePad;
+    private FloatBuffer platform;
 
     private int uColorLocation;
     private int uMatrixLocation;
@@ -61,6 +64,7 @@ public class OpenGLRenderer implements Renderer {
     private float[] mdefaultMatrix = new float[16];
 
     public boolean mooved;
+
 
 
     public OpenGLRenderer(Context context) {
@@ -117,6 +121,11 @@ public class OpenGLRenderer implements Renderer {
         //Берем переменные шейдера, передаем массив данных для текущих объектов
         bindData(dynamicObjects);
         drawTriangle();
+
+        //Платформа
+        //Берем переменные шейдера, передаем массив данных для текущих объектов
+        bindData(platform);
+        drawPlatform();
 
     }
 
@@ -178,6 +187,13 @@ public class OpenGLRenderer implements Renderer {
         glDrawArrays(GL_LINES, 4, 2);
     }
 
+    private void drawPlatform(){
+        Matrix.setIdentityM(mModelMatrix, 0);
+
+        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    }
+
     private void createProjectionMatrix(int width, int height) {
 
         float left = -3;
@@ -230,29 +246,38 @@ public class OpenGLRenderer implements Renderer {
 
     public void prepareDynamicModels(gameObject gObject) {
         dynamicObjects =  ByteBuffer
-                .allocateDirect(gObject.getVertices().length * 4)
+                .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        dynamicObjects.put(gObject.getVertices()).position(0);
+        dynamicObjects.put(gObject.physic.getObjVertices()).position(0);
 
-        dynamicObjectCordX = gObject.getVertices()[0];
-        dynamicObjectCordY = gObject.getVertices()[1];
+        dynamicObjectCordX = gObject.physic.getObjVertices()[0];
+        dynamicObjectCordY = gObject.physic.getObjVertices()[1];
     }
 
     public void prepareStaticModels(gameObject gObject){
         staticObjects = ByteBuffer
-                .allocateDirect(gObject.getVertices().length * 4)
+                .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        staticObjects.put(gObject.getVertices()).position(0);
+        staticObjects.put(gObject.physic.getObjVertices()).position(0);
     }
 
     public void prepareGamePad(gameObject gObject){
         gamePad = ByteBuffer
-                .allocateDirect(gObject.getVertices().length * 4)
+                .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        gamePad.put(gObject.getVertices()).position(0);
+        gamePad.put(gObject.physic.getObjVertices()).position(0);
+    }
+
+    public void preparePlatform(gameObject gObject){
+        platform = ByteBuffer
+                .allocateDirect(gObject.physic.getObjVertices().length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        platform.put(gObject.physic.getObjVertices()).position(0);
+
     }
 
 }

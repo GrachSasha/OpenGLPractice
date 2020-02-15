@@ -2,47 +2,27 @@ package com.example.openglpractice;
 
 public class gameObject {
 
-    float[] vertices = new float[100];
-
     //init
     static int gameObjectCounter = 0;
     static gameObject gameObjectPool[] = new gameObject[physicForObject.MAXOBJECTS];
 
     //fields
+
+    float[] objTexture;
     int objectId;
-    float[] model;
-    physicForObject objectPhysic;
-    int speed;
-    boolean isVisible = false;
-
-
-    public gameObject(int idToDowload){
-        model = downloadModel(idToDowload);
-        objectId = this.hashCode();
-        addToPool(this);
-    }
+    physicForObject physic;
 
     public gameObject(float[] vertices){
-        this.vertices = vertices;
+
         objectId = this.hashCode();
         addToPool(this);
-    }
-    public float[] getVertices(){return vertices;}
-
-    //or inner class
-
-    public void initInComponents(){
-        sendToPhysic(this);
-    }
-    private void sendToPhysic(gameObject gObject){
-         objectPhysic = new physicForObject(gObject);
+        createPhysic(vertices, this);
     }
 
-
-    private float[] downloadModel(int idToDowload) {
-        model[0]= 1.0f;
-        return model;
+    private physicForObject createPhysic(float[] vert, gameObject gameObject){
+         return physic = new physicForObject(vert, gameObject);
     }
+
 
     private void addToPool(gameObject gameObject) {
         if(gameObjectCounter < physicForObject.MAXOBJECTS){
@@ -50,4 +30,23 @@ public class gameObject {
             gameObjectCounter++;
         }
     }
+
+//    private void loadTexture(){
+//
+//    }
+
+//    public void initInComponents(){
+//        createPhysic(this);
+//    }
+
+//    public gameObject(int idToDowload){
+//        objTexture = downloadModel(idToDowload);
+//        objectId = this.hashCode();
+//        addToPool(this);
+//    }
+
+//    private float[] downloadModel(int idToDowload) {
+//        objTexture[0]= 1.0f;
+//        return objTexture;
+//    }
 }

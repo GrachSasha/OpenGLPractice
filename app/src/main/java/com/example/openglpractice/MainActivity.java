@@ -15,18 +15,18 @@ public class MainActivity extends Activity {
 
     float[] vertices = {
             // треугольник
-            // x   y    z
-            -3f, -2f, 0.25f,//2 V0
-            -2.5f, -2f, 0.25f,//5  V1
-            -2.75f, -1.75f, 0.25f,//8  V2
+          // x    y   z
+            -3f, -2f, 0.25f,//2
+            -2.5f, -2f, 0.25f,//5
+            -2.75f, -1.75f, 0.25f,//8
 
     };
     float[] platform = {
-           // x   y   z
-            -3f, -3f, 0,//2  V0
-            -2f, -3f, 0,//5   V1
-            -3f, -2.75f,0,//8  V2
-            -2f, -2.75f, 0//11  V3
+
+            -3f, -3f, 0,//2
+            -2f, -3f, 0,//5
+            -3f, -2.75f,0,//8
+            -2f, -2.75f, 0//11
     };
 
 
@@ -114,8 +114,9 @@ public class MainActivity extends Activity {
 
         step = 0.1f;
 //        controller.walk();
-
-        controller.jump();
+        if(event.getX()<100) {
+            controller.jump();
+        } else {controller.walk();}
         return true;
     }
 

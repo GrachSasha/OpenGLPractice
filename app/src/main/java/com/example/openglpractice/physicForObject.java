@@ -72,9 +72,9 @@ class physicForObject implements Runnable {
 
 
     private void gravitation(){
-        objVertices[1] += -0.1f;
-        objVertices[4] += -0.1f;
-        objVertices[7] += -0.1f;
+        objVertices[1] += -0.07f;
+        objVertices[4] += -0.07f;
+        objVertices[7] += -0.07f;
         render.prepareDynamicModels(gObj);
         //checkGround();
     }
@@ -89,7 +89,7 @@ class physicForObject implements Runnable {
             }
 
             if (jump){
-                for(int i = 0; i < 100; i++){
+                for(int i = 0; i < 50; i++){
                     jump(0.01f);
                 }
                 jump = false;
@@ -113,9 +113,11 @@ class physicForObject implements Runnable {
     private void checkGround() {
         //for (int i=0; i<objectPhysicPool.length; i++){
         //WARNING! HARD CODE!
-            if(!(objectPhysicPool[1].getObjVertices()[0] < objectPhysicPool[0].getObjVertices()[6]) &&
-                    (objectPhysicPool[1].getObjVertices()[6] > objectPhysicPool[0].getObjVertices()[6]) &&
-                    (objectPhysicPool[1].getObjVertices()[6] > objectPhysicPool[0].getObjVertices()[1])){
+            if(
+                    (objectPhysicPool[1].getObjVertices()[6] <= objectPhysicPool[0].getObjVertices()[6]) &&
+                    (objectPhysicPool[1].getObjVertices()[9] >= objectPhysicPool[0].getObjVertices()[6]) &&
+                    (objectPhysicPool[1].getObjVertices()[10] < objectPhysicPool[0].getObjVertices()[1]))
+            {
                 falling = true;
             }
             else {falling = false;}

@@ -45,6 +45,8 @@ public class OpenGLRenderer implements Renderer {
     private FloatBuffer staticObjects;
     private FloatBuffer gamePad;
     private FloatBuffer platform;
+    private FloatBuffer[]platforms = new FloatBuffer[10];
+    private int objCounter = 0;
 
     private int uColorLocation;
     private int uMatrixLocation;
@@ -109,13 +111,13 @@ public class OpenGLRenderer implements Renderer {
         bindMatrix();
 
         //Гейм - пад
-        bindData(gamePad);
-        drawGamePad();
+//        bindData(gamePad);
+//        drawGamePad();
 
         //Сцена
         //Берем переменные шейдера, передаем массив данных для текущих объектов
-        bindData(staticObjects);
-        drawScene();
+//        bindData(staticObjects);
+//        drawScene();
 
         //Треугольник
         //Берем переменные шейдера, передаем массив данных для текущих объектов
@@ -124,8 +126,14 @@ public class OpenGLRenderer implements Renderer {
 
         //Платформа
         //Берем переменные шейдера, передаем массив данных для текущих объектов
-        bindData(platform);
-        drawPlatform();
+        for(int i=0; i < platforms.length; i++){
+            if(platforms[i] != null) {
+                bindData(platforms[i]);
+                drawPlatform();
+            }
+        }
+//        bindData(platforms[]);
+//        drawPlatform();
 
     }
 
@@ -272,11 +280,18 @@ public class OpenGLRenderer implements Renderer {
     }
 
     public void preparePlatform(gameObject gObject){
-        platform = ByteBuffer
+//        platform = ByteBuffer
+//                .allocateDirect(gObject.physic.getObjVertices().length * 4)
+//                .order(ByteOrder.nativeOrder())
+//                .asFloatBuffer();
+//        platform.put(gObject.physic.getObjVertices()).position(0);
+
+        platforms[objCounter] = ByteBuffer
                 .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        platform.put(gObject.physic.getObjVertices()).position(0);
+        platforms[objCounter].put(gObject.physic.getObjVertices()).position(0);
+        objCounter++;
 
     }
 

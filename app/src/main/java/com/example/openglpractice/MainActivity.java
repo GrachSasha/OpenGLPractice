@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
             -2.75f, -1.75f, 0.25f,//8
 
     };
+
     float[] platform = {
 
             -3f, -3f, 0,//2
@@ -29,6 +30,13 @@ public class MainActivity extends Activity {
             -2f, -2.75f, 0//11
     };
 
+    float[] platform2 = {
+            //x   y
+            0f, -3f, 0,//2
+            1f, -3f, 0,//5
+            0f, -2.75f,0,//8
+            1f, -2.75f, 0//11
+    };
 
     float[]gamePadVertices = {
             1.0f, -0.3f, 0f,
@@ -65,8 +73,9 @@ public class MainActivity extends Activity {
 
     //init объектов
     gameObject platformObj = new gameObject(platform);
-    gameObject staticObjects = new gameObject(staticObj);
-    gameObject gamePad = new gameObject(gamePadVertices);
+    gameObject platformObj2 = new gameObject(platform2);
+    //gameObject staticObjects = new gameObject(staticObj);
+    //gameObject gamePad = new gameObject(gamePadVertices);
 
     float step= 0f;
 //===================================================
@@ -87,9 +96,11 @@ public class MainActivity extends Activity {
 
         //Грузим корды объектов
         render.prepareDynamicModels(triangle);
-        render.prepareStaticModels(staticObjects);
-        render.prepareGamePad(gamePad);
+        //render.prepareStaticModels(staticObjects);
+        //render.prepareGamePad(gamePad);
+
         render.preparePlatform(platformObj);
+        render.preparePlatform(platformObj2);
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);

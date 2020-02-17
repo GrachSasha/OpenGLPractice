@@ -4,7 +4,6 @@ public class gameController {
 
     gameObject gObject;
 
-
     public gameController(gameObject gObject) {
         this.gObject = gObject;
     }
@@ -16,4 +15,5 @@ public class gameController {
     public void jump(){
         gObject.physic.doJump();
     }
+
 }

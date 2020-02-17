@@ -55,11 +55,11 @@ class physicForObject implements Runnable {
     //=====================================================================
 
     private void walk(){
-        objVertices[0] += 0.1f;
-        objVertices[3] += 0.1f;
-        objVertices[6] += 0.1f;
+        objVertices[0] += 0.35f;
+        objVertices[3] += 0.35f;
+        objVertices[6] += 0.35f;
         render.prepareDynamicModels(gObj);
-        //checkGround();
+        gravityCheck();
     }
 
     private void jump(float coord){
@@ -67,16 +67,19 @@ class physicForObject implements Runnable {
         objVertices[4] += coord;
         objVertices[7] += coord;
         render.prepareDynamicModels(gObj);
-        //checkGround();
+        gravityCheck();
     }
 
 
-    private void gravitation(){
-        objVertices[1] += -0.07f;
-        objVertices[4] += -0.07f;
-        objVertices[7] += -0.07f;
-        render.prepareDynamicModels(gObj);
-        //checkGround();
+    private void fall(){
+        if(objVertices[1]>= -3f) {
+            objVertices[1] += -0.07f;
+            objVertices[4] += -0.07f;
+            objVertices[7] += -0.07f;
+            render.prepareDynamicModels(gObj);
+        } else {falling = false;}
+        //render.prepareDynamicModels(gObj);
+        //gravityCheck();
     }
 
     @Override
@@ -85,19 +88,20 @@ class physicForObject implements Runnable {
             if (move) {
                 walk();
                 move = false;
-                checkGround();
             }
 
             if (jump){
-                for(int i = 0; i < 50; i++){
-                    jump(0.01f);
+                if(!falling) {
+                    for (int i = 0; i < 10; i++) {
+                        jump(0.07f);
+                    }
                 }
                 jump = false;
-                falling = true;
+                gravityCheck();
             }
             if (falling){
-                checkGround();
-                gravitation();
+                gravityCheck();
+                fall();
             }
             try {
                 Thread.sleep(100);
@@ -110,26 +114,26 @@ class physicForObject implements Runnable {
 
     //WARNING! HARD CODE!
     //todo НЕТ ИТЕРАТОРА НЕТ ПРОВЕРКИ НА СЕБЯ
-    private void checkGround() {
-        //for (int i=0; i<objectPhysicPool.length; i++){
-        //WARNING! HARD CODE!
-            if(
-                    (objectPhysicPool[1].getObjVertices()[6] <= objectPhysicPool[0].getObjVertices()[6]) &&
-                    (objectPhysicPool[1].getObjVertices()[9] >= objectPhysicPool[0].getObjVertices()[6]) &&
-                    (objectPhysicPool[1].getObjVertices()[10] < objectPhysicPool[0].getObjVertices()[1]))
-            {
+    private void gravityCheck() {
+        //for (int i=0; i<objectPhysicPool.length; i++) {
+        for(int i = 1; i < 3; i++) {
+            if (isOnElement(i)) {
+                if ((objectPhysicPool[i].getObjVertices()[10] < objectPhysicPool[0].getObjVertices()[1])) {
+                    falling = true;
+                } else {
+                    falling = false;
+                }
+            } else {
                 falling = true;
             }
-            else {falling = false;}
+        }
         //}
     }
 
-
-
-//    @Override
-//    public void run() {
-//
-//    }
-    //in thread
+    private boolean isOnElement(int i){
+        if((objectPhysicPool[i].getObjVertices()[6] <= objectPhysicPool[0].getObjVertices()[6]) &&
+        (objectPhysicPool[i].getObjVertices()[9] >= objectPhysicPool[0].getObjVertices()[6])){return true;}
+        else{return false;}
+    }
 
 }

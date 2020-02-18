@@ -38,6 +38,14 @@ public class MainActivity extends Activity {
             1f, -2.75f, 0//11
     };
 
+    float[] platform3 = {
+            //x   y
+            2f, -3f, 0,//2
+            3f, -3f, 0,//5
+            2f, -2.75f,0,//8
+            3f, -2.75f, 0//11
+    };
+
     float[]gamePadVertices = {
             1.0f, -0.3f, 0f,
             1.0f, -0.5f, 0f,
@@ -63,7 +71,6 @@ public class MainActivity extends Activity {
             0, 0, 3f
     };
 
-
     //init render
     static OpenGLRenderer render;
 
@@ -74,10 +81,10 @@ public class MainActivity extends Activity {
     //init объектов
     gameObject platformObj = new gameObject(platform);
     gameObject platformObj2 = new gameObject(platform2);
-    //gameObject staticObjects = new gameObject(staticObj);
-    //gameObject gamePad = new gameObject(gamePadVertices);
+    gameObject platformObj3 = new gameObject(platform3);
 
-    float step= 0f;
+
+
 //===================================================
 
     @Override
@@ -101,6 +108,7 @@ public class MainActivity extends Activity {
 
         render.preparePlatform(platformObj);
         render.preparePlatform(platformObj2);
+        render.preparePlatform(platformObj3);
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);
@@ -123,8 +131,6 @@ public class MainActivity extends Activity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        step = 0.1f;
-//        controller.walk();
         if(event.getX()<100) {
             controller.jump();
         } else {controller.walk();}

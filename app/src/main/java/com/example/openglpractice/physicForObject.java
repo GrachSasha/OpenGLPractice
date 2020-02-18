@@ -1,56 +1,36 @@
 package com.example.openglpractice;
 
+import java.io.Console;
+
 import static com.example.openglpractice.MainActivity.render;
+import static com.example.openglpractice.gameObject.gameObjectPool;
 
 class physicForObject implements Runnable {
 
     //init?
     static final int MAXOBJECTS = 10;
-    public static physicForObject objectPhysicPool[] = new physicForObject[MAXOBJECTS];
-    static int objectCounter = 0;
     private Thread physicThread;
-    private Thread gravitation;
-
 
     //fields
-    volatile boolean move = false;
-    volatile boolean jump = false;
-    volatile boolean falling = false;
-    float[] objVertices;
-    gameObject gObj;
+    private volatile boolean move = false;
+    private volatile boolean jump = false;
+    private volatile boolean falling = false;
+    private float[] objVertices;
+    private gameObject gObj;
 
     public physicForObject(float[] vert, gameObject gameObject) {
         objVertices = vert;
         gObj = gameObject;
-        addToPool(this);
 
         physicThread = new Thread(this);
         physicThread.start();
-
-    }
-
-
-    private void addToPool(physicForObject objPhysic) {
-        if(objectCounter < MAXOBJECTS ){
-            objectPhysicPool[objectCounter] = objPhysic;
-            objectCounter++;
-        }
-
     }
 
     public float[] getObjVertices(){return objVertices;}
 
-    public void doStep(){
-        move = true;
-    }
+    public void doStep(){move = true;}
 
-    public void doJump(){
-        jump = true;
-    }
-
-    public void anotherJump(){
-
-    }
+    public void doJump(){jump = true;}
 
     //=====================================================================
 
@@ -99,6 +79,7 @@ class physicForObject implements Runnable {
                 jump = false;
                 gravityCheck();
             }
+
             if (falling){
                 gravityCheck();
                 fall();
@@ -115,24 +96,27 @@ class physicForObject implements Runnable {
     //WARNING! HARD CODE!
     //todo НЕТ ИТЕРАТОРА НЕТ ПРОВЕРКИ НА СЕБЯ
     private void gravityCheck() {
-        //for (int i=0; i<objectPhysicPool.length; i++) {
-        for(int i = 1; i < 3; i++) {
-            if (isOnElement(i)) {
-                if ((objectPhysicPool[i].getObjVertices()[10] < objectPhysicPool[0].getObjVertices()[1])) {
-                    falling = true;
+        for(int i = 0; i < 3; i++){
+            if(gameObjectPool[i].physic != this){
+                if (isOnElement(i)) {
+                    if ((gameObjectPool[i].physic.getObjVertices()[10] < this.getObjVertices()[1])) {
+                        falling = true;
+                        break;
+                    } else {
+                        falling = false;
+                        break;
+                    }
                 } else {
-                    falling = false;
+                    falling = true;
+                    break;
                 }
-            } else {
-                falling = true;
             }
         }
-        //}
     }
 
     private boolean isOnElement(int i){
-        if((objectPhysicPool[i].getObjVertices()[6] <= objectPhysicPool[0].getObjVertices()[6]) &&
-        (objectPhysicPool[i].getObjVertices()[9] >= objectPhysicPool[0].getObjVertices()[6])){return true;}
+        if((gameObjectPool[i].physic.getObjVertices()[6] <= this.getObjVertices()[6]) &&
+        (gameObjectPool[i].physic.getObjVertices()[9] >= this.getObjVertices()[6])){return true;}
         else{return false;}
     }
 

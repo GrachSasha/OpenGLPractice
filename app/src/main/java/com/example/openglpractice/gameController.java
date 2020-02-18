@@ -16,4 +16,6 @@ public class gameController {
         gObject.physic.doJump();
     }
 
+    public void openInventory(){gObject.openInventory();}
+
 }

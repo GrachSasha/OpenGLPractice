@@ -9,41 +9,44 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
+import java.io.Console;
+
 public class MainActivity extends Activity {
-//=================================================
+//static Logger logger = Logger.getLogger();
+    //=================================================
     private GLSurfaceView glSurfaceView;
-
+             // треугольник
+            // x    y   z
     float[] vertices = {
-            // треугольник
-          // x    y   z
-            -3f, -2f, 0.25f,//2
-            -2.5f, -2f, 0.25f,//5
-            -2.75f, -1.75f, 0.25f,//8
+
+            -3f, -2f, 0.25f,
+            -2.5f, -2f, 0.25f,
+            -2.75f, -1.75f, 0.25f,
 
     };
 
-    float[] platform = {
+    float[] platform1Vertices = {
 
-            -3f, -3f, 0,//2
-            -2f, -3f, 0,//5
-            -3f, -2.75f,0,//8
-            -2f, -2.75f, 0//11
+            -3f, -3f, 0,
+            -2f, -3f, 0,
+            -3f, -2.75f,0,
+            -2f, -2.75f, 0
     };
 
-    float[] platform2 = {
-            //x   y
-            0f, -3f, 0,//2
-            1f, -3f, 0,//5
-            0f, -2.75f,0,//8
-            1f, -2.75f, 0//11
+    float[] platform2Vertices = {
+
+            0f, -3f, 0,
+            1f, -3f, 0,
+            0f, -2.75f,0,
+            1f, -2.75f, 0
     };
 
-    float[] platform3 = {
-            //x   y
-            2f, -3f, 0,//2
-            3f, -3f, 0,//5
-            2f, -2.75f,0,//8
-            3f, -2.75f, 0//11
+    float[] platform3Vertices = {
+
+            2f, -3f, 0,
+            3f, -3f, 0,
+            2f, -2.75f,0,
+            3f, -2.75f, 0
     };
 
     float[]gamePadVertices = {
@@ -75,13 +78,16 @@ public class MainActivity extends Activity {
     static OpenGLRenderer render;
 
     //init Игрока с физикой и контроллер
-    gameObject triangle = new gameObject(vertices);
+    dynamicObject triangle = new dynamicObject(vertices);
     gameController controller = new gameController(triangle);
 
     //init объектов
-    gameObject platformObj = new gameObject(platform);
-    gameObject platformObj2 = new gameObject(platform2);
-    gameObject platformObj3 = new gameObject(platform3);
+//    dynamicObject platformObj = new dynamicObject(platform1Vertices);
+//    dynamicObject platformObj2 = new dynamicObject(platform2Vertices);
+//    dynamicObject platformObj3 = new dynamicObject(platform3Vertices);
+    staticObject platform1 = new staticObject(platform1Vertices);
+    staticObject platform2 = new staticObject(platform2Vertices);
+    staticObject platform3 = new staticObject(platform3Vertices);
 
 
 
@@ -106,9 +112,9 @@ public class MainActivity extends Activity {
         //render.prepareStaticModels(staticObjects);
         //render.prepareGamePad(gamePad);
 
-        render.preparePlatform(platformObj);
-        render.preparePlatform(platformObj2);
-        render.preparePlatform(platformObj3);
+        render.preparePlatform(platform1);
+        render.preparePlatform(platform2);
+        render.preparePlatform(platform3);
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);
@@ -120,12 +126,14 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         glSurfaceView.onPause();
+        Runtime.getRuntime().freeMemory();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         glSurfaceView.onResume();
+        Runtime.getRuntime().freeMemory();
     }
 
     @Override

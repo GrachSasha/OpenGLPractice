@@ -2,9 +2,9 @@ package com.example.openglpractice;
 
 public class gameController {
 
-    gameObject gObject;
+    dynamicObject gObject;
 
-    public gameController(gameObject gObject) {
+    public gameController(dynamicObject gObject) {
         this.gObject = gObject;
     }
 

@@ -1,25 +1,25 @@
 package com.example.openglpractice;
 
-public class gameObject {
+public class dynamicObject {
 
     //init
     static int gameObjectCounter = 0;
-    public static gameObject gameObjectPool[] = new gameObject[physicForObject.MAXOBJECTS];
+    public static dynamicObject dynamicObjectPool[] = new dynamicObject[physicForObject.MAXOBJECTS];
 
     //fields
     private int objectId;
     physicForObject physic;
     private boolean invetoryOpen = false;
 
-    public gameObject(float[] vertices){
+    public dynamicObject(float[] vertices){
         objectId = this.hashCode();
         physic = new physicForObject(vertices, this);
         addToPool(this);
     }
 
-    private void addToPool(gameObject gameObject) {
+    private void addToPool(dynamicObject dynamicObject) {
         if(gameObjectCounter < physicForObject.MAXOBJECTS){
-            gameObjectPool[gameObjectCounter] = gameObject;
+            dynamicObjectPool[gameObjectCounter] = dynamicObject;
             gameObjectCounter++;
         }
     }

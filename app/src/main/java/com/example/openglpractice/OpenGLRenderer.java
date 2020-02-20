@@ -14,7 +14,6 @@ import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINES;
-import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glClear;
@@ -44,7 +43,6 @@ public class OpenGLRenderer implements Renderer {
     private FloatBuffer dynamicObjects;
     private FloatBuffer staticObjects;
     private FloatBuffer gamePad;
-    private FloatBuffer platform;
     private FloatBuffer[]platforms = new FloatBuffer[10];
     private int objCounter = 0;
 
@@ -252,7 +250,7 @@ public class OpenGLRenderer implements Renderer {
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
     }
 
-    public void prepareDynamicModels(gameObject gObject) {
+    public void prepareDynamicModels(dynamicObject gObject) {
         dynamicObjects =  ByteBuffer
                 .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -263,7 +261,7 @@ public class OpenGLRenderer implements Renderer {
         dynamicObjectCordY = gObject.physic.getObjVertices()[1];
     }
 
-    public void prepareStaticModels(gameObject gObject){
+    public void prepareStaticModels(dynamicObject gObject){
         staticObjects = ByteBuffer
                 .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -271,7 +269,7 @@ public class OpenGLRenderer implements Renderer {
         staticObjects.put(gObject.physic.getObjVertices()).position(0);
     }
 
-    public void prepareGamePad(gameObject gObject){
+    public void prepareGamePad(dynamicObject gObject){
         gamePad = ByteBuffer
                 .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -279,18 +277,18 @@ public class OpenGLRenderer implements Renderer {
         gamePad.put(gObject.physic.getObjVertices()).position(0);
     }
 
-    public void preparePlatform(gameObject gObject){
-//        platform = ByteBuffer
-//                .allocateDirect(gObject.physic.getObjVertices().length * 4)
+    public void preparePlatform(staticObject staticObj){
+//        platform1Vertices = ByteBuffer
+//                .allocateDirect(staticObj.physic.getObjVertices().length * 4)
 //                .order(ByteOrder.nativeOrder())
 //                .asFloatBuffer();
-//        platform.put(gObject.physic.getObjVertices()).position(0);
+//        platform1Vertices.put(staticObj.physic.getObjVertices()).position(0);
 
         platforms[objCounter] = ByteBuffer
-                .allocateDirect(gObject.physic.getObjVertices().length * 4)
+                .allocateDirect(staticObj.getVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        platforms[objCounter].put(gObject.physic.getObjVertices()).position(0);
+        platforms[objCounter].put(staticObj.getVertices()).position(0);
         objCounter++;
 
     }

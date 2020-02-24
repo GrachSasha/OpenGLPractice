@@ -10,7 +10,6 @@ public class staticObject {
 
     staticObject(float[] vertices){
         objVertices = vertices;
-        //MainActivity.render.preparePlatform(this);
         push(this);
     }
 

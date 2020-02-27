@@ -9,19 +9,25 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
-import java.io.Console;
-
 public class MainActivity extends Activity {
 //static Logger logger = Logger.getLogger();
     //=================================================
     private GLSurfaceView glSurfaceView;
              // треугольник
             // x    y   z
-    float[] vertices = {
+    float[] playerVertices = {
 
-            -3f, -2f, 0.25f,
-            -2.5f, -2f, 0.25f,
-            -2.75f, -1.75f, 0.25f,
+            -3f, -2f, 0f,
+            -2.5f, -2f, 0f,
+            -2.75f, -1.75f, 0f,
+
+    };
+
+    float[] enemyVirtices = {
+
+            -3f, -2f, 0f,
+            -2.5f, -2f, 0f,
+            -2.75f, -1.75f, 0f,
 
     };
 
@@ -50,41 +56,31 @@ public class MainActivity extends Activity {
     };
 
     float[]gamePadVertices = {
-            1.0f, -0.3f, 0f,
-            1.0f, -0.5f, 0f,
+            2.0f, -1.5f, 0.1f,
+            3.0f, -1.5f, 0.1f,
+            2.5f, -1.0f, 0.1f,
 
-            1.0f, -0.3f, 0f,
-            0.9f, -0.35f, 0,
+            2.0f, -2.5f, 0.1f,
+            3.0f, -2.5f, 0.1f,
+            2.5f, -3.0f, 0.1f,
 
-            1.0f, -0.3f, 0f,
-            1.1f, -0.35f, 0,
-    };
+            3.0f, -1.5f, 0.1f,
+            3.0f, -2.5f, 0.1f,
+            3.5f, -2.0f, 0.1f,
 
-    float[] staticObj = {
-            // ось X
-            -3f, 0, 0,
-            3f, 0, 0,
-
-            // ось Y
-            0, -3f, 0,
-            0, 3f, 0,
-
-            // ось Z
-            0, 0, -3f,
-            0, 0, 3f
     };
 
     //init render
     static OpenGLRenderer render;
 
     //init Игрока с физикой и контроллер
-    dynamicObject triangle = new dynamicObject(vertices);
-    gameController controller = new gameController(triangle);
+    dynamicObject player = new dynamicObject(playerVertices);
+    gameController playerController = new gameController(player);
+
+    dynamicObject enemy = new dynamicObject(enemyVirtices);
+    gameController enemyController = new gameController(enemy);
 
     //init объектов
-//    dynamicObject platformObj = new dynamicObject(platform1Vertices);
-//    dynamicObject platformObj2 = new dynamicObject(platform2Vertices);
-//    dynamicObject platformObj3 = new dynamicObject(platform3Vertices);
     staticObject platform1 = new staticObject(platform1Vertices);
     staticObject platform2 = new staticObject(platform2Vertices);
     staticObject platform3 = new staticObject(platform3Vertices);
@@ -108,9 +104,10 @@ public class MainActivity extends Activity {
         render = new OpenGLRenderer(this);
 
         //Грузим корды объектов
-        render.prepareDynamicModels(triangle);
-        //render.prepareStaticModels(staticObjects);
-        //render.prepareGamePad(gamePad);
+
+        render.prepareDynamicModels(player);
+        //render.prepareDynamicModelsForEnemy(enemy);
+        render.prepareGamePad(gamePadVertices);
 
         render.preparePlatform(platform1);
         render.preparePlatform(platform2);
@@ -120,6 +117,8 @@ public class MainActivity extends Activity {
         glSurfaceView.setRenderer(render);
         setContentView(glSurfaceView);
 
+        //Game game = new Game(enemyController);
+
     }
 
     @Override
@@ -127,6 +126,7 @@ public class MainActivity extends Activity {
         super.onPause();
         glSurfaceView.onPause();
         Runtime.getRuntime().freeMemory();
+
     }
 
     @Override
@@ -139,9 +139,10 @@ public class MainActivity extends Activity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(event.getX()<100) {
-            controller.jump();
-        } else {controller.walk();}
+        if(event.getX()<200) {
+            playerController.jump();
+        } else {
+            playerController.walk();}
         return true;
     }
 

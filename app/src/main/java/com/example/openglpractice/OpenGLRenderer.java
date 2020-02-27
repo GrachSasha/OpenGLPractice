@@ -13,7 +13,6 @@ import javax.microedition.khronos.opengles.GL10;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
-import static android.opengl.GLES20.GL_LINES;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glClear;
@@ -31,20 +30,19 @@ import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glLineWidth;
 
 public class OpenGLRenderer implements Renderer {
 
     private final static int POSITION_COUNT = 3;
-    private final static long TIME = 1000L;
 
     private Context context;
 
     private FloatBuffer dynamicObjects;
-    private FloatBuffer staticObjects;
     private FloatBuffer gamePad;
     private FloatBuffer[]platforms = new FloatBuffer[10];
+    private FloatBuffer[]enemies = new FloatBuffer[10];
     private int objCounter = 0;
+    private int enemyCounter = 0;
 
     private int uColorLocation;
     private int uMatrixLocation;
@@ -57,14 +55,10 @@ public class OpenGLRenderer implements Renderer {
     private float[] mModelMatrix = new float[16];
     private float[] mMatrix = new float[16];
 
-    //Доп матрица
-    private float[] mdefaultView= new float[16];
-    private float[] mdefaultProjection= new float[16];
-    private float[] mdefaultModelMatrix = new float[16];
-    private float[] mdefaultMatrix = new float[16];
-
-    public boolean mooved;
-
+    private float[] mProjectionMatrixForInterface = new float[16];
+    private float[] mViewMatrixForInterface = new float[16];
+    private float[] mModelMatrixForInterface = new float[16];
+    private float[] mMatrixForInterface = new float[16];
 
 
     public OpenGLRenderer(Context context) {
@@ -97,30 +91,37 @@ public class OpenGLRenderer implements Renderer {
 
         //создает проекцию
         createProjectionMatrix(width, height);
+        createProjectionMatrixForInterface(width, height);
 
         //биндит матрицу
         bindMatrix();
+        bindMatrixForInterface();
     }
 
     @Override
     public void onDrawFrame(GL10 arg0) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         createViewMatrix();
+        createViewMatrixForInterface();
         bindMatrix();
-
-        //Гейм - пад
-//        bindData(gamePad);
-//        drawGamePad();
-
+        bindMatrixForInterface();
         //Сцена
         //Берем переменные шейдера, передаем массив данных для текущих объектов
 //        bindData(staticObjects);
 //        drawScene();
 
-        //Треугольник
+        //Игрок
         //Берем переменные шейдера, передаем массив данных для текущих объектов
         bindData(dynamicObjects);
         drawTriangle();
+
+        //Вражины
+        for(int i=0; i < enemies.length; i++){
+            if(enemies[i] != null) {
+                bindData(enemies[i]);
+                drawTriangle();
+            }
+        }
 
         //Платформа
         //Берем переменные шейдера, передаем массив данных для текущих объектов
@@ -130,6 +131,11 @@ public class OpenGLRenderer implements Renderer {
                 drawPlatform();
             }
         }
+
+        //Гейм - пад
+        bindData(gamePad);
+        drawGamePad();
+
 //        bindData(platforms[]);
 //        drawPlatform();
 
@@ -153,21 +159,6 @@ public class OpenGLRenderer implements Renderer {
         uMatrixLocation = glGetUniformLocation(programId, "u_Matrix");
     }
 
-    private void drawScene() {
-        Matrix.setIdentityM(mModelMatrix, 0);
-        bindMatrix();
-
-        glLineWidth(3);
-        glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_LINES, 0, 2);
-
-        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
-        glDrawArrays(GL_LINES, 2, 2);
-
-        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_LINES, 4, 2);
-    }
-
     private void drawTriangle() {
         Matrix.setIdentityM(mModelMatrix, 0);
         //setModelMatrix();
@@ -178,19 +169,17 @@ public class OpenGLRenderer implements Renderer {
     }
 
     private void drawGamePad() {
-        Matrix.setIdentityM(mModelMatrix, 0);
-        //Matrix.setIdentityM(mdefaultModelMatrix, 0);
-        //bindDefaultMatrix();
-        glLineWidth(2);
 
-        glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.0f);
-        glDrawArrays(GL_LINES, 0, 2);
+        Matrix.setIdentityM(mModelMatrixForInterface, 0);
+        bindMatrixForInterface();
 
-        glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.0f);
-        glDrawArrays(GL_LINES, 2, 2);
+        glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.5f);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.0f);
-        glDrawArrays(GL_LINES, 4, 2);
+        glDrawArrays(GL_TRIANGLES, 3, 3);
+
+        glDrawArrays(GL_TRIANGLES, 6, 3);
+
     }
 
     private void drawPlatform(){
@@ -198,6 +187,44 @@ public class OpenGLRenderer implements Renderer {
 
         glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    }
+
+    private void createViewMatrix() {
+        // точка положения камеры
+        float eyeX = dynamicObjectCordX;
+        float eyeY = 0;
+        float eyeZ = 3;
+
+        // точка направления камеры
+        float centerX = dynamicObjectCordX;
+        float centerY = 0;
+        float centerZ = 0;
+
+        // up-вектор
+        float upX = 0;
+        float upY = 1;
+        float upZ = 0;
+
+        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+    }
+
+    private void createViewMatrixForInterface() {
+        // точка положения камеры
+        float eyeX = 0;
+        float eyeY = 0;
+        float eyeZ = 3;
+
+        // точка направления камеры
+        float centerX = 0;
+        float centerY = 0;
+        float centerZ = 0;
+
+        // up-вектор
+        float upX = 0;
+        float upY = 1;
+        float upZ = 0;
+
+        Matrix.setLookAtM(mViewMatrixForInterface, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
     }
 
     private void createProjectionMatrix(int width, int height) {
@@ -225,23 +252,34 @@ public class OpenGLRenderer implements Renderer {
         //Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
-    private void createViewMatrix() {
-        // точка положения камеры
-        float eyeX = dynamicObjectCordX;
-        float eyeY = 0;
-        float eyeZ = 3;
+    private void createProjectionMatrixForInterface(int width, int height) {
 
-        // точка направления камеры
-        float centerX = dynamicObjectCordX;
-        float centerY = 0;
-        float centerZ = 0;
+        float left = -3;
+        float right = 3;
+        float bottom = -3;
+        float top = 3;
 
-        // up-вектор
-        float upX = 0;
-        float upY = 1;
-        float upZ = 0;
+        float near = 2;
+        float far = 12;
 
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+        float ratio = 1;
+        if (width > height) {
+            ratio = (float) width / height;
+            left *= ratio;
+            right *= ratio;
+        } else {
+            ratio = (float) height / width;
+            bottom *= ratio;
+            top *= ratio;
+        }
+
+        Matrix.orthoM(mProjectionMatrixForInterface, 0, left, right, bottom, top, near, far);
+    }
+
+    private void bindMatrixForInterface() {
+        Matrix.multiplyMM(mMatrixForInterface, 0, mViewMatrixForInterface, 0, mModelMatrixForInterface, 0);
+        Matrix.multiplyMM(mMatrixForInterface, 0, mProjectionMatrixForInterface, 0, mMatrixForInterface, 0);
+        glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrixForInterface, 0);
     }
 
     private void bindMatrix() {
@@ -261,29 +299,24 @@ public class OpenGLRenderer implements Renderer {
         dynamicObjectCordY = gObject.physic.getObjVertices()[1];
     }
 
-    public void prepareStaticModels(dynamicObject gObject){
-        staticObjects = ByteBuffer
+    public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
+        enemies[enemyCounter] =  ByteBuffer
                 .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        staticObjects.put(gObject.physic.getObjVertices()).position(0);
+        enemies[enemyCounter].put(gObject.physic.getObjVertices()).position(0);
+        enemyCounter++;
     }
 
-    public void prepareGamePad(dynamicObject gObject){
+    public void prepareGamePad(float[] vertices){
         gamePad = ByteBuffer
-                .allocateDirect(gObject.physic.getObjVertices().length * 4)
+                .allocateDirect(vertices.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        gamePad.put(gObject.physic.getObjVertices()).position(0);
+        gamePad.put(vertices).position(0);
     }
 
     public void preparePlatform(staticObject staticObj){
-//        platform1Vertices = ByteBuffer
-//                .allocateDirect(staticObj.physic.getObjVertices().length * 4)
-//                .order(ByteOrder.nativeOrder())
-//                .asFloatBuffer();
-//        platform1Vertices.put(staticObj.physic.getObjVertices()).position(0);
-
         platforms[objCounter] = ByteBuffer
                 .allocateDirect(staticObj.getVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -292,5 +325,6 @@ public class OpenGLRenderer implements Renderer {
         objCounter++;
 
     }
+
 
 }

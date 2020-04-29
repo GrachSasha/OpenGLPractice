@@ -20,6 +20,8 @@ class physicForObject implements Runnable {
     private Thread physicThread;
     private float[] objVertices;
     private dynamicObject linkDynamicObject;
+    float currentX;
+    float currentY;
 
     public physicForObject(float[] vert, dynamicObject dynamicObject) {
         objVertices = vert;
@@ -114,13 +116,18 @@ class physicForObject implements Runnable {
     }
 
     private void gravityCheck() {
+
+
         for (int i = 0; i < staticObject.staticObjectPool.length - 1; i++) {
             //проверка на пустые объекты
             if (staticObject.staticObjectPool[i] == null) {
-                break;
+                continue;
             }
+
+            //если над объектом
             if ((dynamicObjectPool[0].physic.getObjVertices()[6] >= staticObject.staticObjectPool[i].getVertices()[6]) &&
                     (dynamicObjectPool[0].physic.getObjVertices()[6] <= staticObject.staticObjectPool[i].getVertices()[9])) {
+
                 //если над объектом, проверяем высоту и падаем
                 if (dynamicObjectPool[0].physic.getObjVertices()[1] > staticObject.staticObjectPool[i].getVertices()[7]) {
                     falling = true;
@@ -145,7 +152,7 @@ class physicForObject implements Runnable {
         for (int i = 0; i < staticObject.staticObjectPool.length - 1; i++) {
             //проверка на пустые объекты
             if (staticObject.staticObjectPool[i] == null) {
-                break;
+                continue;
             }
 
             //проверка на высоту

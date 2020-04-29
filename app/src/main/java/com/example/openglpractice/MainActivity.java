@@ -23,7 +23,7 @@ public class MainActivity extends Activity {
 
     };
 
-    float[] enemyVirtices = {
+    float[] enemyVertices = {
 
             -3f, -2f, 0f,
             -2.5f, -2f, 0f,
@@ -55,6 +55,13 @@ public class MainActivity extends Activity {
             3f, -2.75f, 0
     };
 
+    float[] platform4Vertices = {
+            0f, -1f, 0,
+            1f, -1f, 0,
+            0f, -0.75f,0,
+            1f, -0.75f, 0
+    };
+
     float[]gamePadVertices = {
             2.0f, -1.5f, 0.1f,
             3.0f, -1.5f, 0.1f,
@@ -70,6 +77,9 @@ public class MainActivity extends Activity {
 
     };
 
+    //init Game Control
+    Game game;
+
     //init render
     static OpenGLRenderer render;
 
@@ -77,13 +87,14 @@ public class MainActivity extends Activity {
     dynamicObject player = new dynamicObject(playerVertices);
     gameController playerController = new gameController(player);
 
-    dynamicObject enemy = new dynamicObject(enemyVirtices);
+    dynamicObject enemy = new dynamicObject(enemyVertices);
     gameController enemyController = new gameController(enemy);
 
     //init объектов
     staticObject platform1 = new staticObject(platform1Vertices);
     staticObject platform2 = new staticObject(platform2Vertices);
     staticObject platform3 = new staticObject(platform3Vertices);
+    //staticObject platform4 = new staticObject(platform4Vertices);
 
 
 
@@ -92,6 +103,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (!supportES2()) {
             Toast.makeText(this, "OpenGL ES 2.0 is not supported", Toast.LENGTH_LONG).show();
             finish();
@@ -100,6 +112,7 @@ public class MainActivity extends Activity {
 
         //Инициализация рендера
         glSurfaceView = new GLSurfaceView(this);
+        game = new Game(glSurfaceView);
         glSurfaceView.setEGLContextClientVersion(2);
         render = new OpenGLRenderer(this);
 
@@ -112,6 +125,7 @@ public class MainActivity extends Activity {
         render.preparePlatform(platform1);
         render.preparePlatform(platform2);
         render.preparePlatform(platform3);
+        //render.preparePlatform(platform4);
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);

@@ -1,6 +1,6 @@
 package com.example.openglpractice;
 
-public class dynamicObject {
+public class dynamicObject{
 
     //init
     static int gameObjectCounter = 0;

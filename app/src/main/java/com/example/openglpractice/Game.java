@@ -1,24 +1,27 @@
 package com.example.openglpractice;
 
-class Game implements Runnable {
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import static java.security.AccessController.getContext;
+import static java.util.ResourceBundle.getBundle;
+
+class Game {
     Thread thread;
     gameController gController;
+    GLSurfaceView glSurfaceView;
 
-    Game(gameController gm){
+    Game(gameController gm, GLSurfaceView glSurfaceView){
         gController = gm;
-        thread = new Thread(this);
-        thread.start();
+        this.glSurfaceView = glSurfaceView;
     }
 
-    @Override
-    public void run() {
-        do {
-            gController.jump();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }while (true);
+    public Game(GLSurfaceView glSurfaceView) {
+        this.glSurfaceView = glSurfaceView;
+    }
+
+    public void startGame(){
+
     }
 }

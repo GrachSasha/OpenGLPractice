@@ -1,6 +1,6 @@
 package com.example.openglpractice;
 
-public class staticObject {
+public class staticObject{
 
 
     static staticObject[] staticObjectPool = new staticObject[10];
@@ -34,4 +34,5 @@ public class staticObject {
         staticObjectPool[staticObjectCounter] = null;
         staticObjectCounter--;
     }
+
 }

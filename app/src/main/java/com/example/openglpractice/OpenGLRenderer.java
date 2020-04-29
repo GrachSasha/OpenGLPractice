@@ -254,10 +254,10 @@ public class OpenGLRenderer implements Renderer {
 
     private void createProjectionMatrixForInterface(int width, int height) {
 
-        float left = -3;
-        float right = 3;
-        float bottom = -3;
-        float top = 3;
+        float left = -5;
+        float right = 5;
+        float bottom = -5;
+        float top = 5;
 
         float near = 2;
         float far = 12;

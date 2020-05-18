@@ -13,6 +13,14 @@ public class staticObject{
         push(this);
     }
 
+    public static staticObject[] getStaticObjectPool() {
+        return staticObjectPool;
+    }
+
+    synchronized public static void setStaticObjectPool(staticObject[] staticObjectPool) {
+        staticObject.staticObjectPool = staticObjectPool;
+    }
+
     public float[] getVertices(){
         return objVertices;
     }
@@ -20,19 +28,31 @@ public class staticObject{
     //=========================================================================
 
     public void push(staticObject staticObject){
-        if (staticObjectCounter == staticObjectPool.length - 1) {
+        if (staticObjectCounter == getStaticObjectPool().length - 1) {
 
             throw new ArrayIndexOutOfBoundsException("staticObjectPool full");
         }
-        staticObjectPool[++staticObjectCounter] = staticObject;
+        getStaticObjectPool()[++staticObjectCounter] = staticObject;
     }
 
     public void delete(staticObject staticObject){
         if(staticObjectCounter == -1){
             throw new ArrayIndexOutOfBoundsException("staticObjectPool empty");
         }
-        staticObjectPool[staticObjectCounter] = null;
+        getStaticObjectPool()[staticObjectCounter] = null;
         staticObjectCounter--;
     }
-
+                                //x          //y            //x          //y
+     public float[] getTop(){
+         return new float[]{objVertices[6], objVertices[7], objVertices[9], objVertices[10]};
+     }
+     public float[] getDown(){
+         return new float[]{objVertices[0], objVertices[1], objVertices[3], objVertices[4]};
+     }
+     public float[] getRight(){
+         return new float[]{objVertices[3], objVertices[4], objVertices[9], objVertices[10]};
+     }
+     public float[] getLeft(){
+         return new float[]{objVertices[0], objVertices[1], objVertices[6], objVertices[7]};
+     }
 }

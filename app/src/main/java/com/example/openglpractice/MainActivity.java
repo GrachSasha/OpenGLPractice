@@ -83,6 +83,14 @@ public class MainActivity extends Activity {
             2.25f, 0, 0
     };
 
+    float[] platform7Vertices = {
+            -2f, -2f, 0,
+            -0.5f, -2f, 0,
+
+            -2f, -1.5f, 0,
+            -0.5f, -1.5f, 0
+    };
+
     float[]gamePadVertices = {
             2.0f, -1.5f, 0.1f,
             3.0f, -1.5f, 0.1f,
@@ -119,6 +127,7 @@ public class MainActivity extends Activity {
     staticObject platform4 = new staticObject(platform4Vertices);
     staticObject platform5 = new staticObject(platform5Vertices);
     staticObject platform6 = new staticObject(platform6Vertices);
+    staticObject platform7 = new staticObject(platform7Vertices);
 
 
 
@@ -157,6 +166,7 @@ public class MainActivity extends Activity {
         render.preparePlatform(platform4);
         render.preparePlatform(platform5);
         render.preparePlatform(platform6);
+        render.preparePlatform(platform7);
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);

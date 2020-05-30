@@ -20,9 +20,9 @@ public class MainActivity extends Activity {
             // x    y   z
     float[] playerVertices = {
 
-            -3f, -2f, 0f,
-            -2.5f, -2f, 0f,
-            -2.75f, -1.75f, 0f,
+            -3f, -1f, 0f,
+            -2.5f, -1f, 0f,
+            -2.75f, -0.75f, 0f,
 
     };
 

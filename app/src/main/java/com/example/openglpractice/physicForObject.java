@@ -30,8 +30,6 @@ class physicForObject implements Runnable {
     private volatile boolean isPossibleJump = true;
 
     //fields
-    private float centerDotX;
-    private float centerDotY;
     private Thread physicThread;
     private float[] objVertices;
     private dynamicObject linkDynamicObject;
@@ -54,11 +52,11 @@ class physicForObject implements Runnable {
     //=====================================================================
 
     private void walkRight(){
-        dynamicObjectPool[0].physic.getObjVertices()[0] += 0.25f;
-        dynamicObjectPool[0].physic.getObjVertices()[3] += 0.25f;
-        dynamicObjectPool[0].physic.getObjVertices()[6] += 0.25f;
+        dynamicObjectPool[0].physic.getObjVertices()[0] += 0.10f;
+        dynamicObjectPool[0].physic.getObjVertices()[3] += 0.10f;
+        dynamicObjectPool[0].physic.getObjVertices()[6] += 0.10f;
         render.prepareDynamicModels(linkDynamicObject);
-//        wallCheck();
+//        wallCheckRight();
 //        downCheck();
     }
 
@@ -93,8 +91,7 @@ class physicForObject implements Runnable {
     public void run() {
         do {
             if (move) {
-                wallCheck();
-                if(isPossibleWalk) {
+                if(wallCheckRight()) {
                     walkRight();
                     move = false;
                     downCheck();
@@ -104,11 +101,15 @@ class physicForObject implements Runnable {
             }
 
             if (jump){
-                for(int i = 0 ; i < 5; i++) {
-                    newUpCheck();
-                    if (isPossibleJump) {
-                        jump(0.1f);
-                    } else { break; }
+                if(!falling) {
+                    for (int i = 0; i < 10; i++) {
+                        upCheck();
+                        if (isPossibleJump) {
+                            jump(0.1f);
+                        } else {
+                            break;
+                        }
+                    }
                 }
                 jump = false;
                 downCheck();
@@ -127,38 +128,7 @@ class physicForObject implements Runnable {
         while (true);
     }
 
-    private boolean upCheck() {
-        UP_VECTOR[X1] = dynamicObjectPool[0].physic.getObjVertices()[6];
-        UP_VECTOR[Y1] = UP_VECTOR[X1] + 0.15f;
-
-        for (int i = 0; i < staticObject.getStaticObjectPool().length - 1; i++) {
-
-            //проверка на пустые объекты
-            if (staticObject.getStaticObjectPool()[i] == null) {
-                continue;
-            }
-
-            //если между краев
-            if ((dynamicObjectPool[0].physic.getObjVertices()[6] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
-                    (dynamicObjectPool[0].physic.getObjVertices()[6] <= staticObject.getStaticObjectPool()[i].getVertices()[9])) {
-
-                    //если вплотную
-                    if (dynamicObjectPool[0].physic.getObjVertices()[7] < staticObject.getStaticObjectPool()[i].getVertices()[1]) {
-                        if (DOWN_VECTOR[Y1] > staticObject.getStaticObjectPool()[i].getVertices()[1]) {
-                            isPossibleJump = false;
-//                            jump = false;
-                            return false;
-                        } else {
-                            isPossibleJump = true;
-                            return true;
-                        }
-                    } else { continue; }
-            } else {continue;}
-        }
-        return false;
-    }
-
-    private void newUpCheck(){
+    private void upCheck(){
 //        UP_VECTOR[X1] = dynamicObjectPool[0].physic.getObjVertices()[6];
 //        UP_VECTOR[Y1] = dynamicObjectPool[0].physic.getObjVertices()[7] + 0.10f;
 
@@ -188,9 +158,8 @@ class physicForObject implements Runnable {
             }
     }
     private void downCheck(){
-        centerDotY = (dynamicObjectPool[0].physic.getObjVertices()[1] + dynamicObjectPool[0].physic.getObjVertices()[7])/2;
-        centerDotX = dynamicObjectPool[0].physic.getObjVertices()[6];
-        DOWN_VECTOR[X1] = centerDotX;
+        float centerDotY = (dynamicObjectPool[0].physic.getObjVertices()[1] + dynamicObjectPool[0].physic.getObjVertices()[7])/2;
+        float centerDotX = dynamicObjectPool[0].physic.getObjVertices()[6];
         DOWN_VECTOR[Y1] = centerDotY + (-0.15f);
 
         for (int i = 0; i < staticObject.getStaticObjectPool().length - 1; i++) {
@@ -230,28 +199,26 @@ class physicForObject implements Runnable {
     }
 
     //todo NEED CREATE DIRECTION
-    private void wallCheck() {
+    private boolean wallCheckRight() {
+        float vectorEndY  = (dynamicObjectPool[0].physic.getObjVertices()[4] + dynamicObjectPool[0].physic.getObjVertices()[7])/2;
+        float vectorEndX = dynamicObjectPool[0].physic.getObjVertices()[3] + 0.15f;
+
         for (int i = 0; i < staticObject.getStaticObjectPool().length - 1; i++) {
 
             //проверка на пустые объекты
-            if (staticObject.getStaticObjectPool()[i] == null) { continue; }
+            if (staticObject.getStaticObjectPool()[i] == null) {
+                continue;
+            }
 
-            //проверка на высоту
-                if (dynamicObjectPool[0].physic.getObjVertices()[4] > staticObject.getStaticObjectPool()[i].getVertices()[7]) {
-                    isPossibleWalk = true;
-                    break;
-                } else {
-
-                    //если игрок стоит перед объектом, то он не двигается дальше в него
-                    if (Math.abs(dynamicObjectPool[0].physic.getObjVertices()[3] - staticObject.getStaticObjectPool()[i].getVertices()[0]) <= 0.1) {
-                        isPossibleWalk = false;
-                        break;
-                    } else {
-                        isPossibleWalk = true;
-                        //break;
-                    }
+            if ((vectorEndY > staticObject.getStaticObjectPool()[i].getVertices()[1]) &&
+                    (vectorEndY < staticObject.getStaticObjectPool()[i].getVertices()[7])) {
+                if ((dynamicObjectPool[0].physic.getObjVertices()[3] < staticObject.getStaticObjectPool()[i].getVertices()[0]) &&
+                        (vectorEndX > staticObject.getStaticObjectPool()[i].getVertices()[0])) {
+                    return false;
                 }
+            }
         }
+    return true;
     }
 
 //    private boolean isNearToObject(staticObject staticObj, float pogreshnost){

@@ -7,9 +7,7 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.MotionEvent;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -26,13 +24,13 @@ public class MainActivity extends Activity {
 
     };
 
-//    float[] enemyVertices = {
-//
-//            -3f, -2f, 0f,
-//            -2.5f, -2f, 0f,
-//            -2.75f, -1.75f, 0f,
-//
-//    };
+    float[] enemyVertices = {
+
+            -3f, -2f, 0f,
+            -2.5f, -2f, 0f,
+            -2.75f, -1.75f, 0f,
+
+    };
 
     float[] platform1Vertices = {
 
@@ -108,6 +106,8 @@ public class MainActivity extends Activity {
 
     //init Game Control
     Game game;
+    int screenWidth;
+    int screenHeight;
 
     //init render
     static OpenGLRenderer render;
@@ -117,8 +117,10 @@ public class MainActivity extends Activity {
     dynamicObject player = new dynamicObject(playerVertices);
     gameController playerController = new gameController(player);
 
-    //dynamicObject enemy = new dynamicObject(enemyVertices);
-    //gameController enemyController = new gameController(enemy);
+    //enemies
+//    dynamicObject enemy = new dynamicObject(enemyVertices);
+//    gameController enemyContoller = new gameController(enemy);
+//    AI enemy  = new AI(enemyVertices);
 
     //init объектов
     staticObject platform1 = new staticObject(platform1Vertices);
@@ -144,8 +146,8 @@ public class MainActivity extends Activity {
         }
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenWidth = displaymetrics.widthPixels;
-        int screenHeight = displaymetrics.heightPixels;
+        screenWidth = displaymetrics.widthPixels;
+        screenHeight = displaymetrics.heightPixels;
         Toast.makeText(this, "WIDTH = " + screenWidth + "HEIGHT = " + screenHeight, Toast.LENGTH_LONG).show();
 
         //Инициализация рендера
@@ -156,7 +158,7 @@ public class MainActivity extends Activity {
 
         //Грузим корды динамических объектов
         render.prepareDynamicModels(player);
-        //render.prepareDynamicModelsForEnemy(enemy);
+//        enemy.createModel();
 
         render.prepareGamePad(gamePadVertices);
 
@@ -193,11 +195,13 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        float sector = screenWidth/3;
+        float cord = event.getX();
 
-        if(event.getX()<200) {
-            playerController.jump();
-        } else {
-            playerController.walk();}
+        if(cord < sector){playerController.walkLeft();}
+        if((cord > sector) && (cord < sector*2)){playerController.jump();}
+        if((cord > sector*2) && (cord < sector*3)){playerController.walkRight();}
+
         return true;
     }
 

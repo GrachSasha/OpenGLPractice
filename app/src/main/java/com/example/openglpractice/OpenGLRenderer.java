@@ -36,6 +36,8 @@ public class OpenGLRenderer implements Renderer {
     private final static int POSITION_COUNT = 3;
 
     private Context context;
+    float width;
+    float height;
 
     private FloatBuffer dynamicObjects;
     private FloatBuffer gamePad;
@@ -88,6 +90,8 @@ public class OpenGLRenderer implements Renderer {
     public void onSurfaceChanged(GL10 arg0, int width, int height) {
         //full screen
         glViewport(0, 0, width, height);
+        this.width = width;
+        this.height = height;
 
         //создает проекцию
         createProjectionMatrix(width, height);
@@ -119,7 +123,7 @@ public class OpenGLRenderer implements Renderer {
         for(int i=0; i < enemies.length; i++){
             if(enemies[i] != null) {
                 bindData(enemies[i]);
-                drawTriangle();
+                drawEnemies();
             }
         }
 
@@ -162,6 +166,14 @@ public class OpenGLRenderer implements Renderer {
     private void drawTriangle() {
         Matrix.setIdentityM(mModelMatrix, 0);
         //setModelMatrix();
+        bindMatrix();
+
+        glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
+
+    private void drawEnemies() {
+        Matrix.setIdentityM(mModelMatrix, 0);
         bindMatrix();
 
         glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
@@ -274,9 +286,18 @@ public class OpenGLRenderer implements Renderer {
         }
 
         Matrix.orthoM(mProjectionMatrixForInterface, 0, left, right, bottom, top, near, far);
+
     }
 
     private void bindMatrixForInterface() {
+        //Matrix.scaleM(mModelMatrixForInterface, 0, 2,2,2);
+        float x = 2.25f, y = -0.8f;
+        if (width > height) {
+            x *= width / height;
+            y *= width / height;
+        }
+        Matrix.translateM(mModelMatrixForInterface, 0, x, y, 1);
+        Matrix.scaleM(mModelMatrixForInterface, 0,1.25f, 1.25f, 0);
         Matrix.multiplyMM(mMatrixForInterface, 0, mViewMatrixForInterface, 0, mModelMatrixForInterface, 0);
         Matrix.multiplyMM(mMatrixForInterface, 0, mProjectionMatrixForInterface, 0, mMatrixForInterface, 0);
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrixForInterface, 0);
@@ -298,14 +319,26 @@ public class OpenGLRenderer implements Renderer {
         dynamicObjectCordX = gObject.physic.getObjVertices()[0];
         dynamicObjectCordY = gObject.physic.getObjVertices()[1];
     }
-
-    public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
-        enemies[enemyCounter] =  ByteBuffer
+    public void prepareDynamicModelsOld(dynamicObject gObject) {
+        dynamicObjects =  ByteBuffer
                 .allocateDirect(gObject.physic.getObjVertices().length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        enemies[enemyCounter].put(gObject.physic.getObjVertices()).position(0);
-        enemyCounter++;
+        dynamicObjects.put(gObject.physic.getObjVertices()).position(0);
+
+        dynamicObjectCordX = gObject.physic.getObjVertices()[0];
+        dynamicObjectCordY = gObject.physic.getObjVertices()[1];
+    }
+
+    public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
+        try {
+            enemies[enemyCounter] = ByteBuffer
+                    .allocateDirect(gObject.physic.getObjVertices().length * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            enemies[enemyCounter].put(gObject.physic.getObjVertices()).position(0);
+            enemyCounter++;
+        } catch (NullPointerException exc){}
     }
 
     public void prepareGamePad(float[] vertices){

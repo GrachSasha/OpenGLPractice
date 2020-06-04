@@ -10,8 +10,12 @@ public class gameController {
         this.gObject = gObject;
     }
 
-    public void walk(){
-        gObject.physic.doStep();
+    public void walkLeft(){
+        gObject.physic.doStepLeft();
+    }
+
+    public void walkRight(){
+        gObject.physic.doStepRight();
     }
 
     public void jump(){

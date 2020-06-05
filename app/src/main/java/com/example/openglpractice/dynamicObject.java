@@ -8,12 +8,13 @@ public class dynamicObject{
 
     //fields
     private int objectId;
+    public boolean player = false;
     physicForObject physic;
-    alternativePhysicForObject alternativePhysic;
     private boolean invetoryOpen = false;
 
-    public dynamicObject(float[] vertices){
+    public dynamicObject(float[] vertices, boolean pl){
         objectId = this.hashCode();
+        player = pl;
         //alternativePhysic = new alternativePhysicForObject(vertices, this);
         physic = new physicForObject(vertices, this);
         addToPool(this);

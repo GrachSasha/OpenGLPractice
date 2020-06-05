@@ -3,6 +3,7 @@ package com.example.openglpractice;
 import static com.example.openglpractice.MainActivity.render;
 
 public class AI implements Runnable{
+
     private float[] vertices;
     private dynamicObject physic;
     private gameController gameController;
@@ -10,21 +11,16 @@ public class AI implements Runnable{
 
     AI(float[] vert) {
         vertices = vert;
-        physic = new dynamicObject(vertices);
+        physic = new dynamicObject(vertices, false);
         gameController = new gameController(physic);
+
         controlThread = new Thread(this);
         controlThread.start();
     }
 
-//    public AI(physic gObj, gameController gControl) {
-//        physic = gObj;
-//        gameController = gControl;
-//        createModel();
-//    }
-
     public void createModel() {
         try {
-            render.prepareDynamicModelsForEnemy(this.physic);
+            render.prepareDynamicModelsForEnemy(physic);
         } catch (NullPointerException exc) {
             exc.printStackTrace();
         }
@@ -33,9 +29,10 @@ public class AI implements Runnable{
     @Override
     public void run() {
         do {
+            this.gameController.walkRight();
             this.gameController.jump();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

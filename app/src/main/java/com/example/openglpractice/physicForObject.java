@@ -1,7 +1,6 @@
 package com.example.openglpractice;
 
 import static com.example.openglpractice.MainActivity.render;
-import static com.example.openglpractice.dynamicObject.dynamicObjectPool;
 
 class physicForObject implements Runnable {
 
@@ -44,36 +43,40 @@ class physicForObject implements Runnable {
     //=====================================================================
 
     private void walkRight(){
-        dynamicObjectPool[0].physic.getObjVertices()[0] += 0.10f;
-        dynamicObjectPool[0].physic.getObjVertices()[3] += 0.10f;
-        dynamicObjectPool[0].physic.getObjVertices()[6] += 0.10f;
-        render.prepareDynamicModels(linkDynamicObject);
+        objVertices[0] += 0.10f;
+        objVertices[3] += 0.10f;
+        objVertices[6] += 0.10f;
+        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
+            {render.changeDynamicModelsForEnemy(linkDynamicObject);}
 
     }
     private void walkLeft(){
-        dynamicObjectPool[0].physic.getObjVertices()[0] += (-0.10f);
-        dynamicObjectPool[0].physic.getObjVertices()[3] += (-0.10f);
-        dynamicObjectPool[0].physic.getObjVertices()[6] += (-0.10f);
-        render.prepareDynamicModels(linkDynamicObject);
+        objVertices[0] += (-0.10f);
+        objVertices[3] += (-0.10f);
+        objVertices[6] += (-0.10f);
+        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
+            {render.changeDynamicModelsForEnemy(linkDynamicObject);}
 
     }
 
     private void jump(float coord){
-        if(dynamicObjectPool[0].physic.getObjVertices()[1] <= MAX_GROUND) {
-            dynamicObjectPool[0].physic.getObjVertices()[1] += coord;
-            dynamicObjectPool[0].physic.getObjVertices()[4] += coord;
-            dynamicObjectPool[0].physic.getObjVertices()[7] += coord;
-            render.prepareDynamicModels(linkDynamicObject);
+        if(objVertices[1] <= MAX_GROUND) {
+            objVertices[1] += coord;
+            objVertices[4] += coord;
+            objVertices[7] += coord;
+        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
+            {render.changeDynamicModelsForEnemy(linkDynamicObject);}
         }
     }
 
 
     private void fall(){
-        if(dynamicObjectPool[0].physic.getObjVertices()[1] >= MIN_GROUND) {
-            dynamicObjectPool[0].physic.getObjVertices()[1] += -0.05f;
-            dynamicObjectPool[0].physic.getObjVertices()[4] += -0.05f;
-            dynamicObjectPool[0].physic.getObjVertices()[7] += -0.05f;
-            render.prepareDynamicModels(linkDynamicObject);
+        if(objVertices[1] >= MIN_GROUND) {
+            objVertices[1] += -0.05f;
+            objVertices[4] += -0.05f;
+            objVertices[7] += -0.05f;
+            if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
+                {render.changeDynamicModelsForEnemy(linkDynamicObject);}
         } else {falling = false;}
     }
 
@@ -138,12 +141,12 @@ class physicForObject implements Runnable {
                 continue;
             }
 
-            if ((dynamicObjectPool[0].physic.getObjVertices()[4]  >=
+            if ((objVertices[4]  >=
                     staticObject.getStaticObjectPool()[i].getVertices()[1]) &&
-                    (dynamicObjectPool[0].physic.getObjVertices()[4] <=
+                    (objVertices[4] <=
                             staticObject.getStaticObjectPool()[i].getVertices()[7])) {
 
-                if (Math.abs(dynamicObjectPool[0].physic.getObjVertices()[3] -
+                if (Math.abs(objVertices[3] -
                         staticObject.getStaticObjectPool()[i].getVertices()[0]) < 0.05f)
                         {
                             return false;
@@ -164,12 +167,12 @@ class physicForObject implements Runnable {
                 continue;
             }
 
-            if ((dynamicObjectPool[0].physic.getObjVertices()[1]  >=
+            if ((objVertices[1]  >=
                     staticObject.getStaticObjectPool()[i].getVertices()[4]) &&
-                    (dynamicObjectPool[0].physic.getObjVertices()[1] <=
+                    (objVertices[1] <=
                             staticObject.getStaticObjectPool()[i].getVertices()[7])) {
 
-                if (Math.abs(dynamicObjectPool[0].physic.getObjVertices()[0] -
+                if (Math.abs(objVertices[0] -
                         staticObject.getStaticObjectPool()[i].getVertices()[3]) < 0.05f)
                 {
                     return false;
@@ -190,11 +193,11 @@ class physicForObject implements Runnable {
             }
 
             //проверка по х
-            if ((dynamicObjectPool[0].physic.getObjVertices()[6] >= staticObject.getStaticObjectPool()[i].getVertices()[0]) &&
-                    (dynamicObjectPool[0].physic.getObjVertices()[6] <= staticObject.getStaticObjectPool()[i].getVertices()[3])) {
+            if ((objVertices[6] >= staticObject.getStaticObjectPool()[i].getVertices()[0]) &&
+                    (objVertices[6] <= staticObject.getStaticObjectPool()[i].getVertices()[3])) {
 
                 //проверка по у
-                if (Math.abs(dynamicObjectPool[0].physic.getObjVertices()[7] -
+                if (Math.abs(objVertices[7] -
                         staticObject.getStaticObjectPool()[i].getVertices()[1]) < 0.05f) {
                     return false;
                 }
@@ -212,13 +215,13 @@ class physicForObject implements Runnable {
             }
 
             //если над объектом
-            if ((dynamicObjectPool[0].physic.getObjVertices()[0] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
-                    (dynamicObjectPool[0].physic.getObjVertices()[0] <= staticObject.getStaticObjectPool()[i].getVertices()[9]) ||
-                        (dynamicObjectPool[0].physic.getObjVertices()[3] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
-                            (dynamicObjectPool[0].physic.getObjVertices()[3] <= staticObject.getStaticObjectPool()[i].getVertices()[9])) {
+            if ((objVertices[0] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
+                    (objVertices[0] <= staticObject.getStaticObjectPool()[i].getVertices()[9]) ||
+                        (objVertices[3] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
+                            (objVertices[3] <= staticObject.getStaticObjectPool()[i].getVertices()[9])) {
 
                 //если выше
-                if (Math.abs(dynamicObjectPool[0].physic.getObjVertices()[1] -
+                if (Math.abs(objVertices[1] -
                         staticObject.getStaticObjectPool()[i].getVertices()[7]) < 0.025f){
                     falling = false;
                     return false;
@@ -231,8 +234,8 @@ class physicForObject implements Runnable {
 
 
     //    private void upCheck(){
-////        UP_VECTOR[X1] = dynamicObjectPool[0].physic.getObjVertices()[6];
-////        UP_VECTOR[Y1] = dynamicObjectPool[0].physic.getObjVertices()[7] + 0.10f;
+////        UP_VECTOR[X1] = objVertices[6];
+////        UP_VECTOR[Y1] = objVertices[7] + 0.10f;
 //
 //            for(int i = 0; i < staticObject.getStaticObjectPool().length-1; i++){
 //
@@ -242,12 +245,12 @@ class physicForObject implements Runnable {
 //                }
 //
 //                //проверка по х
-//                if((dynamicObjectPool[0].physic.getObjVertices()[6] >= staticObject.getStaticObjectPool()[i].getVertices()[0]) &&
-//                        (dynamicObjectPool[0].physic.getObjVertices()[6] <= staticObject.getStaticObjectPool()[i].getVertices()[3])){
+//                if((objVertices[6] >= staticObject.getStaticObjectPool()[i].getVertices()[0]) &&
+//                        (objVertices[6] <= staticObject.getStaticObjectPool()[i].getVertices()[3])){
 //
 //                    //проверка по у
-//                    if((dynamicObjectPool[0].physic.getObjVertices()[7] + 0.10f > staticObject.getStaticObjectPool()[i].getVertices()[1]) &&
-//                            (dynamicObjectPool[0].physic.getObjVertices()[7] < staticObject.getStaticObjectPool()[i].getVertices()[1])){
+//                    if((objVertices[7] + 0.10f > staticObject.getStaticObjectPool()[i].getVertices()[1]) &&
+//                            (objVertices[7] < staticObject.getStaticObjectPool()[i].getVertices()[1])){
 //                            isPossibleJump = false;
 //                            break;
 //                    } else {
@@ -261,8 +264,8 @@ class physicForObject implements Runnable {
 //    }
 
     //    private void downCheck(){
-//        float centerDotY = (dynamicObjectPool[0].physic.getObjVertices()[1] + dynamicObjectPool[0].physic.getObjVertices()[7])/2;
-//        float centerDotX = dynamicObjectPool[0].physic.getObjVertices()[6];
+//        float centerDotY = (objVertices[1] + objVertices[7])/2;
+//        float centerDotX = objVertices[6];
 //        DOWN_VECTOR[Y1] = centerDotY + (-0.15f);
 //
 //        for (int i = 0; i < staticObject.getStaticObjectPool().length - 1; i++) {
@@ -273,11 +276,11 @@ class physicForObject implements Runnable {
 //            }
 //
 //                //если над объектом
-//                if ((dynamicObjectPool[0].physic.getObjVertices()[6] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
-//                        (dynamicObjectPool[0].physic.getObjVertices()[6] <= staticObject.getStaticObjectPool()[i].getVertices()[9])) {
+//                if ((objVertices[6] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
+//                        (objVertices[6] <= staticObject.getStaticObjectPool()[i].getVertices()[9])) {
 //
 //                    //если выше
-//                    if (dynamicObjectPool[0].physic.getObjVertices()[1] > staticObject.getStaticObjectPool()[i].getVertices()[7]){
+//                    if (objVertices[1] > staticObject.getStaticObjectPool()[i].getVertices()[7]){
 //                            if(DOWN_VECTOR[Y1] < staticObject.getStaticObjectPool()[i].getVertices()[7]) {
 //                                falling = false;
 //                                break;

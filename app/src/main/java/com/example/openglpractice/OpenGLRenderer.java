@@ -105,14 +105,16 @@ public class OpenGLRenderer implements Renderer {
     @Override
     public void onDrawFrame(GL10 arg0) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        //Камера для игрока
         createViewMatrix();
+
+        //Камера для интерфейса
         createViewMatrixForInterface();
+
         bindMatrix();
         bindMatrixForInterface();
-        //Сцена
-        //Берем переменные шейдера, передаем массив данных для текущих объектов
-//        bindData(staticObjects);
-//        drawScene();
+
 
         //Игрок
         //Берем переменные шейдера, передаем массив данных для текущих объектов
@@ -309,36 +311,34 @@ public class OpenGLRenderer implements Renderer {
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
     }
 
-    public void prepareDynamicModels(dynamicObject gObject) {
+    public void prepareDynamicModels(float[] gObject) {
         dynamicObjects =  ByteBuffer
-                .allocateDirect(gObject.physic.getObjVertices().length * 4)
+                .allocateDirect(gObject.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        dynamicObjects.put(gObject.physic.getObjVertices()).position(0);
+        dynamicObjects.put(gObject).position(0);
 
-        dynamicObjectCordX = gObject.physic.getObjVertices()[0];
-        dynamicObjectCordY = gObject.physic.getObjVertices()[1];
-    }
-    public void prepareDynamicModelsOld(dynamicObject gObject) {
-        dynamicObjects =  ByteBuffer
-                .allocateDirect(gObject.physic.getObjVertices().length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        dynamicObjects.put(gObject.physic.getObjVertices()).position(0);
-
-        dynamicObjectCordX = gObject.physic.getObjVertices()[0];
-        dynamicObjectCordY = gObject.physic.getObjVertices()[1];
+        dynamicObjectCordX = gObject[0];
+        dynamicObjectCordY = gObject[1];
     }
 
     public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
-        try {
+        //todo create seacrh
             enemies[enemyCounter] = ByteBuffer
                     .allocateDirect(gObject.physic.getObjVertices().length * 4)
                     .order(ByteOrder.nativeOrder())
                     .asFloatBuffer();
             enemies[enemyCounter].put(gObject.physic.getObjVertices()).position(0);
             enemyCounter++;
-        } catch (NullPointerException exc){}
+    }
+
+    public void changeDynamicModelsForEnemy(dynamicObject gObject) {
+        //todo create seacrh
+            enemies[0] = ByteBuffer
+                    .allocateDirect(gObject.physic.getObjVertices().length * 4)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer();
+            enemies[0].put(gObject.physic.getObjVertices()).position(0);
     }
 
     public void prepareGamePad(float[] vertices){

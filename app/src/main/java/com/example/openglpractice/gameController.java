@@ -2,8 +2,6 @@ package com.example.openglpractice;
 
 public class gameController {
 
-
-
     dynamicObject gObject;
 
     public gameController(dynamicObject gObject) {

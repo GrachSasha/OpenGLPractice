@@ -114,13 +114,11 @@ public class MainActivity extends Activity {
 
 
     //init Игрока с физикой и контроллер
-    dynamicObject player = new dynamicObject(playerVertices);
+    dynamicObject player = new dynamicObject(playerVertices, true);
     gameController playerController = new gameController(player);
 
     //enemies
-//    dynamicObject enemy = new dynamicObject(enemyVertices);
-//    gameController enemyContoller = new gameController(enemy);
-//    AI enemy  = new AI(enemyVertices);
+    AI enemy  = new AI(enemyVertices);
 
     //init объектов
     staticObject platform1 = new staticObject(platform1Vertices);
@@ -157,11 +155,11 @@ public class MainActivity extends Activity {
         render = new OpenGLRenderer(this);
 
         //Грузим корды динамических объектов
-        render.prepareDynamicModels(player);
-//        enemy.createModel();
+        render.prepareDynamicModels(player.physic.getObjVertices());
+        enemy.createModel();
 
+        //Грузим корды стастических объектов
         render.prepareGamePad(gamePadVertices);
-
         render.preparePlatform(platform1);
         render.preparePlatform(platform2);
         render.preparePlatform(platform3);

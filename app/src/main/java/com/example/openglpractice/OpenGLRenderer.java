@@ -311,7 +311,7 @@ public class OpenGLRenderer implements Renderer {
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
     }
 
-    public void prepareDynamicModels(float[] gObject) {
+    public void prepareAndChangeModelForPlayer(float[] gObject) {
         dynamicObjects =  ByteBuffer
                 .allocateDirect(gObject.length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -322,23 +322,21 @@ public class OpenGLRenderer implements Renderer {
         dynamicObjectCordY = gObject[1];
     }
 
-    public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
-        //todo create seacrh
+    public int prepareDynamicModelsForEnemy(dynamicObject gObject) {
             enemies[enemyCounter] = ByteBuffer
                     .allocateDirect(gObject.physic.getObjVertices().length * 4)
                     .order(ByteOrder.nativeOrder())
                     .asFloatBuffer();
             enemies[enemyCounter].put(gObject.physic.getObjVertices()).position(0);
-            enemyCounter++;
+            return enemyCounter++;
     }
 
-    public void changeDynamicModelsForEnemy(dynamicObject gObject) {
-        //todo create seacrh
-            enemies[0] = ByteBuffer
-                    .allocateDirect(gObject.physic.getObjVertices().length * 4)
+    public void changeDynamicModelsForEnemy(float[] gObject, int renderNumber) {
+            enemies[renderNumber] = ByteBuffer
+                    .allocateDirect(gObject.length * 4)
                     .order(ByteOrder.nativeOrder())
                     .asFloatBuffer();
-            enemies[0].put(gObject.physic.getObjVertices()).position(0);
+            enemies[renderNumber].put(gObject).position(0);
     }
 
     public void prepareGamePad(float[] vertices){

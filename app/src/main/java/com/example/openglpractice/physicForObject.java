@@ -46,16 +46,16 @@ class physicForObject implements Runnable {
         objVertices[0] += 0.10f;
         objVertices[3] += 0.10f;
         objVertices[6] += 0.10f;
-        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
-            {render.changeDynamicModelsForEnemy(linkDynamicObject);}
+        if(linkDynamicObject.player){render.prepareAndChangeModelForPlayer(objVertices);} else
+            {render.changeDynamicModelsForEnemy(objVertices, linkDynamicObject.renderNumber);}
 
     }
     private void walkLeft(){
         objVertices[0] += (-0.10f);
         objVertices[3] += (-0.10f);
         objVertices[6] += (-0.10f);
-        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
-            {render.changeDynamicModelsForEnemy(linkDynamicObject);}
+        if(linkDynamicObject.player){render.prepareAndChangeModelForPlayer(objVertices);} else
+            {render.changeDynamicModelsForEnemy(objVertices, linkDynamicObject.renderNumber);}
 
     }
 
@@ -64,8 +64,8 @@ class physicForObject implements Runnable {
             objVertices[1] += coord;
             objVertices[4] += coord;
             objVertices[7] += coord;
-        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
-            {render.changeDynamicModelsForEnemy(linkDynamicObject);}
+        if(linkDynamicObject.player){render.prepareAndChangeModelForPlayer(objVertices);} else
+            {render.changeDynamicModelsForEnemy(objVertices, linkDynamicObject.renderNumber);}
         }
     }
 
@@ -75,8 +75,8 @@ class physicForObject implements Runnable {
             objVertices[1] += -0.05f;
             objVertices[4] += -0.05f;
             objVertices[7] += -0.05f;
-            if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
-                {render.changeDynamicModelsForEnemy(linkDynamicObject);}
+            if(linkDynamicObject.player){render.prepareAndChangeModelForPlayer(objVertices);} else
+                {render.changeDynamicModelsForEnemy(objVertices, linkDynamicObject.renderNumber);}
         } else {falling = false;}
     }
 

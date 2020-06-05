@@ -1,5 +1,7 @@
 package com.example.openglpractice;
 
+import static com.example.openglpractice.MainActivity.render;
+
 public class dynamicObject{
 
     //init
@@ -7,15 +9,15 @@ public class dynamicObject{
     public static dynamicObject dynamicObjectPool[] = new dynamicObject[physicForObject.MAXOBJECTS];
 
     //fields
-    private int objectId;
-    public boolean player = false;
+    int renderNumber;
+    public boolean player;
     physicForObject physic;
     private boolean invetoryOpen = false;
+    private int objectId;
 
     public dynamicObject(float[] vertices, boolean pl){
         objectId = this.hashCode();
         player = pl;
-        //alternativePhysic = new alternativePhysicForObject(vertices, this);
         physic = new physicForObject(vertices, this);
         addToPool(this);
     }
@@ -29,4 +31,13 @@ public class dynamicObject{
 
     public void openInventory() { invetoryOpen = true;}
 
+
+    public void createModel() {
+        try {
+            if(player){render.prepareAndChangeModelForPlayer(physic.getObjVertices());}
+                else {renderNumber = render.prepareDynamicModelsForEnemy(this);}
+        } catch (NullPointerException exc) {
+            exc.printStackTrace();
+        }
+    }
 }

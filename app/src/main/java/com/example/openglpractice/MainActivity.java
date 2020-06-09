@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
 
     //init Игрока с физикой и контроллер
     dynamicObject player = new dynamicObject(playerVertices, true);
-    gameController playerController = new gameController(player);
+    playerController playerController = new playerController(player);
 
     //enemies
     AI enemy  = new AI(enemyVertices);

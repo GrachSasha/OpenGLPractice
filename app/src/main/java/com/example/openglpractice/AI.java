@@ -6,13 +6,13 @@ public class AI implements Runnable{
 
     private float[] vertices;
     private dynamicObject physic;
-    private gameController gameController;
+    private playerController playerController;
     private Thread controlThread;
 
     AI(float[] vert) {
         vertices = vert;
         physic = new dynamicObject(vertices, false);
-        gameController = new gameController(physic);
+        playerController = new playerController(physic);
 
         controlThread = new Thread(this);
         controlThread.start();
@@ -29,8 +29,8 @@ public class AI implements Runnable{
     @Override
     public void run() {
         do {
-            this.gameController.walkRight();
-            this.gameController.jump();
+            this.playerController.walkRight();
+            this.playerController.jump();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

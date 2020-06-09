@@ -155,19 +155,18 @@ public class MainActivity extends Activity {
         render = new OpenGLRenderer(this);
 
         //Грузим корды динамических объектов
-        player.createModel();
+        render.prepareDynamicModels(player.physic.getObjVertices());
         enemy.createModel();
 
         //Грузим корды стастических объектов
         render.prepareGamePad(gamePadVertices);
-
-        platform1.createModel();
-        platform2.createModel();
-        platform3.createModel();
-        platform4.createModel();
-        platform5.createModel();
-        platform6.createModel();
-        platform7.createModel();
+        render.preparePlatform(platform1);
+        render.preparePlatform(platform2);
+        render.preparePlatform(platform3);
+        render.preparePlatform(platform4);
+        render.preparePlatform(platform5);
+        render.preparePlatform(platform6);
+        render.preparePlatform(platform7);
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);

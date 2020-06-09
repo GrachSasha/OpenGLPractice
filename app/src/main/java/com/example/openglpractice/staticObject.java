@@ -1,7 +1,5 @@
 package com.example.openglpractice;
 
-import static com.example.openglpractice.MainActivity.render;
-
 public class staticObject{
 
 
@@ -41,18 +39,9 @@ public class staticObject{
         if(staticObjectCounter == -1){
             throw new ArrayIndexOutOfBoundsException("staticObjectPool empty");
         }
-        for(int i = 0; i < staticObjectPool.length; i++ ){
-            if(staticObject.equals(staticObjectPool[i])){
-                staticObjectPool[i] = null;
-                staticObjectCounter--;
-            }
-        }
+        getStaticObjectPool()[staticObjectCounter] = null;
+        staticObjectCounter--;
     }
-
-    public void createModel(){
-            render.preparePlatform(this);
-    }
-
                                 //x          //y            //x          //y
      public float[] getTop(){
          return new float[]{objVertices[6], objVertices[7], objVertices[9], objVertices[10]};

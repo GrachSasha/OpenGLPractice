@@ -10,6 +10,7 @@ public class dynamicObject{
     private int objectId;
     public boolean player = false;
     physicForObject physic;
+    Thread physicThread;
     private boolean invetoryOpen = false;
 
     public dynamicObject(float[] vertices, boolean pl){

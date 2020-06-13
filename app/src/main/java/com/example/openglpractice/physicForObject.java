@@ -61,11 +61,6 @@ class physicForObject implements Runnable {
 
     private void jump(float coord){
         if(objVertices[1] <= MAX_GROUND) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             objVertices[1] += coord;
             objVertices[4] += coord;
             objVertices[7] += coord;

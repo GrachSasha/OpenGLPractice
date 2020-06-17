@@ -43,17 +43,21 @@ class physicForObject implements Runnable {
     //=====================================================================
 
     private void walkRight(){
+        //движение хитбокса
         objVertices[0] += 0.10f;
-        objVertices[3] += 0.10f;
-        objVertices[6] += 0.10f;
+        objVertices[5] += 0.10f;
+        objVertices[10] += 0.10f;
+        objVertices[15] += 0.10f;
+
         if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
             {render.changeDynamicModelsForEnemy(linkDynamicObject);}
 
     }
     private void walkLeft(){
         objVertices[0] += (-0.10f);
-        objVertices[3] += (-0.10f);
-        objVertices[6] += (-0.10f);
+        objVertices[5] += (-0.10f);
+        objVertices[10] += (-0.10f);
+        objVertices[15] += (-0.10f);
         if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
             {render.changeDynamicModelsForEnemy(linkDynamicObject);}
 
@@ -62,8 +66,9 @@ class physicForObject implements Runnable {
     private void jump(float coord){
         if(objVertices[1] <= MAX_GROUND) {
             objVertices[1] += coord;
-            objVertices[4] += coord;
-            objVertices[7] += coord;
+            objVertices[6] += coord;
+            objVertices[11] += coord;
+            objVertices[16] += coord;
         if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
             {render.changeDynamicModelsForEnemy(linkDynamicObject);}
         }
@@ -73,8 +78,9 @@ class physicForObject implements Runnable {
     private void fall(){
         if(objVertices[1] >= MIN_GROUND) {
             objVertices[1] += -0.05f;
-            objVertices[4] += -0.05f;
-            objVertices[7] += -0.05f;
+            objVertices[6] += -0.05f;
+            objVertices[11] += -0.05f;
+            objVertices[16] += -0.05f;
             if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
                 {render.changeDynamicModelsForEnemy(linkDynamicObject);}
         } else {falling = false;}

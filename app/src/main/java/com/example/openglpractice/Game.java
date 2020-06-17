@@ -3,7 +3,6 @@ package com.example.openglpractice;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import java.util.logging.Handler;
 
 import static com.example.openglpractice.MainActivity.render;
 import static com.example.openglpractice.MainActivity.screenWidth;
@@ -11,21 +10,26 @@ import static com.example.openglpractice.MainActivity.screenWidth;
 class Game {
     // треугольник
     // x    y   z
+
     private float[] playerVertices = {
 
-            -3f, -1f, 0f,
-            -2.5f, -1f, 0f,
-            -2.75f, -0.75f, 0f,
+            -3f, -1f, 0f,       0, 0,
+            -2.5f, -1f, 0f,     0, 1,
 
+            -3f, -0.5f, 0f,     1, 0,
+            -2.5f, -0.5f, 0f,   1, 1,
     };
 
     private float[] enemyVertices = {
 
-            -3f, -2f, 0f,
-            -2.5f, -2f, 0f,
-            -2.75f, -1.75f, 0f,
+            -3f, -2f, 0f,       0, 0,
+            -2.5f, -2f, 0f,     0, 1,
+
+            -3f, -1.5f, 0f,     1, 0,
+            -2.5f, -1.5f, 0f,   1, 1,
 
     };
+
 
     private float[] platform1Vertices = {
 
@@ -118,36 +122,37 @@ class Game {
                 //init Игрока с физикой и контроллер
                 dynamicObject player = new dynamicObject(playerVertices, true);
                 Log.i(GAME_LOG, "Players load");
+
                 playerController = new playerController(player);
                 Log.i(GAME_LOG, "Player controller load");
 
                 //enemies
-                AI enemy  = new AI(enemyVertices);
-                Log.i(GAME_LOG, "AI load");
+//                AI enemy  = new AI(enemyVertices);
+//                Log.i(GAME_LOG, "AI load");
 
                 //init объектов
                 staticObject platform1 = new staticObject(platform1Vertices);
-                staticObject platform2 = new staticObject(platform2Vertices);
-                staticObject platform3 = new staticObject(platform3Vertices);
-                staticObject platform4 = new staticObject(platform4Vertices);
-                staticObject platform5 = new staticObject(platform5Vertices);
-                staticObject platform6 = new staticObject(platform6Vertices);
-                staticObject platform7 = new staticObject(platform7Vertices);
+//                staticObject platform2 = new staticObject(platform2Vertices);
+//                staticObject platform3 = new staticObject(platform3Vertices);
+//                staticObject platform4 = new staticObject(platform4Vertices);
+//                staticObject platform5 = new staticObject(platform5Vertices);
+//                staticObject platform6 = new staticObject(platform6Vertices);
+//                staticObject platform7 = new staticObject(platform7Vertices);
                 Log.i(GAME_LOG, "Platforms load");
 
                 //Грузим корды динамических объектов
                 render.prepareDynamicModels(player.physic.getObjVertices());
-                enemy.createModel();
+//                enemy.createModel();
 
                 //Грузим корды стастических объектов
-                render.prepareGamePad(gamePadVertices);
+//                render.prepareGamePad(gamePadVertices);
                 render.preparePlatform(platform1);
-                render.preparePlatform(platform2);
-                render.preparePlatform(platform3);
-                render.preparePlatform(platform4);
-                render.preparePlatform(platform5);
-                render.preparePlatform(platform6);
-                render.preparePlatform(platform7);
+//                render.preparePlatform(platform2);
+//                render.preparePlatform(platform3);
+//                render.preparePlatform(platform4);
+//                render.preparePlatform(platform5);
+//                render.preparePlatform(platform6);
+//                render.preparePlatform(platform7);
             }
         });
         prepareModelsThread.start();

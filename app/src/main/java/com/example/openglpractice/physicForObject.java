@@ -147,12 +147,12 @@ class physicForObject implements Runnable {
                 continue;
             }
 
-            if ((objVertices[4]  >=
+            if ((objVertices[6]  >=
                     staticObject.getStaticObjectPool()[i].getVertices()[1]) &&
-                    (objVertices[4] <=
-                            staticObject.getStaticObjectPool()[i].getVertices()[7])) {
+                    (objVertices[6] <=
+                            staticObject.getStaticObjectPool()[i].getVertices()[11])) {
 
-                if (Math.abs(objVertices[3] -
+                if (Math.abs(objVertices[5] -
                         staticObject.getStaticObjectPool()[i].getVertices()[0]) < 0.05f)
                         {
                             return false;
@@ -174,12 +174,12 @@ class physicForObject implements Runnable {
             }
 
             if ((objVertices[1]  >=
-                    staticObject.getStaticObjectPool()[i].getVertices()[4]) &&
+                    staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
                     (objVertices[1] <=
-                            staticObject.getStaticObjectPool()[i].getVertices()[7])) {
+                            staticObject.getStaticObjectPool()[i].getVertices()[11])) {
 
                 if (Math.abs(objVertices[0] -
-                        staticObject.getStaticObjectPool()[i].getVertices()[3]) < 0.05f)
+                        staticObject.getStaticObjectPool()[i].getVertices()[5]) < 0.05f)
                 {
                     return false;
                 }
@@ -199,11 +199,11 @@ class physicForObject implements Runnable {
             }
 
             //проверка по х
-            if ((objVertices[6] >= staticObject.getStaticObjectPool()[i].getVertices()[0]) &&
-                    (objVertices[6] <= staticObject.getStaticObjectPool()[i].getVertices()[3])) {
+            if ((objVertices[10] >= staticObject.getStaticObjectPool()[i].getVertices()[0]) &&
+                    (objVertices[10] <= staticObject.getStaticObjectPool()[i].getVertices()[5])) {
 
                 //проверка по у
-                if (Math.abs(objVertices[7] -
+                if (Math.abs(objVertices[11] -
                         staticObject.getStaticObjectPool()[i].getVertices()[1]) < 0.05f) {
                     return false;
                 }
@@ -221,14 +221,14 @@ class physicForObject implements Runnable {
             }
 
             //если над объектом
-            if ((objVertices[0] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
-                    (objVertices[0] <= staticObject.getStaticObjectPool()[i].getVertices()[9]) ||
-                        (objVertices[3] >= staticObject.getStaticObjectPool()[i].getVertices()[6]) &&
-                            (objVertices[3] <= staticObject.getStaticObjectPool()[i].getVertices()[9])) {
+            if ((objVertices[0] >= staticObject.getStaticObjectPool()[i].getVertices()[10]) &&
+                    (objVertices[0] <= staticObject.getStaticObjectPool()[i].getVertices()[15]) ||
+                        (objVertices[5] >= staticObject.getStaticObjectPool()[i].getVertices()[10]) &&
+                            (objVertices[5] <= staticObject.getStaticObjectPool()[i].getVertices()[15])) {
 
                 //если выше
                 if (Math.abs(objVertices[1] -
-                        staticObject.getStaticObjectPool()[i].getVertices()[7]) < 0.025f){
+                        staticObject.getStaticObjectPool()[i].getVertices()[11]) < 0.025f){
                     falling = false;
                     return false;
                 }

@@ -35,10 +35,15 @@ public class TextureUtil {
             return 0;
         }
 
-        // настройка объекта текстуры
+
+        // Активируем 0-ой юнит
         glActiveTexture(GL_TEXTURE0);
+        // Помещаем в таргет GL_TEXTURE_2D объект тестуры по айдишнику
         glBindTexture(GL_TEXTURE_2D, textureIds[0]);
 
+        // Настройка объекта текстуры
+        // GL_TEXTURE_MIN_FILTER - какой режим фильтрации будет применен при сжатии изображения
+        // GL_TEXTURE_MAG_FILTER - какой режим фильтрации будет применен при растягивании изображения
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 

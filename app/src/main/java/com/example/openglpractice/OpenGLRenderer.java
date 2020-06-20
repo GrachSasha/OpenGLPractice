@@ -2,6 +2,7 @@ package com.example.openglpractice;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -56,11 +57,13 @@ public class OpenGLRenderer implements Renderer {
     private int uMatrixLocation;
     private int aTextureLocation;
     private int uTextureUnitLocation;
+    private int framesCount = 0;
 
     private int programId;
     private float dynamicObjectCordX;
     private float dynamicObjectCordY;
     private int texture;
+    private int texture2;
 
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
@@ -81,7 +84,7 @@ public class OpenGLRenderer implements Renderer {
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
 
         //чистит экран
-        glClearColor(0f, 0f, 0f, 1f);
+        glClearColor(32f, 178f, 170f, 1f);
 
         //разрешает проекции
         glEnable(GL_DEPTH_TEST);
@@ -106,6 +109,7 @@ public class OpenGLRenderer implements Renderer {
 
         //загружаем тестуру
         texture = TextureUtil.loadTexture(context, R.drawable.box);
+        texture2 = TextureUtil.loadTexture(context, R.drawable.man);
 //        Log.i("RENDER LOG", String.valueOf(texture));
     }
 
@@ -151,13 +155,12 @@ public class OpenGLRenderer implements Renderer {
 
         //Игрок
         //Берем переменные шейдера, передаем массив данных для текущих объектов
-        drawPlayer(dynamicObjects);
+        drawPlayer(dynamicObjects, texture2);
 
         //Вражины
         for(int i=0; i < enemies.length; i++){
             if(enemies[i] != null) {
-                bindData(enemies[i]);
-                drawEnemies();
+                drawEnemies(enemies[i], texture);
             }
         }
 
@@ -165,8 +168,7 @@ public class OpenGLRenderer implements Renderer {
         //Берем переменные шейдера, передаем массив данных для текущих объектов
         for(int i=0; i < platforms.length; i++){
             if(platforms[i] != null) {
-                bindData(platforms[i]);
-                drawPlatform();
+                drawPlatform(platforms[i], texture);
             }
         }
 
@@ -175,24 +177,15 @@ public class OpenGLRenderer implements Renderer {
             bindData(gamePad);
             drawGamePad();
         }
+        Log.i("RENDER LOG", Integer.toString(framesCount));
+        framesCount++;
 
     }
 
 
-    private void bindData(FloatBuffer floatBuffer) {
-
-        floatBuffer.position(0);
-
-        // из какого массива брать данные и по каким правилам
-        glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
-                false, 20, floatBuffer);
-        glEnableVertexAttribArray(aPositionLocation);
-
-}
-
-    private void drawPlayer(FloatBuffer floatBuffer) {
+    private void drawPlayer(FloatBuffer floatBuffer, int textureId) {
         bindData(floatBuffer);
-        setTexture(floatBuffer);
+        setTexture(floatBuffer, textureId);
         Matrix.setIdentityM(mModelMatrix, 0);
         bindMatrix();
 
@@ -200,26 +193,19 @@ public class OpenGLRenderer implements Renderer {
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 
-    private void setTexture(FloatBuffer floatBuffer) {
+    private void drawPlatform(FloatBuffer floatBuffer, int textureId){
+        bindData(floatBuffer);
+        setTexture(floatBuffer, textureId);
+        Matrix.setIdentityM(mModelMatrix, 0);
+        bindMatrix();
 
-        // координаты текстур
-        // параметр отвечает за точку отсчета в массиве
-        floatBuffer.position(3);
-
-        //параметры 2 - количество занчений которые нужно взять, 5 - количество байт до следующей точки
-        glVertexAttribPointer(aTextureLocation, 2, GL_FLOAT,
-                false, 20, floatBuffer);
-        glEnableVertexAttribArray(aTextureLocation);
-
-        // помещаем текстуру в target 2D юнита 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-
-        // юнит текстуры
-        glUniform1i(uTextureUnitLocation, 0);
+        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 
-    private void drawEnemies() {
+    private void drawEnemies(FloatBuffer floatBuffer, int textureId) {
+        bindData(floatBuffer);
+        setTexture(floatBuffer, textureId);
         Matrix.setIdentityM(mModelMatrix, 0);
         bindMatrix();
 
@@ -241,11 +227,34 @@ public class OpenGLRenderer implements Renderer {
 
     }
 
-    private void drawPlatform(){
-        Matrix.setIdentityM(mModelMatrix, 0);
+    private void bindData(FloatBuffer floatBuffer) {
 
-        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        floatBuffer.position(0);
+
+        // из какого массива брать данные и по каким правилам
+        glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
+                false, 20, floatBuffer);
+        glEnableVertexAttribArray(aPositionLocation);
+
+    }
+
+    private void setTexture(FloatBuffer floatBuffer, int textureId) {
+
+        // координаты текстур
+        // параметр отвечает за точку отсчета в массиве
+        floatBuffer.position(3);
+
+        //параметры 2 - количество занчений которые нужно взять, 5 - количество байт до следующей точки
+        glVertexAttribPointer(aTextureLocation, 2, GL_FLOAT,
+                false, 20, floatBuffer);
+        glEnableVertexAttribArray(aTextureLocation);
+
+        // помещаем текстуру в target 2D юнита 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+
+        // юнит текстуры
+        glUniform1i(uTextureUnitLocation, 0);
     }
 
     private void createViewMatrix() {

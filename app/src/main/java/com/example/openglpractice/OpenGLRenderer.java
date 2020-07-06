@@ -62,6 +62,7 @@ public class OpenGLRenderer implements Renderer {
     private int programId;
     private float dynamicObjectCordX;
     private float dynamicObjectCordY;
+
     private int texture;
     private int texture2;
 
@@ -80,6 +81,7 @@ public class OpenGLRenderer implements Renderer {
     public OpenGLRenderer(Context context) {
         this.context = context;
     }
+
     @Override
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
 
@@ -109,8 +111,8 @@ public class OpenGLRenderer implements Renderer {
 
         //загружаем тестуру
         texture = TextureUtil.loadTexture(context, R.drawable.box);
-        texture2 = TextureUtil.loadTexture(context, R.drawable.man);
-//        Log.i("RENDER LOG", String.valueOf(texture));
+        texture2 = TextureUtil.loadTexture(context, R.drawable.child_go);
+//        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
     }
 
     private void createAndUseProgramm() {
@@ -177,6 +179,7 @@ public class OpenGLRenderer implements Renderer {
             bindData(gamePad);
             drawGamePad();
         }
+
         Log.i("RENDER LOG", Integer.toString(framesCount));
         framesCount++;
 

@@ -49,6 +49,18 @@ class physicForObject implements Runnable {
         objVertices[10] += 0.10f;
         objVertices[15] += 0.10f;
 
+        if((objVertices[9] >= 1f)&&
+                (objVertices[19] >= 1f)&&
+                    (objVertices[4] >= 1f)&&
+                        (objVertices[14] >= 1f))
+                        {objVertices[9] = 0.17f; objVertices[19] = 0.17f;
+                            objVertices[4] = 0.05f; objVertices[14] = 0.05f;}
+
+        objVertices[4] += 0.16f;
+        objVertices[14] += 0.16f;
+        objVertices[9] += 0.16f;
+        objVertices[19] += 0.16f;
+
         if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
             {render.changeDynamicModelsForEnemy(linkDynamicObject);}
 

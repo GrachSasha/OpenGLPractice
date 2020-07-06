@@ -14,10 +14,10 @@ class Game {
     private float[] playerVertices = {
 
             -3f, -1f, 0f,       0, 0,
-            -2.5f, -1f, 0f,     0, 1,
+            -2.5f, -1f, 0f,     0, 0.17f,
 
             -3f, -0.5f, 0f,     1, 0,
-            -2.5f, -0.5f, 0f,   1, 1,
+            -2.5f, -0.5f, 0f,   1, 0.17f,
     };
 
     private float[] enemyVertices = {

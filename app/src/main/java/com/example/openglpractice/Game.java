@@ -1,10 +1,14 @@
 package com.example.openglpractice;
 
+import android.app.Activity;
 import android.util.Log;
 import android.view.MotionEvent;
 
 
+import java.io.IOException;
+
 import static com.example.openglpractice.MainActivity.render;
+import static com.example.openglpractice.MainActivity.screenHeight;
 import static com.example.openglpractice.MainActivity.screenWidth;
 
 class Game {
@@ -105,21 +109,28 @@ class Game {
 
 
     //======================================== fields ==========================================//
-    String GAME_LOG = " Game ";
+    static String GAME_LOG = " Game ";
+    Activity activity;
     playerController playerController;
+    ResourceLoader loader;
     //==========================================================================================//
 
 
-    public Game() {
+    public Game(MainActivity mainActivity) {
+        //todo убрать загрузку уровня из конструктора
+        activity = mainActivity;
+        prepareModelsForLevel1();
     }
 
-    public void prepareModelsForLevel(){
-        Thread prepareModelsThread;
-        prepareModelsThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
+    public void prepareModelsForLevel1(){
+
+                //TEST
+//                loader.openLibrary();
+                //TEST
 
                 //init Игрока с физикой и контроллер
+
+                render.drawSelector = 1;
                 dynamicObject player = new dynamicObject(playerVertices, true);
                 Log.i(GAME_LOG, "Players load");
 
@@ -153,18 +164,22 @@ class Game {
                 render.preparePlatform(platform5);
                 render.preparePlatform(platform6);
                 render.preparePlatform(platform7);
-            }
-        });
-        prepareModelsThread.start();
+
     }
 
     public void getTouchEvent(MotionEvent event) {
+        //todo привести в порядок вызов меню
+        render.drawSelector = 1;
+//        prepareModelsForLevel1();
         float sector = screenWidth/3;
         float cord = event.getX();
-
         if(cord < sector){playerController.walkLeft();}
         if((cord > sector) && (cord < sector*2)){playerController.jump();}
         if((cord > sector*2) && (cord < sector*3)){playerController.walkRight();}
 
+    }
+
+    public void createMenu() {
+        render.drawSelector = 0;
     }
 }

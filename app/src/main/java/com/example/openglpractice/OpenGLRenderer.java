@@ -2,7 +2,6 @@ package com.example.openglpractice;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -15,6 +14,7 @@ import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glActiveTexture;
@@ -42,11 +42,15 @@ public class OpenGLRenderer implements Renderer {
     private final static int POSITION_COUNT = 3;
 
     private Context context;
-    float width;
-    float height;
+    private float width;
+    private float height;
+    byte drawSelector;
+    private float[] menuVertices;
 
     private FloatBuffer dynamicObjects;
     private FloatBuffer gamePad;
+    private FloatBuffer menu;
+
     private FloatBuffer[]platforms = new FloatBuffer[10];
     private FloatBuffer[]enemies = new FloatBuffer[10];
     private int objCounter = 0;
@@ -65,6 +69,7 @@ public class OpenGLRenderer implements Renderer {
 
     private int texture;
     private int texture2;
+    private int menuTexture;
 
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
@@ -76,10 +81,15 @@ public class OpenGLRenderer implements Renderer {
     private float[] mModelMatrixForInterface = new float[16];
     private float[] mMatrixForInterface = new float[16];
 
+    private float[] mProjectionMatrixForMenu = new float[16];
+    private float[] mViewMatrixForMenu = new float[16];
+    private float[] mModelMatrixForMenu = new float[16];
+    private float[] mMatrixForMenu = new float[16];
+
     //текстуры
 
-    public OpenGLRenderer(Context context) {
-        this.context = context;
+    public OpenGLRenderer(Context context, byte drawSelector) {
+        this.context = context; this.drawSelector = drawSelector;
     }
 
     @Override
@@ -93,6 +103,40 @@ public class OpenGLRenderer implements Renderer {
 
         createAndUseProgramm();
         getLocations();
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 arg0, int width, int height) {
+        //full screen
+        glViewport(0, 0, width, height);
+        this.width = width;
+        this.height = height;
+
+        //создает проекцию
+        createProjectionMatrix(width, height);
+        createProjectionMatrixForInterface(width, height);
+        createProjectionMatrixForMenu(width, height);
+
+        //биндит матрицу
+        bindMatrix();
+        bindMatrixForInterface();
+        bindMatrixForMenu();
+    }
+
+    @Override
+    public void onDrawFrame(GL10 arg0) {
+        drawSelector();
+    }
+
+    private void createAndUseProgramm() {
+
+        //берет шейдер файлы
+        int vertexShaderId = ShaderUtils.createShader(context, GL_VERTEX_SHADER, R.raw.vertex_shader);
+        int fragmentShaderId = ShaderUtils.createShader(context, GL_FRAGMENT_SHADER, R.raw.fragment_shader);
+
+        //создает ид рендера
+        programId = ShaderUtils.createProgram(vertexShaderId, fragmentShaderId);
+        glUseProgram(programId);
     }
 
     private void getLocations() {
@@ -112,77 +156,8 @@ public class OpenGLRenderer implements Renderer {
         //загружаем тестуру
         texture = TextureUtil.loadTexture(context, R.drawable.box);
         texture2 = TextureUtil.loadTexture(context, R.drawable.child_go);
+        menuTexture = TextureUtil.loadTexture(context, R.drawable.menu);
 //        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
-    }
-
-    private void createAndUseProgramm() {
-
-        //берет шейдер файлы
-        int vertexShaderId = ShaderUtils.createShader(context, GL_VERTEX_SHADER, R.raw.vertex_shader);
-        int fragmentShaderId = ShaderUtils.createShader(context, GL_FRAGMENT_SHADER, R.raw.fragment_shader);
-
-        //создает ид рендера
-        programId = ShaderUtils.createProgram(vertexShaderId, fragmentShaderId);
-        glUseProgram(programId);
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 arg0, int width, int height) {
-        //full screen
-        glViewport(0, 0, width, height);
-        this.width = width;
-        this.height = height;
-
-        //создает проекцию
-        createProjectionMatrix(width, height);
-        createProjectionMatrixForInterface(width, height);
-
-        //биндит матрицу
-        bindMatrix();
-        bindMatrixForInterface();
-    }
-
-    @Override
-    public void onDrawFrame(GL10 arg0) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        //Камера для игрока
-        createViewMatrix();
-
-        //Камера для интерфейса
-        createViewMatrixForInterface();
-
-//        bindMatrix();
-//        bindMatrixForInterface();
-
-        //Игрок
-        //Берем переменные шейдера, передаем массив данных для текущих объектов
-        drawPlayer(dynamicObjects, texture2);
-
-        //Вражины
-        for(int i=0; i < enemies.length; i++){
-            if(enemies[i] != null) {
-                drawEnemies(enemies[i], texture);
-            }
-        }
-
-        //Платформа
-        //Берем переменные шейдера, передаем массив данных для текущих объектов
-        for(int i=0; i < platforms.length; i++){
-            if(platforms[i] != null) {
-                drawPlatform(platforms[i], texture);
-            }
-        }
-
-        //Гейм - пад
-        if(gamePad != null) {
-            bindData(gamePad);
-            drawGamePad();
-        }
-
-        Log.i("RENDER LOG", Integer.toString(framesCount));
-        framesCount++;
-
     }
 
 
@@ -298,6 +273,25 @@ public class OpenGLRenderer implements Renderer {
         Matrix.setLookAtM(mViewMatrixForInterface, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
     }
 
+    private void createViewMatrixForMenu() {
+        // точка положения камеры
+        float eyeX = 0;
+        float eyeY = 0;
+        float eyeZ = 3;
+
+        // точка направления камеры
+        float centerX = 0;
+        float centerY = 0;
+        float centerZ = 0;
+
+        // up-вектор
+        float upX = 0;
+        float upY = 1;
+        float upZ = 0;
+
+        Matrix.setLookAtM(mViewMatrixForMenu, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+    }
+
     private void createProjectionMatrix(int width, int height) {
 
         float left = -3;
@@ -348,6 +342,31 @@ public class OpenGLRenderer implements Renderer {
 
     }
 
+    private void createProjectionMatrixForMenu(int width, int height) {
+
+        float left = -5;
+        float right = 5;
+        float bottom = -5;
+        float top = 5;
+
+        float near = 2;
+        float far = 6;
+
+        float ratio = 1;
+        if (width > height) {
+            ratio = (float) width / height;
+            left *= ratio;
+            right *= ratio;
+        } else {
+            ratio = (float) height / width;
+            bottom *= ratio;
+            top *= ratio;
+        }
+
+        Matrix.orthoM(mProjectionMatrixForMenu, 0, left, right, bottom, top, near, far);
+
+    }
+
     private void bindMatrixForInterface() {
         //Matrix.scaleM(mModelMatrixForInterface, 0, 2,2,2);
         float x = 2.25f, y = -0.8f;
@@ -360,6 +379,12 @@ public class OpenGLRenderer implements Renderer {
         Matrix.multiplyMM(mMatrixForInterface, 0, mViewMatrixForInterface, 0, mModelMatrixForInterface, 0);
         Matrix.multiplyMM(mMatrixForInterface, 0, mProjectionMatrixForInterface, 0, mMatrixForInterface, 0);
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrixForInterface, 0);
+    }
+
+    private void bindMatrixForMenu() {
+        Matrix.multiplyMM(mMatrixForMenu, 0, mViewMatrixForMenu, 0, mModelMatrixForMenu, 0);
+        Matrix.multiplyMM(mMatrixForMenu, 0, mProjectionMatrixForMenu, 0, mMatrixForMenu, 0);
+        glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrixForMenu, 0);
     }
 
     private void bindMatrix() {
@@ -414,6 +439,77 @@ public class OpenGLRenderer implements Renderer {
         platforms[objCounter].put(staticObj.getVertices()).position(0);
         objCounter++;
 
+    }
+
+    private void drawSelector(){
+        if(drawSelector == 1){
+            drawLevel();
+        } else {drawMenu();}
+    }
+
+    private void drawLevel(){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        //Камера для игрока
+        createViewMatrix();
+
+        //Камера для интерфейса
+        createViewMatrixForInterface();
+
+//        bindMatrix();
+//        bindMatrixForInterface();
+
+        //Игрок
+        //Берем переменные шейдера, передаем массив данных для текущих объектов
+        drawPlayer(dynamicObjects, texture2);
+
+        //Вражины
+        for(int i=0; i < enemies.length; i++){
+            if(enemies[i] != null) {
+                drawEnemies(enemies[i], texture);
+            }
+        }
+
+        //Платформа
+        //Берем переменные шейдера, передаем массив данных для текущих объектов
+        for(int i=0; i < platforms.length; i++){
+            if(platforms[i] != null) {
+                drawPlatform(platforms[i], texture);
+            }
+        }
+
+        //Гейм - пад
+        if(gamePad != null) {
+            bindData(gamePad);
+            drawGamePad();
+        }
+
+//        Log.i("RENDER LOG", Integer.toString(framesCount));
+//        framesCount++;
+    }
+
+    private void drawMenu(){
+        //todo растянуть меню на фулл скрин
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        createViewMatrixForMenu();
+
+        menuVertices = new float[]{ -3f, -3f, 0f, 0f, 0f,
+                                    3f, -3f, 0f, 0f, 1f,
+                                    -3f, 3f, 0f, 1f, 0f,
+                                    3f, 3f, 0f, 1f, 1f,};
+        menu = ByteBuffer
+                .allocateDirect(menuVertices.length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        menu.put(menuVertices).position(0);
+
+        bindData(menu);
+        setTexture(menu, menuTexture);
+        Matrix.setIdentityM(mModelMatrixForMenu, 0);
+        bindMatrixForMenu();
+
+        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 
 

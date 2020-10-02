@@ -4,11 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.MotionEvent;
 
-
-import java.io.IOException;
-
 import static com.example.openglpractice.MainActivity.render;
-import static com.example.openglpractice.MainActivity.screenHeight;
 import static com.example.openglpractice.MainActivity.screenWidth;
 
 class Game {
@@ -93,17 +89,17 @@ class Game {
     };
 
     private float[]gamePadVertices = {
-            2.0f, -1.5f, 0.1f,
-            3.0f, -1.5f, 0.1f,
-            2.5f, -1.0f, 0.1f,
+            2.0f, -1.5f, 0.1f, 0,0,
+            3.0f, -1.5f, 0.1f, 0,1,
+            2.5f, -1.0f, 0.1f, 1,1,
 
-            2.0f, -2.5f, 0.1f,
-            3.0f, -2.5f, 0.1f,
-            2.5f, -3.0f, 0.1f,
+            2.0f, -2.5f, 0.1f,  0,0,
+            3.0f, -2.5f, 0.1f,  0,1,
+            2.5f, -3.0f, 0.1f,  1,1,
 
-            3.0f, -1.5f, 0.1f,
-            3.0f, -2.5f, 0.1f,
-            3.5f, -2.0f, 0.1f,
+            3.0f, -1.5f, 0.1f,  0,0,
+            3.0f, -2.5f, 0.1f,  0,1,
+            3.5f, -2.0f, 0.1f,  1,1
 
     };
 
@@ -131,7 +127,7 @@ class Game {
                 //init Игрока с физикой и контроллер
 
                 render.drawSelector = 1;
-                dynamicObject player = new dynamicObject(playerVertices, true);
+                dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
                 Log.i(GAME_LOG, "Players load");
 
                 playerController = new playerController(player);
@@ -142,13 +138,13 @@ class Game {
 //                Log.i(GAME_LOG, "AI load");
 
                 //init объектов
-                staticObject platform1 = new staticObject(platform1Vertices);
-                staticObject platform2 = new staticObject(platform2Vertices);
-                staticObject platform3 = new staticObject(platform3Vertices);
-                staticObject platform4 = new staticObject(platform4Vertices);
-                staticObject platform5 = new staticObject(platform5Vertices);
-                staticObject platform6 = new staticObject(platform6Vertices);
-                staticObject platform7 = new staticObject(platform7Vertices);
+                staticObject platform1 = new staticObject(platform1Vertices,"box");
+                staticObject platform2 = new staticObject(platform2Vertices,"box");
+                staticObject platform3 = new staticObject(platform3Vertices,"box");
+                staticObject platform4 = new staticObject(platform4Vertices,"box");
+                staticObject platform5 = new staticObject(platform5Vertices,"box");
+                staticObject platform6 = new staticObject(platform6Vertices,"box");
+                staticObject platform7 = new staticObject(platform7Vertices,"box");
                 Log.i(GAME_LOG, "Platforms load");
 
                 //Грузим корды динамических объектов
@@ -164,7 +160,7 @@ class Game {
                 render.preparePlatform(platform5);
                 render.preparePlatform(platform6);
                 render.preparePlatform(platform7);
-
+                render.prepareGamePad(gamePadVertices);
     }
 
     public void getTouchEvent(MotionEvent event) {

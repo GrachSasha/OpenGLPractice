@@ -7,9 +7,11 @@ public class staticObject{
     static int staticObjectCounter = -1;
 
     private float[] objVertices;
+    public String TEXTURE_NAME;
 
-    staticObject(float[] vertices){
+    staticObject(float[] vertices,String textureName){
         objVertices = vertices;
+        TEXTURE_NAME = textureName;
         push(this);
     }
 

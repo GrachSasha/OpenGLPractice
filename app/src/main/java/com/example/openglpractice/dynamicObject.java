@@ -12,10 +12,12 @@ public class dynamicObject{
     physicForObject physic;
     Thread physicThread;
     private boolean invetoryOpen = false;
+    public String TEXTURE_NAME;
 
-    public dynamicObject(float[] vertices, boolean pl){
+    public dynamicObject(float[] vertices, boolean pl, String textureName){
         objectId = this.hashCode();
         player = pl;
+        TEXTURE_NAME = textureName;
         //alternativePhysic = new alternativePhysicForObject(vertices, this);
         physic = new physicForObject(vertices, this);
         addToPool(this);

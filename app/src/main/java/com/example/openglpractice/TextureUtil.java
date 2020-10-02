@@ -7,6 +7,9 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
 import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE1;
+import static android.opengl.GLES20.GL_TEXTURE2;
+
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
@@ -34,7 +37,6 @@ public class TextureUtil {
             glDeleteTextures(1, textureIds, 0);
             return 0;
         }
-
 
         // Активируем 0-ой юнит
         glActiveTexture(GL_TEXTURE0);

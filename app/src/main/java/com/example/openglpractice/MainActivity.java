@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
 
         assetManager =  this.getAssets();
 //========TEST PO===========
-        loadShit();
+//        loadResource();
 //========TEST PO===========
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -67,6 +67,7 @@ public class MainActivity extends Activity {
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);
+
         setContentView(glSurfaceView);
 
         game = new Game(this);
@@ -102,10 +103,12 @@ public class MainActivity extends Activity {
         return (configurationInfo.reqGlEsVersion >= 0x20000);
     }
 
-    private void loadShit() {
+    private void loadResource(String lvl) {
         try {
             String[] files = assetManager.list("levels");
             Log.i(TEST_PO, files[0]);
+            String level = "levels/ + " + lvl + " + .xml";
+
 //            InputStream inputStream = assetManager.open("levels/level1.xml");
 //            byte[] buffer = null;
 //            int size = inputStream.available();
@@ -122,7 +125,7 @@ public class MainActivity extends Activity {
             // создаем парсер
             XmlPullParser xpp = factory.newPullParser();
 
-            xpp.setInput(assetManager.open("levels/level1.xml"),"utf-8");
+            xpp.setInput(assetManager.open(level),"utf-8");
 
             //=============================================================
             String tmp="";

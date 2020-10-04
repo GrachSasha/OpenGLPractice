@@ -62,6 +62,9 @@ public class OpenGLRenderer implements Renderer {
     private int texture;
     private int texture2;
     private int null_texture;
+    //todo убрать хардкод
+    private int[] textures = new int[10];
+    private volatile byte textureCount = 0;
     //===текстуры==//
 
     //===служебные переменые===//
@@ -188,10 +191,6 @@ public class OpenGLRenderer implements Renderer {
 
         createAndUseProgramm();
         getLocations();
-        loadTextures();
-    }
-
-    private void loadTextures() {
 
     }
 
@@ -231,15 +230,6 @@ public class OpenGLRenderer implements Renderer {
         //Камера для игрока
         createViewMatrix();
 
-        //Камера для интерфейса
-        //Работает без обработки в кадом кадре
-//        createViewMatrixForInterface();
-
-//        bindMatrix();
-//        bindMatrixForInterface();
-
-        //Берем переменные шейдера, передаем массив данных для текущих объектов
-
         //Гейм - пад
         if(gamePad != null) {
             drawGamePad();
@@ -255,7 +245,6 @@ public class OpenGLRenderer implements Renderer {
             }
         }
 
-
         //Платформа
         //Берем переменные шейдера, передаем массив данных для текущих объектов
         for(int i=0; i < platforms.length; i++){
@@ -263,6 +252,13 @@ public class OpenGLRenderer implements Renderer {
                 drawPlatform(platforms[i], texture);
             }
         }
+
+        //Камера для интерфейса
+        //Работает без обработки в кадом кадре
+//        createViewMatrixForInterface();
+
+//        bindMatrix();
+//        bindMatrixForInterface();
 
 //        Log.i("RENDER LOG", Integer.toString(framesCount));
 //        framesCount++;
@@ -466,7 +462,6 @@ public class OpenGLRenderer implements Renderer {
     }
 
     public void prepareDynamicModels(float[] gObject) {
-
         dynamicObjects =  ByteBuffer
                 .allocateDirect(gObject.length * 4)
                 .order(ByteOrder.nativeOrder())

@@ -128,6 +128,7 @@ class Game {
 
                 render.drawSelector = 1;
                 dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
+
                 Log.i(GAME_LOG, "Players load");
 
                 playerController = new playerController(player);
@@ -152,7 +153,6 @@ class Game {
 //                enemy.createModel();
 
                 //Грузим корды стастических объектов
-//                render.prepareGamePad(gamePadVertices);
                 render.preparePlatform(platform1);
                 render.preparePlatform(platform2);
                 render.preparePlatform(platform3);

@@ -7,6 +7,7 @@ public class staticObject{
     static int staticObjectCounter = -1;
 
     private float[] objVertices;
+
     public String TEXTURE_NAME;
 
     staticObject(float[] vertices,String textureName){
@@ -25,6 +26,10 @@ public class staticObject{
 
     public float[] getVertices(){
         return objVertices;
+    }
+
+    public String getName() {
+        return TEXTURE_NAME;
     }
 
     //=========================================================================

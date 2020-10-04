@@ -30,6 +30,11 @@ public class dynamicObject{
         }
     }
 
+    public String getName() {
+        return TEXTURE_NAME;
+    }
+
     public void openInventory() { invetoryOpen = true;}
+
 
 }

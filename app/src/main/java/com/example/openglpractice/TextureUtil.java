@@ -7,8 +7,6 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
 import static android.opengl.GLES20.GL_TEXTURE0;
-import static android.opengl.GLES20.GL_TEXTURE1;
-import static android.opengl.GLES20.GL_TEXTURE2;
 
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.glActiveTexture;

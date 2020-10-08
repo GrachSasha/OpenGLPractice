@@ -1,6 +1,7 @@
 package com.example.openglpractice;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -88,33 +89,52 @@ class Game {
             -0.5f, -1.5f, 0,    1, 1,
     };
 
+    private float[] platform8Vertices = {
+            -2.5f, -2.5f, 0.5f,        0, 0,
+            -1f, -2.5f, 0.5f,      0, 1,
+
+            -2.5f, -2f, 0.5f,      1, 0,
+            -1f, -2f, 0.5f,    1, 1,
+    };
+
     private float[]gamePadVertices = {
             2.0f, -1.5f, 0.1f, 0,0,
             3.0f, -1.5f, 0.1f, 0,1,
             2.5f, -1.0f, 0.1f, 1,1,
 
-            2.0f, -2.5f, 0.1f,  0,0,
-            3.0f, -2.5f, 0.1f,  0,1,
-            2.5f, -3.0f, 0.1f,  1,1,
-
-            3.0f, -1.5f, 0.1f,  0,0,
-            3.0f, -2.5f, 0.1f,  0,1,
-            3.5f, -2.0f, 0.1f,  1,1
+//            2.0f, -2.5f, 0.1f,  0,0,
+//            3.0f, -2.5f, 0.1f,  0,1,
+//            2.5f, -3.0f, 0.1f,  1,1,
+//
+//            3.0f, -1.5f, 0.1f,  0,0,
+//            3.0f, -2.5f, 0.1f,  0,1,
+//            3.5f, -2.0f, 0.1f,  1,1
 
     };
 
+    //===pools===//
+    //todo хз нужен ли volatile
+    public static int gameObjectCounter = 0;
+    public static int staticObjectCounter = 0;
 
-    //======================================== fields ==========================================//
+    public static volatile dynamicObject dynamicObjectPool[] = new dynamicObject[10];
+    public static volatile  staticObject staticObjectPool[]= new staticObject[10];
+    //===pools===//
+
+    //===fields===//
+    private Context myContext;
     static String GAME_LOG = " Game ";
-    Activity activity;
     playerController playerController;
+    TextureUtil textureUtil;
+    Activity activity;
     ResourceLoader loader;
-    //==========================================================================================//
+    //===fields===//
 
 
-    public Game(MainActivity mainActivity) {
+
+    public Game(Context context) {
         //todo убрать загрузку уровня из конструктора
-        activity = mainActivity;
+        myContext = context;
         prepareModelsForLevel1();
     }
 
@@ -125,10 +145,9 @@ class Game {
                 //TEST
 
                 //init Игрока с физикой и контроллер
-
+                gameMenu menu = new gameMenu();
                 render.drawSelector = 1;
                 dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
-
                 Log.i(GAME_LOG, "Players load");
 
                 playerController = new playerController(player);
@@ -146,20 +165,13 @@ class Game {
                 staticObject platform5 = new staticObject(platform5Vertices,"box");
                 staticObject platform6 = new staticObject(platform6Vertices,"box");
                 staticObject platform7 = new staticObject(platform7Vertices,"box");
+                staticObject platform8 = new staticObject(platform8Vertices,"box");
                 Log.i(GAME_LOG, "Platforms load");
 
                 //Грузим корды динамических объектов
-                render.prepareDynamicModels(player.physic.getObjVertices());
+//                player.objectBuffer = render.prepareModelsForDynamicObjects(player.physic.getObjVertices());
 //                enemy.createModel();
 
-                //Грузим корды стастических объектов
-                render.preparePlatform(platform1);
-                render.preparePlatform(platform2);
-                render.preparePlatform(platform3);
-                render.preparePlatform(platform4);
-                render.preparePlatform(platform5);
-                render.preparePlatform(platform6);
-                render.preparePlatform(platform7);
                 render.prepareGamePad(gamePadVertices);
     }
 

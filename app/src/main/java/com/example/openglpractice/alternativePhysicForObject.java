@@ -1,6 +1,7 @@
 package com.example.openglpractice;
 
-import static com.example.openglpractice.staticObject.staticObjectPool;
+
+import static com.example.openglpractice.Game.staticObjectPool;
 
 public class alternativePhysicForObject implements Runnable {
 
@@ -19,6 +20,7 @@ public class alternativePhysicForObject implements Runnable {
 
     alternativePhysicForObject(float[] vertices, dynamicObject dynamicObject){
        //todo load level from src
+
         level = new byte[100][1000];
         linkDynamicObject = dynamicObject;
         createLevel();

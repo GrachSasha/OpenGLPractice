@@ -11,7 +11,7 @@ public class AI implements Runnable{
 
     AI(float[] vert) {
         vertices = vert;
-        physic = new dynamicObject(vertices, false,"");
+//        physic = new dynamicObject(vertices, false,"");
         playerController = new playerController(physic);
 
         controlThread = new Thread(this);

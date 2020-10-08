@@ -6,21 +6,29 @@ import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
+import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.GL_SRC_ALPHA;
+import static android.opengl.GLES20.GL_SRC_COLOR;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glBufferData;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glDeleteTextures;
+import static android.opengl.GLES20.glDisable;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
@@ -36,8 +44,10 @@ import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.GL_TEXTURE0;
+import static com.example.openglpractice.Game.dynamicObjectPool;
+import static com.example.openglpractice.Game.staticObjectPool;
 
-public class OpenGLRenderer implements Renderer {
+public class gameRenderer implements Renderer {
 
     private final static int POSITION_COUNT = 3;
 
@@ -46,14 +56,12 @@ public class OpenGLRenderer implements Renderer {
     private float height;
     byte drawSelector;
     private float[] menuVertices;
-    private int objCounter =0;
     private int enemyCounter = 0;
+    private final String RENDER_LOG = "Render log";
 
     //==буфферы для отрисовки===//
-    private FloatBuffer dynamicObjects;
     private FloatBuffer gamePad;
     private FloatBuffer menu;
-    private FloatBuffer[]platforms = new FloatBuffer[10];
     private FloatBuffer[]enemies = new FloatBuffer[10];
     //==буфферы для отрисовки===//
 
@@ -62,9 +70,9 @@ public class OpenGLRenderer implements Renderer {
     private int texture;
     private int texture2;
     private int null_texture;
+
     //todo убрать хардкод
-    private int[] textures = new int[10];
-    private volatile byte textureCount = 0;
+//    Map<String, Integer> texturesMap = new HashMap<>();
     //===текстуры==//
 
     //===служебные переменые===//
@@ -76,8 +84,6 @@ public class OpenGLRenderer implements Renderer {
     private int framesCount = 0;
 
     private int programId;
-    private float dynamicObjectCordX;
-    private float dynamicObjectCordY;
 
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
@@ -112,35 +118,35 @@ public class OpenGLRenderer implements Renderer {
     //===камера==//
 
     //===проекции===//
-    float leftForLevel = -3;
-    float rightForLevel  = 3;
-    float bottomForLevel  = -3;
-    float topForLevel  = 3;
+    private float leftForLevel = -3;
+    private float rightForLevel  = 3;
+    private float bottomForLevel  = -3;
+    private float topForLevel  = 3;
 
-    float nearForLevel  = 2;
-    float farForLevel  = 12;
-    float ratioForLevel  = 1;
+    private float nearForLevel  = 2;
+    private float farForLevel  = 12;
+    private float ratioForLevel  = 1;
 
-    float leftForInterface = -5;
-    float rightForInterface  = 5;
-    float bottomForInterface  = -5;
-    float topForInterface  = 5;
+    private float leftForInterface = -5;
+    private float rightForInterface  = 5;
+    private float bottomForInterface  = -5;
+    private float topForInterface  = 5;
 
-    float nearForInterface  = 2;
-    float farForInterface  = 12;
-    float ratioForInterface  = 1;
+    private float nearForInterface  = 2;
+    private float farForInterface  = 12;
+    private float ratioForInterface  = 1;
 
-    float leftForMenu = -5;
-    float rightForMenu  = 5;
-    float bottomForMenu  = -5;
-    float topForMenu  = 5;
+    private float leftForMenu = -5;
+    private float rightForMenu  = 5;
+    private float bottomForMenu  = -5;
+    private float topForMenu  = 5;
 
-    float nearForMenu  = 2;
-    float farForMenu  = 6;
-    float ratioForMenu  = 1;
+    private float nearForMenu  = 2;
+    private float farForMenu  = 6;
+    private float ratioForMenu  = 1;
     //===проекции===//
 
-    public OpenGLRenderer(Context context, byte drawSelector) {
+    public gameRenderer(Context context, byte drawSelector) {
         this.context = context; this.drawSelector = drawSelector;
     }
 
@@ -175,6 +181,7 @@ public class OpenGLRenderer implements Renderer {
         menuTexture = TextureUtil.loadTexture(context, R.drawable.menu);
         null_texture = TextureUtil.loadTexture(context, R.drawable.null_texture);
 //        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
+
         //todo создать нормальный инит!
         createViewMatrixForInterface();
     }
@@ -188,6 +195,12 @@ public class OpenGLRenderer implements Renderer {
 
         //разрешает проекции
         glEnable(GL_DEPTH_TEST);
+
+        //ВзЯЛ СО СТАКОВЕРФЛОУ ЭТ ДЛЯ ПРОЗРАЧНОСТИ ПНГ
+//        glEnable(GL_ALPHA_TEST);
+//        glAlphaFunc(GL_GREATER, 0.8f);
+//        //здесь вывод примитива
+//        glDisable(GL_ALPHA_TEST);
 
         createAndUseProgramm();
         getLocations();
@@ -228,7 +241,7 @@ public class OpenGLRenderer implements Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //Камера для игрока
-        createViewMatrix();
+        setCameraOnPlayer(dynamicObjectPool[0].getEye());
 
         //Гейм - пад
         if(gamePad != null) {
@@ -236,87 +249,25 @@ public class OpenGLRenderer implements Renderer {
         }
 
         //Игрок
-        drawPlayer(dynamicObjects, texture2);
+        dynamicObjectPool[0].drawDynamicObject(texture2);
 
-        //Вражины
-        for(int i=0; i < enemies.length; i++){
-            if(enemies[i] != null) {
-                drawEnemies(enemies[i], texture);
+
+        for(int i=0; i < staticObjectPool.length; i++){
+            if(staticObjectPool[i] != null) {
+                staticObjectPool[i].drawStaticObject(texture);
             }
         }
 
-        //Платформа
-        //Берем переменные шейдера, передаем массив данных для текущих объектов
-        for(int i=0; i < platforms.length; i++){
-            if(platforms[i] != null) {
-                drawPlatform(platforms[i], texture);
-            }
-        }
-
-        //Камера для интерфейса
-        //Работает без обработки в кадом кадре
-//        createViewMatrixForInterface();
-
-//        bindMatrix();
-//        bindMatrixForInterface();
-
-//        Log.i("RENDER LOG", Integer.toString(framesCount));
-//        framesCount++;
     }
 
     private void drawMenu(){
-        //todo растянуть меню на фулл скрин
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        createViewMatrixForMenu();
 
-//        menuVertices = new float[]{ -3f, -3f, 0f, 0f, 0f,
-//                                    3f, -3f, 0f, 0f, 1f,
-//                                    -3f, 3f, 0f, 1f, 0f,
-//                                    3f, 3f, 0f, 1f, 1f,};
-
-        menuVertices = new float[]{ -3f, -3f, 0f, 0f, 0f,
-                                      3f, -3f, 0f, 0f, 1f,
-                                        -3f, 3f, 0f, 1f, 0f,
-                                           3f, 3f, 0f, 1f, 1f,};
-        menu = ByteBuffer
-                .allocateDirect(menuVertices.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        menu.put(menuVertices).position(0);
-
-        bindData(menu);
-        setTexture(menu, menuTexture);
-        Matrix.setIdentityM(mModelMatrixForMenu, 0);
-        bindMatrixForMenu();
-
-        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    }
-
-
-    private void drawPlayer(FloatBuffer floatBuffer, int textureId) {
-        bindData(floatBuffer);
-        setTexture(floatBuffer, textureId);
-        Matrix.setIdentityM(mModelMatrix, 0);
-        bindMatrix();
-
-//        glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    }
-
-    private void drawPlatform(FloatBuffer floatBuffer, int textureId){
-        bindData(floatBuffer);
-        setTexture(floatBuffer, textureId);
-        Matrix.setIdentityM(mModelMatrix, 0);
-        bindMatrix();
-
-        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 
     private void drawEnemies(FloatBuffer floatBuffer, int textureId) {
         bindData(floatBuffer);
-        setTexture(floatBuffer, textureId);
+
+        setTexture(floatBuffer, textureId, false);
         Matrix.setIdentityM(mModelMatrix, 0);
         bindMatrix();
 
@@ -326,7 +277,9 @@ public class OpenGLRenderer implements Renderer {
 
     private void drawGamePad() {
         bindData(gamePad);
-        setTexture(gamePad, null_texture);
+        glDisable(GL_TEXTURE0);
+//        setTexture(gamePad,0,false);
+        //TODO скорее всего ошибка в матрице, поменять на mModelMatrix
         Matrix.setIdentityM(mModelMatrixForInterface, 0);
         bindMatrixForInterface();
 
@@ -339,42 +292,44 @@ public class OpenGLRenderer implements Renderer {
 
     }
 
-    private void bindData(FloatBuffer floatBuffer) {
+    public void bindData(FloatBuffer floatBuffer) {
+        if(floatBuffer != null) {
+            floatBuffer.position(0);
 
-        floatBuffer.position(0);
-
-        // из какого массива брать данные и по каким правилам
-        glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
-                false, 20, floatBuffer);
-        glEnableVertexAttribArray(aPositionLocation);
-
+            // из какого массива брать данные и по каким правилам
+            glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
+                    false, 20, floatBuffer);
+            glEnableVertexAttribArray(aPositionLocation);
+        }
     }
 
-    private void setTexture(FloatBuffer floatBuffer, int textureId) {
+    public void setTexture(FloatBuffer floatBuffer, int textureId, boolean limpidity) {
+        if(floatBuffer != null) {
+            // координаты текстур
+            // параметр отвечает за точку отсчета в массиве
+            floatBuffer.position(3);
 
-        // координаты текстур
-        // параметр отвечает за точку отсчета в массиве
-        floatBuffer.position(3);
+            //параметры 2 - количество занчений которые нужно взять, 5 - количество байт до следующей точки
+            glVertexAttribPointer(aTextureLocation, 2, GL_FLOAT,
+                    false, 20, floatBuffer);
+            glEnableVertexAttribArray(aTextureLocation);
 
-        //параметры 2 - количество занчений которые нужно взять, 5 - количество байт до следующей точки
-        glVertexAttribPointer(aTextureLocation, 2, GL_FLOAT,
-                false, 20, floatBuffer);
-        glEnableVertexAttribArray(aTextureLocation);
+            if(limpidity) {
+//                glEnable(GL_BLEND);
+//                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            }
 
-        // помещаем текстуру в target 2D юнита 0
+            // помещаем текстуру в target 2D юнита 0
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, textureId);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureId);
-
-        // юнит текстуры
-        glUniform1i(uTextureUnitLocation, 0);
+            // юнит текстуры
+            glUniform1i(uTextureUnitLocation, 0);
+        }
     }
 
-    private void createViewMatrix() {
-        float eyeXForPlayer = dynamicObjectCordX;
-        float centerXForPlayer = dynamicObjectCordX;
-
-        Matrix.setLookAtM(mViewMatrix, 0, eyeXForPlayer, eyeY, eyeZ, centerXForPlayer, centerY, centerZ, upX, upY, upZ);
+    private void setCameraOnPlayer(float eyeX) {
+        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, eyeX, centerY, centerZ, upX, upY, upZ);
     }
 
     private void createViewMatrixForInterface() {
@@ -382,7 +337,7 @@ public class OpenGLRenderer implements Renderer {
         Matrix.setLookAtM(mViewMatrixForInterface, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
     }
 
-    private void createViewMatrixForMenu() {
+    public void createViewMatrixForMenu() {
         float eyeX = 0;
         Matrix.setLookAtM(mViewMatrixForMenu, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
     }
@@ -455,21 +410,10 @@ public class OpenGLRenderer implements Renderer {
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrixForMenu, 0);
     }
 
-    private void bindMatrix() {
+    public void bindMatrix() {
         Matrix.multiplyMM(mMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
         Matrix.multiplyMM(mMatrix, 0, mProjectionMatrix, 0, mMatrix, 0);
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
-    }
-
-    public void prepareDynamicModels(float[] gObject) {
-        dynamicObjects =  ByteBuffer
-                .allocateDirect(gObject.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        dynamicObjects.put(gObject).position(0);
-
-        dynamicObjectCordX = gObject[0];
-        dynamicObjectCordY = gObject[1];
     }
 
     public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
@@ -499,15 +443,56 @@ public class OpenGLRenderer implements Renderer {
         gamePad.put(vertices).position(0);
     }
 
-    public void preparePlatform(staticObject staticObj){
-        platforms[objCounter] = ByteBuffer
-                .allocateDirect(staticObj.getVertices().length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        platforms[objCounter].put(staticObj.getVertices()).position(0);
-        objCounter++;
 
+    public void setMatrixForDynamicObject() {
+        Matrix.setIdentityM(mModelMatrix, 0);
+    }
+    public void setMatrixForStaticObject() {
+        Matrix.setIdentityM(mModelMatrix, 0);
+    }
+    public void setMatrixForMenu() { Matrix.setIdentityM(mModelMatrixForMenu, 0);}
+
+    public void drawArraysForDynamicObject(int glTriangleStrip, int position, int count) {
+        glDrawArrays(glTriangleStrip, position, count);
+    }
+    public void drawArraysForStaticObject(int glTriangleStrip, int position, int count) {
+        glDrawArrays(glTriangleStrip, position, count);
     }
 
+//    public int loadTexture(String textureName) {
+//        texturesMap.put(textureName, TextureUtil.loadTexture(context, R.drawable.child_go));
+//        return texturesMap.get(textureName);
+//    }
 
+    //    private void drawPlayer(FloatBuffer floatBuffer, int textureId) {
+//        bindData(floatBuffer);
+//        setTexture(floatBuffer, textureId);
+//        Matrix.setIdentityM(mModelMatrix, 0);
+//        bindMatrix();
+//
+////        glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
+//        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//    }
+
+    //    private void drawPlatform(FloatBuffer floatBuffer, int textureId){
+//        bindData(floatBuffer);
+//        setTexture(floatBuffer, textureId);
+//        Matrix.setIdentityM(mModelMatrix, 0);
+//        bindMatrix();
+//
+//        //useful because using a textures
+////        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+//        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//    }
+
+
+//    public void preparePlatform(staticObject staticObj){
+//        platforms[objCounter] = ByteBuffer
+//                .allocateDirect(staticObj.getVertices().length * 4)
+//                .order(ByteOrder.nativeOrder())
+//                .asFloatBuffer();
+//        platforms[objCounter].put(staticObj.getVertices()).position(0);
+//        objCounter++;
+//
+//    }
 }

@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
     public static AssetManager assetManager;
 
     //init render
-    static OpenGLRenderer render;
+    static gameRenderer render;
 
 //===================================================
 
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         //Инициализация рендера
         glSurfaceView = new GLSurfaceView(this);
         glSurfaceView.setEGLContextClientVersion(2);
-        render = new OpenGLRenderer(this, (byte) 0);
+        render = new gameRenderer(this, (byte) 0);
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);

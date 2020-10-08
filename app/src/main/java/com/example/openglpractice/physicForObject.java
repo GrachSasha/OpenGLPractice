@@ -6,7 +6,6 @@ class physicForObject implements Runnable {
 
 
     //init?
-    static final int MAXOBJECTS = 10;
     private static final int MIN_GROUND = -3;
     private static final int MAX_GROUND = 3;
 
@@ -61,7 +60,7 @@ class physicForObject implements Runnable {
         objVertices[9] += 0.16f;
         objVertices[19] += 0.16f;
 
-        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
+        if(linkDynamicObject.isRealPlayer){linkDynamicObject.prepareCoordinatesAndConvert(objVertices);} else
             {render.changeDynamicModelsForEnemy(linkDynamicObject);}
 
     }
@@ -70,7 +69,7 @@ class physicForObject implements Runnable {
         objVertices[5] += (-0.10f);
         objVertices[10] += (-0.10f);
         objVertices[15] += (-0.10f);
-        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
+        if(linkDynamicObject.isRealPlayer){linkDynamicObject.prepareCoordinatesAndConvert(objVertices);} else
             {render.changeDynamicModelsForEnemy(linkDynamicObject);}
 
     }
@@ -81,7 +80,7 @@ class physicForObject implements Runnable {
             objVertices[6] += coord;
             objVertices[11] += coord;
             objVertices[16] += coord;
-        if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
+        if(linkDynamicObject.isRealPlayer){linkDynamicObject.prepareCoordinatesAndConvert(objVertices);} else
             {render.changeDynamicModelsForEnemy(linkDynamicObject);}
         }
     }
@@ -93,7 +92,7 @@ class physicForObject implements Runnable {
             objVertices[6] += -0.05f;
             objVertices[11] += -0.05f;
             objVertices[16] += -0.05f;
-            if(linkDynamicObject.player){render.prepareDynamicModels(objVertices);} else
+            if(linkDynamicObject.isRealPlayer){linkDynamicObject.prepareCoordinatesAndConvert(objVertices);} else
                 {render.changeDynamicModelsForEnemy(linkDynamicObject);}
         } else {falling = false;}
     }

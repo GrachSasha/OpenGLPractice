@@ -15,6 +15,7 @@ import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
+import static android.opengl.GLES20.GL_ONE_MINUS_CONSTANT_ALPHA;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.GL_SRC_ALPHA;
 import static android.opengl.GLES20.GL_SRC_COLOR;
@@ -24,10 +25,8 @@ import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glBlendFunc;
-import static android.opengl.GLES20.glBufferData;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glDisable;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
@@ -41,7 +40,6 @@ import static android.opengl.GLES20.glViewport;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
-import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static com.example.openglpractice.Game.dynamicObjectPool;
@@ -70,6 +68,7 @@ public class gameRenderer implements Renderer {
     private int texture;
     private int texture2;
     private int null_texture;
+    private int scottPilgrim;
 
     //todo убрать хардкод
 //    Map<String, Integer> texturesMap = new HashMap<>();
@@ -144,6 +143,7 @@ public class gameRenderer implements Renderer {
     private float nearForMenu  = 2;
     private float farForMenu  = 6;
     private float ratioForMenu  = 1;
+
     //===проекции===//
 
     public gameRenderer(Context context, byte drawSelector) {
@@ -180,10 +180,16 @@ public class gameRenderer implements Renderer {
         texture2 = TextureUtil.loadTexture(context, R.drawable.child_go);
         menuTexture = TextureUtil.loadTexture(context, R.drawable.menu);
         null_texture = TextureUtil.loadTexture(context, R.drawable.null_texture);
+        scottPilgrim = TextureUtil.loadTexture(context, R.drawable.scott);
 //        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
 
-        //todo создать нормальный инит!
-        createViewMatrixForInterface();
+
+    }
+
+    private void turnOnBlend() {
+        //Works without fails
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
     }
 
     //вызывается при создании/пересоздании surface
@@ -191,19 +197,17 @@ public class gameRenderer implements Renderer {
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
 
         //чистит экран
-        glClearColor(32f, 178f, 170f, 1f);
+        glClearColor(0, 0, 0, 0f);
 
         //разрешает проекции
-        glEnable(GL_DEPTH_TEST);
+        //Почему-то с этим параметром тестуры не работают как надо
+//        glEnable(GL_DEPTH_TEST);
 
-        //ВзЯЛ СО СТАКОВЕРФЛОУ ЭТ ДЛЯ ПРОЗРАЧНОСТИ ПНГ
-//        glEnable(GL_ALPHA_TEST);
-//        glAlphaFunc(GL_GREATER, 0.8f);
-//        //здесь вывод примитива
-//        glDisable(GL_ALPHA_TEST);
-
+        //todo создать нормальный инит!
+        createViewMatrixForInterface();
         createAndUseProgramm();
         getLocations();
+        turnOnBlend();
 
     }
 
@@ -228,6 +232,7 @@ public class gameRenderer implements Renderer {
 
     @Override
     public void onDrawFrame(GL10 arg0) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         drawSelector();
     }
 
@@ -238,7 +243,6 @@ public class gameRenderer implements Renderer {
     }
 
     private void drawLevel(){
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //Камера для игрока
         setCameraOnPlayer(dynamicObjectPool[0].getEye());
@@ -249,7 +253,7 @@ public class gameRenderer implements Renderer {
         }
 
         //Игрок
-        dynamicObjectPool[0].drawDynamicObject(texture2);
+        dynamicObjectPool[0].drawDynamicObject(scottPilgrim);
 
 
         for(int i=0; i < staticObjectPool.length; i++){
@@ -313,11 +317,6 @@ public class gameRenderer implements Renderer {
             glVertexAttribPointer(aTextureLocation, 2, GL_FLOAT,
                     false, 20, floatBuffer);
             glEnableVertexAttribArray(aTextureLocation);
-
-            if(limpidity) {
-//                glEnable(GL_BLEND);
-//                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            }
 
             // помещаем текстуру в target 2D юнита 0
             glActiveTexture(GL_TEXTURE0);

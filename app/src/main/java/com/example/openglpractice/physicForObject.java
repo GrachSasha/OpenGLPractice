@@ -42,6 +42,7 @@ class physicForObject implements Runnable {
     //=====================================================================
 
     private void walkRight(){
+
         //движение хитбокса
         objVertices[0] += 0.10f;
         objVertices[5] += 0.10f;
@@ -55,6 +56,8 @@ class physicForObject implements Runnable {
 //                        {objVertices[9] = 0.17f; objVertices[19] = 0.17f;
 //                            objVertices[4] = 0.05f; objVertices[14] = 0.05f;}
 
+
+        //движение текстуры
         objVertices[3] += 0.125f;
         objVertices[8] += 0.125f;
         objVertices[13] += 0.125f;
@@ -65,6 +68,7 @@ class physicForObject implements Runnable {
 
     }
     private void walkLeft(){
+
         objVertices[0] += (-0.10f);
         objVertices[5] += (-0.10f);
         objVertices[10] += (-0.10f);

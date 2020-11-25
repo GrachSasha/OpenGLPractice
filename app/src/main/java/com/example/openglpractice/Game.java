@@ -8,23 +8,25 @@ import android.view.MotionEvent;
 import static com.example.openglpractice.MainActivity.render;
 import static com.example.openglpractice.MainActivity.screenWidth;
 
+
 class Game {
     // треугольник
     // x    y   z
 
     private float[] playerVertices = {
-                                //x  y
+                                //x     y
+            -3f, -1f, 1f,       0.125f, 1,
+            -2.5f, -1f, 1f,     0, 1,
+
+            -3f, -0.5f, 1f,     0.125f, 0.5f,
+            -2.5f, -0.5f, 1f,   0, 0.5f,
+
 //            -3f, -1f, 0f,       0f, 0.5f,
 //            -2.5f, -1f, 0f,     0, 1f,
 //
 //            -3f, -0.5f, 0f,     0.125f, 1,
 //            -2.5f, -0.5f, 0f,   0.125f, 0.5f,
 
-            -3f, -1f, 1f,       0.125f, 1,
-            -2.5f, -1f, 1f,     0, 1,
-
-            -3f, -0.5f, 1f,     0.125f, 0.5f,
-            -2.5f, -0.5f, 1f,   0, 0.5f,
 
 
 
@@ -136,7 +138,7 @@ class Game {
     //===pools===//
 
     //===fields===//
-    private Context myContext;
+    private Context gameContext;
     static String GAME_LOG = " Game ";
     playerController playerController;
     TextureUtil textureUtil;
@@ -146,17 +148,17 @@ class Game {
 
 
 
-    public Game(Context context) {
+    public Game() {
         //todo убрать загрузку уровня из конструктора
-        myContext = context;
         prepareModelsForLevel1();
     }
 
     public void prepareModelsForLevel1(){
 
                 //TEST
-//                loader.openLibrary();
+//                loader.loadLevel(1);
                 //TEST
+
 
                 //init Игрока с физикой и контроллер
                 gameMenu menu = new gameMenu();

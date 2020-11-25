@@ -47,10 +47,11 @@ public class MainActivity extends Activity {
             return;
         }
 
-        assetManager =  this.getAssets();
+//        assetManager =  this.getAssets();
 //========TEST PO===========
-//        loadResource();
+        ResourceLoader.getResourceLoader(this).loadLevel("level1");
 //========TEST PO===========
+
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         screenWidth = displaymetrics.widthPixels;
@@ -70,9 +71,10 @@ public class MainActivity extends Activity {
 
         setContentView(glSurfaceView);
 
-        game = new Game(this);
+        game = new Game();
 //        game.prepareModelsForLevel1();
         game.createMenu();
+
     }
 
     @Override

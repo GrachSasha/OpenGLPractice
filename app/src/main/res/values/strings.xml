@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">OpenGLPractice</string>
+    <string name="title_activity_menu_test">menuTest</string>
+    <string name="title_activity_test">testActivity</string>
 </resources>

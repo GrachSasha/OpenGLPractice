@@ -1,4 +1,4 @@
-package com.example.openglpractice;
+package utils;
 
 import android.content.Context;
 
@@ -39,7 +39,7 @@ public class ShaderUtils {
 
     }
 
-    static int createShader(Context context, int type, int shaderRawId) {
+    public static int createShader(Context context, int type, int shaderRawId) {
         String shaderText = FileUtils
                 .readTextFromRaw(context, shaderRawId);
         return ShaderUtils.createShader(type, shaderText);

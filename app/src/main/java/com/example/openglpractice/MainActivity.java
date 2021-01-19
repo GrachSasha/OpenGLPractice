@@ -3,6 +3,7 @@ package com.example.openglpractice;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
@@ -20,6 +21,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 
+import utils.ResourceLoader;
+
 public class MainActivity extends Activity {
     //=================================================
     private GLSurfaceView glSurfaceView;
@@ -31,6 +34,7 @@ public class MainActivity extends Activity {
     static int screenHeight;
     final String TEST_PO = "TEST_PO";
     public static AssetManager assetManager;
+
 
     //init render
     static gameRenderer render;
@@ -94,6 +98,12 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        float sector = screenWidth/3;
+        float cord = event.getX();
+        if((cord > sector) && (cord < sector*2)){
+            startActivity(new Intent(this, Menu.class));
+            }
         game.getTouchEvent(event);
         return true;
     }

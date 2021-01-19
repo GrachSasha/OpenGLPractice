@@ -5,6 +5,9 @@ import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import utils.ResourceLoader;
+import utils.TextureUtil;
+
 import static com.example.openglpractice.MainActivity.render;
 import static com.example.openglpractice.MainActivity.screenWidth;
 
@@ -118,6 +121,10 @@ class Game {
             3.0f, -1.5f, 0.1f, 0,1,
             2.5f, -1.0f, 0.1f, 1,1,
 
+            2.0f, 3.0f, 0.1f, 0,0,
+            3.0f, 3.0f, 0.1f, 0,1,
+            2.0f, 3.5f, 0.1f, 1,0,
+            3.0f, 3.5f, 0.1f, 1,1,
 //            2.0f, -2.5f, 0.1f,  0,0,
 //            3.0f, -2.5f, 0.1f,  0,1,
 //            2.5f, -3.0f, 0.1f,  1,1,
@@ -150,6 +157,7 @@ class Game {
 
     public Game() {
         //todo убрать загрузку уровня из конструктора
+        createMenu();
         prepareModelsForLevel1();
     }
 
@@ -160,31 +168,32 @@ class Game {
                 //TEST
 
 
-                //init Игрока с физикой и контроллер
-                gameMenu menu = new gameMenu();
-                render.drawSelector = 1;
-                dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
-                Log.i(GAME_LOG, "Players load");
+        //init Игрока с физикой и контроллер
 
-                playerController = new playerController(player);
-                Log.i(GAME_LOG, "Player controller load");
+        render.drawSelector = 1;
+        dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
+        Log.i(GAME_LOG, "Players load");
 
-                //enemies
+        playerController = new playerController(player);
+        Log.i(GAME_LOG, "Player controller load");
+
+//        MainActivity activity = new MainActivity();
+//        activity.loadResource("level1");
+        //enemies
 //                AI enemy  = new AI(enemyVertices);
 //                Log.i(GAME_LOG, "AI load");
 
-                //init объектов
-                staticObject platform1 = new staticObject(platform1Vertices,"box");
-                staticObject platform2 = new staticObject(platform2Vertices,"box");
-                staticObject platform3 = new staticObject(platform3Vertices,"box");
-                staticObject platform4 = new staticObject(platform4Vertices,"box");
-                staticObject platform5 = new staticObject(platform5Vertices,"box");
-                staticObject platform6 = new staticObject(platform6Vertices,"box");
-                staticObject platform7 = new staticObject(platform7Vertices,"box");
-                staticObject platform8 = new staticObject(platform8Vertices,"box");
-                Log.i(GAME_LOG, "Platforms load");
-
-                //Грузим корды динамических объектов
+        //init объектов
+        staticObject platform1 = new staticObject(platform1Vertices,"box");
+        staticObject platform2 = new staticObject(platform2Vertices,"box");
+        staticObject platform3 = new staticObject(platform3Vertices,"box");
+        staticObject platform4 = new staticObject(platform4Vertices,"box");
+        staticObject platform5 = new staticObject(platform5Vertices,"box");
+        staticObject platform6 = new staticObject(platform6Vertices,"box");
+        staticObject platform7 = new staticObject(platform7Vertices,"box");
+        staticObject platform8 = new staticObject(platform8Vertices,"box");
+        Log.i(GAME_LOG, "Platforms load");
+        //Грузим корды динамических объектов
 //                player.objectBuffer = render.prepareModelsForDynamicObjects(player.physic.getObjVertices());
 //                enemy.createModel();
 
@@ -198,12 +207,22 @@ class Game {
         float sector = screenWidth/3;
         float cord = event.getX();
         if(cord < sector){playerController.walkLeft();}
-        if((cord > sector) && (cord < sector*2)){playerController.jump();}
+//        if((cord > sector) && (cord < sector*2)){playerController.jump();}
+
         if((cord > sector*2) && (cord < sector*3)){playerController.walkRight();}
 
     }
 
     public void createMenu() {
         render.drawSelector = 0;
+//        switch(event){
+//            case 10 :
+//                new Screen().loadScreen();
+//                break;
+//
+//            case event.getX()>11 :
+//                new Screen().loadScreen();
+//                break;
+//        }
     }
 }

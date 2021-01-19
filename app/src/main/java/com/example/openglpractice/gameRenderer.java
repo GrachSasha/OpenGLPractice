@@ -6,20 +6,21 @@ import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import utils.ShaderUtils;
+import utils.TextureUtil;
 
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_ONE_MINUS_CONSTANT_ALPHA;
-import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.GL_SRC_ALPHA;
-import static android.opengl.GLES20.GL_SRC_COLOR;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glActiveTexture;
@@ -53,13 +54,12 @@ public class gameRenderer implements Renderer {
     private float width;
     private float height;
     byte drawSelector;
-    private float[] menuVertices;
     private int enemyCounter = 0;
     private final String RENDER_LOG = "Render log";
+    private Menu menu;
 
     //==буфферы для отрисовки===//
     private FloatBuffer gamePad;
-    private FloatBuffer menu;
     private FloatBuffer[]enemies = new FloatBuffer[10];
     //==буфферы для отрисовки===//
 
@@ -148,6 +148,7 @@ public class gameRenderer implements Renderer {
 
     public gameRenderer(Context context, byte drawSelector) {
         this.context = context; this.drawSelector = drawSelector;
+        menu = new Menu();
     }
 
     private void createAndUseProgramm() {
@@ -239,7 +240,11 @@ public class gameRenderer implements Renderer {
     private void drawSelector(){
         if(drawSelector == 1){
             drawLevel();
-        } else {drawMenu();}
+        } else {
+            glClearColor(0, 0, 0, 0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            drawMenu();}
     }
 
     private void drawLevel(){
@@ -265,7 +270,7 @@ public class gameRenderer implements Renderer {
     }
 
     private void drawMenu(){
-
+        menu.drawMenu(menuTexture);
     }
 
     private void drawEnemies(FloatBuffer floatBuffer, int textureId) {
@@ -288,11 +293,14 @@ public class gameRenderer implements Renderer {
         bindMatrixForInterface();
 
         glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.5f);
-        glDrawArrays(GL_TRIANGLES, 0, 4);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+//        glDrawArrays(GL_TRIANGLE_STRIP, 15, 4);
+//        glDrawArrays(GL_TRIANGLES, 15, 4);
+//
+//        glDrawArrays(GL_TRIANGLES, 31, 4);
 
-        glDrawArrays(GL_TRIANGLES, 15, 4);
 
-        glDrawArrays(GL_TRIANGLES, 31, 4);
+
 
     }
 

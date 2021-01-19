@@ -163,25 +163,12 @@ class Game {
 
     public void prepareModelsForLevel1(){
 
-                //TEST
-//                loader.loadLevel(1);
-                //TEST
-
-
-        //init Игрока с физикой и контроллер
-
         render.drawSelector = 1;
         dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
         Log.i(GAME_LOG, "Players load");
 
         playerController = new playerController(player);
         Log.i(GAME_LOG, "Player controller load");
-
-//        MainActivity activity = new MainActivity();
-//        activity.loadResource("level1");
-        //enemies
-//                AI enemy  = new AI(enemyVertices);
-//                Log.i(GAME_LOG, "AI load");
 
         //init объектов
         staticObject platform1 = new staticObject(platform1Vertices,"box");
@@ -197,7 +184,7 @@ class Game {
 //                player.objectBuffer = render.prepareModelsForDynamicObjects(player.physic.getObjVertices());
 //                enemy.createModel();
 
-                render.prepareGamePad(gamePadVertices);
+        render.prepareGamePad(gamePadVertices);
     }
 
     public void getTouchEvent(MotionEvent event) {
@@ -215,14 +202,5 @@ class Game {
 
     public void createMenu() {
         render.drawSelector = 0;
-//        switch(event){
-//            case 10 :
-//                new Screen().loadScreen();
-//                break;
-//
-//            case event.getX()>11 :
-//                new Screen().loadScreen();
-//                break;
-//        }
-    }
+  }
 }

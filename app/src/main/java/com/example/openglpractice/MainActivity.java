@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
     static int screenHeight;
     final String TEST_PO = "TEST_PO";
     public static AssetManager assetManager;
-
+    static Menu menu;
 
     //init render
     static gameRenderer render;
@@ -62,8 +62,11 @@ public class MainActivity extends Activity {
         screenHeight = displaymetrics.heightPixels;
         Toast.makeText(this, "WIDTH = " + screenWidth + "HEIGHT = " + screenHeight, Toast.LENGTH_LONG).show();
 
-        //Create Handler for Controller
+        //Контроллер
         controlHandler = new Handler();
+
+        //Инит рендера
+        menu = new Menu();
 
         //Инициализация рендера
         glSurfaceView = new GLSurfaceView(this);
@@ -76,7 +79,6 @@ public class MainActivity extends Activity {
         setContentView(glSurfaceView);
 
         game = new Game();
-//        game.prepareModelsForLevel1();
         game.createMenu();
 
     }

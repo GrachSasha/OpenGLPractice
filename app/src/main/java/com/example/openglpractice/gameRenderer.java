@@ -20,7 +20,6 @@ import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_ONE_MINUS_CONSTANT_ALPHA;
 import static android.opengl.GLES20.GL_SRC_ALPHA;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glActiveTexture;
@@ -255,11 +254,10 @@ public class gameRenderer implements Renderer {
         //Гейм - пад
         if(gamePad != null) {
             drawGamePad();
-        }
 
+        }
         //Игрок
         dynamicObjectPool[0].drawDynamicObject(scottPilgrim);
-
 
         for(int i=0; i < staticObjectPool.length; i++){
             if(staticObjectPool[i] != null) {
@@ -270,7 +268,23 @@ public class gameRenderer implements Renderer {
     }
 
     private void drawMenu(){
-        menu.drawMenu(menuTexture);
+
+//        menu.drawMenu(null_texture);
+        float[] menuVertices = { -3f, -3f, 0f, 0f,
+                3f, -3f, 0f, 0f,
+                -3f, 3f, 0f, 0f,
+                3f, 3f, 0f, 0f };
+
+        FloatBuffer menuE = ByteBuffer
+                .allocateDirect(menuVertices.length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        menuE.put(menuVertices).position(0);
+        bindData(menuE);
+        setTexture(menuE, null_texture, false);
+        setMatrixForStaticObject();
+        bindMatrix();
+        drawArraysForStaticObject(GL_TRIANGLE_STRIP,0,4);
     }
 
     private void drawEnemies(FloatBuffer floatBuffer, int textureId) {
@@ -294,13 +308,6 @@ public class gameRenderer implements Renderer {
 
         glUniform4f(uColorLocation, 0.0f, 1.0f, 1.0f, 1.5f);
         glDrawArrays(GL_TRIANGLES, 0, 3);
-//        glDrawArrays(GL_TRIANGLE_STRIP, 15, 4);
-//        glDrawArrays(GL_TRIANGLES, 15, 4);
-//
-//        glDrawArrays(GL_TRIANGLES, 31, 4);
-
-
-
 
     }
 

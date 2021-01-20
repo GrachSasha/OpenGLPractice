@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
         //Инициализация рендера
         glSurfaceView = new GLSurfaceView(this);
         glSurfaceView.setEGLContextClientVersion(2);
-        render = new gameRenderer(this, (byte) 0);
+        render = new gameRenderer(this, (byte) 0, screenWidth, screenHeight);
 
         //Рендер на весь экран
         glSurfaceView.setRenderer(render);

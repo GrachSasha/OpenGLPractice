@@ -1,4 +1,5 @@
 package com.example.openglpractice;
+import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
@@ -177,7 +178,6 @@ public class gameRenderer implements Renderer {
             topForInterface *= ratioForInterface;
         }
 
-
         if (width > height) {
             xMatrixForInterface *= width / height;
             yMatrixForInterface *= width / height;
@@ -237,7 +237,6 @@ public class gameRenderer implements Renderer {
 //        glEnable(GL_DEPTH_TEST);
 
         //todo создать нормальный инит!
-
         createViewMatrixForInterface();
         createAndUseProgramm();
         getLocations();
@@ -279,7 +278,9 @@ public class gameRenderer implements Renderer {
         } else {
             glClearColor(0, 0, 0, 0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            drawMenu();}
+            drawMenu();
+//            menu.drawMenu(null_texture);
+        }
     }
 
     private void drawLevel(){
@@ -306,10 +307,10 @@ public class gameRenderer implements Renderer {
     private void drawMenu(){
 
 //        menu.drawMenu(null_texture);
-        float[] menuVertices = { -5f, -5f, 0f, 0f,
-                5f, -5f, 0f, 0f,
-                -5f, 5f, 0f, 0f,
-                5f, 5f, 0f, 0f };
+        float[] menuVertices = { -5f, -5f, 0f, 0, 0,
+                                    5f, -5f, 0f, 0, 1,
+                                      -5f, 5f, 0f, 1, 0,
+                                           5f, 5f,  0f, 1, 1 };
 
         FloatBuffer menuE = ByteBuffer
                 .allocateDirect(menuVertices.length * 4)

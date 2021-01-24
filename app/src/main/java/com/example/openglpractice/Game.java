@@ -1,18 +1,14 @@
 package com.example.openglpractice;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import utils.ResourceLoader;
-import utils.TextureUtil;
-
 import static com.example.openglpractice.MainActivity.render;
 import static com.example.openglpractice.MainActivity.screenWidth;
 
-
-class Game {
+//Thread для теста
+class Game implements Runnable {
     // треугольник
     // x    y   z
 
@@ -135,6 +131,7 @@ class Game {
 
     };
 
+
     //===pools===//
     //todo хз нужен ли volatile
     public static int gameObjectCounter = 0;
@@ -142,25 +139,26 @@ class Game {
 
     public static volatile dynamicObject dynamicObjectPool[] = new dynamicObject[10];
     public static volatile  staticObject staticObjectPool[]= new staticObject[10];
+    public static volatile TextWriter textWriter;
     //===pools===//
 
     //===fields===//
     private Context gameContext;
     static String GAME_LOG = " Game ";
     playerController playerController;
-    TextureUtil textureUtil;
-    Activity activity;
-    ResourceLoader loader;
+    Thread textWriterThread;
     //===fields===//
 
     public Game() {
         //todo убрать загрузку уровня из конструктора
         createMenu();
         prepareModelsForLevel1();
+        textWriterThread = new Thread(this);
+        textWriterThread.start();
     }
 
     public void prepareModelsForLevel1(){
-
+        textWriter = new TextWriter();
         render.drawSelector = 1;
         dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
         Log.i(GAME_LOG, "Players load");
@@ -178,9 +176,6 @@ class Game {
         staticObject platform7 = new staticObject(platform7Vertices,"box");
         staticObject platform8 = new staticObject(platform8Vertices,"box");
         Log.i(GAME_LOG, "Platforms load");
-        //Грузим корды динамических объектов
-//                player.objectBuffer = render.prepareModelsForDynamicObjects(player.physic.getObjVertices());
-//                enemy.createModel();
 
         render.prepareGamePad(gamePadVertices);
     }
@@ -201,4 +196,21 @@ class Game {
     public void createMenu() {
         render.drawSelector = 0;
   }
+
+  //TEST=====================================//
+
+    @Override
+    public void run() {
+        textWriter.setText("9");
+        Log.i("MAINACTIVITY","AFTER textWriter.setText(\"9\")");
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        textWriter.setText("1");
+        Log.i("MAINACTIVITY","AFTER textWriter.setText(\")");
+    }
+
+    //TEST=====================================//
 }

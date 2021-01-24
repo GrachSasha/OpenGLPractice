@@ -23,7 +23,9 @@ import java.io.IOException;
 
 import utils.ResourceLoader;
 
-public class MainActivity extends Activity  {
+import static com.example.openglpractice.Game.textWriter;
+
+public class MainActivity extends Activity{
     //=================================================
     private GLSurfaceView glSurfaceView;
 
@@ -38,7 +40,7 @@ public class MainActivity extends Activity  {
 
     //init render
     static gameRenderer render;
-
+    Thread renderThread;
 //===================================================
 
     @Override
@@ -81,7 +83,11 @@ public class MainActivity extends Activity  {
         game = new Game();
         game.createMenu();
 
+        renderThread = new Thread();
+        renderThread.start();
+
     }
+
 
     @Override
     protected void onPause() {
@@ -122,15 +128,6 @@ public class MainActivity extends Activity  {
             String[] files = assetManager.list("levels");
             Log.i(TEST_PO, files[0]);
             String level = "levels/ + " + lvl + " + .xml";
-
-//            InputStream inputStream = assetManager.open("levels/level1.xml");
-//            byte[] buffer = null;
-//            int size = inputStream.available();
-//            buffer = new byte[size];
-//            inputStream.read(buffer);
-//            inputStream.close();
-//            String dataFromXML = new String(buffer);
-//            Log.i(TEST_PO, dataFromXML);
 
             // получаем фабрику
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();

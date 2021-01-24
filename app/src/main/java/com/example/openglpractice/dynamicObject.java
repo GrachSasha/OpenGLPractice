@@ -48,7 +48,7 @@ public class dynamicObject implements RenderCommandsForDynamicObjects {
 
     @Override
     public void prepareCoordinatesAndConvert(float[] gObject) {
-        objectBuffer=  ByteBuffer
+        objectBuffer =  ByteBuffer
                 .allocateDirect(gObject.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();

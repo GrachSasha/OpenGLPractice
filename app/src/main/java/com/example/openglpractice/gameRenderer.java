@@ -1,5 +1,4 @@
 package com.example.openglpractice;
-import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
@@ -46,6 +45,7 @@ import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static com.example.openglpractice.Game.dynamicObjectPool;
 import static com.example.openglpractice.Game.staticObjectPool;
+import static com.example.openglpractice.Game.textWriter;
 
 public class gameRenderer implements Renderer {
 
@@ -71,6 +71,7 @@ public class gameRenderer implements Renderer {
     private int null_texture;
     private int scottPilgrim;
     private int stars;
+    public int font;
     //todo убрать хардкод
     //Map<String, Integer> texturesMap = new HashMap<>();
     //===текстуры==//
@@ -99,7 +100,8 @@ public class gameRenderer implements Renderer {
     private float[] mViewMatrixForMenu = new float[16];
     private float[] mModelMatrixForMenu = new float[16];
     private float[] mMatrixForMenu = new float[16];
-    //===служебные переменые===//
+
+     //===служебные переменые===//
 
     //===камера==//
     // точка положения камеры
@@ -217,6 +219,8 @@ public class gameRenderer implements Renderer {
         null_texture = TextureUtil.loadTexture(context, R.drawable.null_texture);
         scottPilgrim = TextureUtil.loadTexture(context, R.drawable.scott);
         stars = TextureUtil.loadTexture(context, R.drawable.starsky);
+        font = TextureUtil.loadTexture(context, R.drawable.fontturned);
+//        font = TextureUtil.loadTexture(context, R.drawable.font);
 //        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
 
     }
@@ -232,7 +236,8 @@ public class gameRenderer implements Renderer {
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
 
         //чистит экран
-        glClearColor(0, 0, 0, 0f);
+//        glClearColor(0, 0, 0, 0f);
+        glClearColor(0, 0, 100, 0f);
 
         //разрешает проекции
         //Почему-то с этим параметром тестуры не работают как надо
@@ -251,7 +256,8 @@ public class gameRenderer implements Renderer {
     public void onSurfaceChanged(GL10 arg0, int width, int height) {
         //full screen
         glViewport(0, 0, width, height);
-        glClearColor(0, 0, 0, 0f);
+//        glClearColor(0, 0, 0, 0f);
+        glClearColor(0, 0, 100, 0f);
         this.width = width;
         this.height = height;
 
@@ -278,7 +284,7 @@ public class gameRenderer implements Renderer {
         if(drawSelector == 1){
             drawLevel();
         } else {
-            menu.drawMenu(stars);
+            menu.drawStaticObject(stars);
         }
     }
 
@@ -300,6 +306,8 @@ public class gameRenderer implements Renderer {
                 staticObjectPool[i].drawStaticObject(texture);
             }
         }
+
+        textWriter.drawDynamicObject(font);
     }
 
     private void drawGamePad() {
@@ -432,8 +440,6 @@ public class gameRenderer implements Renderer {
         Matrix.setIdentityM(mModelMatrix, 0);
     }
 
-    public void setMatrixForMenu() { Matrix.setIdentityM(mModelMatrixForMenu, 0);}
-
     public void drawArraysForDynamicObject(int glTriangleStrip, int position, int count) {
         glDrawArrays(glTriangleStrip, position, count);
     }
@@ -467,11 +473,6 @@ public class gameRenderer implements Renderer {
 
         Matrix.orthoM(mProjectionMatrixForMenu, 0, leftForMenu, rightForMenu, bottomForMenu, topForMenu, nearForMenu, farForMenu);
 
-    }
-    public void bindMatrixForMenu() {
-        Matrix.multiplyMM(mMatrixForMenu, 0, mViewMatrixForMenu, 0, mModelMatrixForMenu, 0);
-        Matrix.multiplyMM(mMatrixForMenu, 0, mProjectionMatrixForMenu, 0, mMatrixForMenu, 0);
-        glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrixForMenu, 0);
     }
 
     public void createViewMatrixForMenu() {

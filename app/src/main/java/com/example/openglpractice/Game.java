@@ -153,8 +153,6 @@ class Game {
     ResourceLoader loader;
     //===fields===//
 
-
-
     public Game() {
         //todo убрать загрузку уровня из конструктора
         createMenu();

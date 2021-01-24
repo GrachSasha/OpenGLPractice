@@ -23,7 +23,7 @@ import java.io.IOException;
 
 import utils.ResourceLoader;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity  {
     //=================================================
     private GLSurfaceView glSurfaceView;
 

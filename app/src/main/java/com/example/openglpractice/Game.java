@@ -165,7 +165,6 @@ class Game implements Runnable {
 
         playerController = new playerController(player);
         Log.i(GAME_LOG, "Player controller load");
-
         //init объектов
         staticObject platform1 = new staticObject(platform1Vertices,"box");
         staticObject platform2 = new staticObject(platform2Vertices,"box");
@@ -176,7 +175,6 @@ class Game implements Runnable {
         staticObject platform7 = new staticObject(platform7Vertices,"box");
         staticObject platform8 = new staticObject(platform8Vertices,"box");
         Log.i(GAME_LOG, "Platforms load");
-
         render.prepareGamePad(gamePadVertices);
     }
 
@@ -201,15 +199,38 @@ class Game implements Runnable {
 
     @Override
     public void run() {
-        textWriter.setText("9");
-        Log.i("MAINACTIVITY","AFTER textWriter.setText(\"9\")");
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        float fontSizeForSign = 0.3f;
+        do {
+            textWriter.setText("\"", fontSizeForSign, new float[]{fontSizeForSign, -1f});
+            Log.i("MAINACTIVITY", "AFTER textWriter.setText(\")");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            textWriter.setText("9", 1f, new float[]{-2f, -1f});
+            Log.i("MAINACTIVITY", "AFTER textWriter.setText(9)");
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+//            textWriter.setText("\"9", 1f, new float[]{-2f, -1f});
+//            Log.i("MAINACTIVITY", "AFTER textWriter.setText(\")");
+//
+//            try {
+//                Thread.sleep(10000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            fontSizeForSign += 0.3f;
         }
-        textWriter.setText("1");
-        Log.i("MAINACTIVITY","AFTER textWriter.setText(\")");
+        while(true);
+//        textWriter.setText("191");
+//        Log.i("MAINACTIVITY","AFTER textWriter.setText(\")");
+
     }
 
     //TEST=====================================//

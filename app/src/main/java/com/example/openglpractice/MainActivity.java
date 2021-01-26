@@ -109,9 +109,9 @@ public class MainActivity extends Activity{
 
         float sector = screenWidth/3;
         float cord = event.getX();
-        if((cord > sector) && (cord < sector*2)){
+        if((cord > sector) && (cord < sector*2)) {
             startActivity(new Intent(this, Menu.class));
-            }
+        }
         game.getTouchEvent(event);
         return true;
     }

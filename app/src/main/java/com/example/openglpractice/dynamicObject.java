@@ -24,6 +24,7 @@ public class dynamicObject implements RenderCommandsForDynamicObjects {
         FloatBuffer objectBuffer;
         int objectTexture;
         private float eyeX;
+        private float eyeY;
         private int objectId;
     //===fields===//
 
@@ -55,6 +56,7 @@ public class dynamicObject implements RenderCommandsForDynamicObjects {
         objectBuffer.put(gObject).position(0);
 
         eyeX = gObject[0];
+        eyeY = gObject[11];
     }
 
     private void addToPool(dynamicObject dynamicObject) {
@@ -74,7 +76,11 @@ public class dynamicObject implements RenderCommandsForDynamicObjects {
     public void openInventory() { isInventoryOpen = true;}
 
 
-    public float getEye() {
+    public float getEyeX() {
         return eyeX;
+    }
+
+    public float getEyeY() {
+        return eyeY;
     }
 }

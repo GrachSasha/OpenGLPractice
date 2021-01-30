@@ -291,7 +291,7 @@ public class gameRenderer implements Renderer {
     private void drawLevel(){
 
         //Камера для игрока
-        setCameraOnPlayer(dynamicObjectPool[0].getEye());
+        setCameraOnPlayer(dynamicObjectPool[0].getEyeX());
 
         //Гейм - пад
         if(gamePad != null) {

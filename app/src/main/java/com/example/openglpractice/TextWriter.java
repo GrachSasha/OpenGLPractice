@@ -32,12 +32,42 @@ public class TextWriter implements RenderCommandsForDynamicObjects{
         fillAlphavit();
     }
 
-    float [] sign = {0, 0.05f, 0, 0.10f, 0.10f, 0.05f, 0.10f, 0.10f};
-    float [] nine = {0.11f, 0.03f, 0.11f, 0.10f,0.20f, 0.03f, 0.20f, 0.10f,};
-
     private void fillAlphavit() {
+        //use fontturned
         alphavit.put("\"", new float[]{0, 0.05f, 0, 0.10f, 0.10f, 0.05f, 0.10f, 0.10f});
-        alphavit.put("9", new float[]{0.11f, 0.03f, 0.11f, 0.10f,0.20f, 0.03f, 0.20f, 0.10f,});
+        alphavit.put("9", new float[]{0.11f, 0.03f, 0.11f, 0.10f, 0.20f, 0.03f, 0.20f, 0.10f,});
+        alphavit.put("0", new float[]{0.22f, 0.03f, 0.22f, 0.10f, 0.31f, 0.03f, 0.31f, 0.10f,});
+        alphavit.put("s", new float[]{0.33f, 0.03f, 0.33f, 0.10f, 0.42f, 0.03f, 0.42f, 0.10f,});
+        alphavit.put("j", new float[]{0.448f, 0.03f, 0.448f, 0.10f, 0.53f, 0.03f, 0.53f, 0.10f,});
+        alphavit.put("a", new float[]{0.534f, 0.03f, 0.534f, 0.10f, 0.64f, 0.03f, 0.64f, 0.10f,});
+        //===//
+        alphavit.put("/", new float[]{0,    0.115f, 0,      0.22f, 0.10f, 0.115f, 0.10f, 0.22f});
+        alphavit.put(".", new float[]{0.11f, 0.115f, 0.11f, 0.20f, 0.20f, 0.10f, 0.20f, 0.20f,});
+        alphavit.put("1", new float[]{0.22f, 0.115f, 0.22f, 0.20f, 0.31f, 0.10f, 0.31f, 0.20f,});
+        alphavit.put("t", new float[]{0.33f, 0.115f, 0.33f, 0.20f, 0.42f, 0.10f, 0.42f, 0.20f,});
+        alphavit.put("k", new float[]{0.448f, 0.115f, 0.448f, 0.20f, 0.53f, 0.10f, 0.53f, 0.20f,});
+        alphavit.put("b", new float[]{0.534f, 0.115f, 0.534f, 0.20f, 0.64f, 0.10f, 0.64f, 0.20f,});
+        //===//
+        alphavit.put("?", new float[]{0,     0.20f,  0,     0.32f, 0.10f, 0.20f, 0.10f, 0.32f});
+        alphavit.put(",", new float[]{0.11f, 0.20f, 0.11f, 0.32f, 0.20f, 0.20f, 0.20f, 0.32f,});
+        alphavit.put("2", new float[]{0.22f, 0.20f, 0.22f, 0.32f, 0.31f, 0.20f, 0.31f, 0.32f,});
+        alphavit.put("u", new float[]{0.33f, 0.20f, 0.33f, 0.32f, 0.42f, 0.20f, 0.42f, 0.32f,});
+        alphavit.put("l", new float[]{0.448f, 0.20f, 0.448f, 0.32f, 0.53f, 0.20f, 0.53f, 0.32f,});
+        alphavit.put("o", new float[]{0.534f, 0.20f, 0.534f, 0.32f, 0.64f, 0.20f, 0.64f, 0.32f,});
+        //===//
+        alphavit.put("%", new float[]{0,     0.308f,  0,     0.418f, 0.10f, 0.30f, 0.10f, 0.42f});
+        alphavit.put(";", new float[]{0.11f, 0.308f, 0.11f, 0.418f, 0.20f, 0.30f, 0.20f, 0.42f,});
+        alphavit.put("3", new float[]{0.22f, 0.308f, 0.22f, 0.418f, 0.31f, 0.30f, 0.31f, 0.42f,});
+        alphavit.put("v", new float[]{0.33f, 0.308f, 0.33f, 0.418f, 0.42f, 0.30f, 0.42f, 0.42f,});
+        alphavit.put("m", new float[]{0.448f, 0.308f, 0.448f, 0.418f, 0.53f, 0.30f, 0.53f, 0.42f,});
+        alphavit.put("d", new float[]{0.534f, 0.308f, 0.534f, 0.418f, 0.64f, 0.30f, 0.64f, 0.42f,});
+        //===//
+
+        alphavit.put(":", new float[]{0.11f, 0.4f, 0.11f, 0.5f, 0.20f, 0.4f, 0.20f, 0.5f,});
+        alphavit.put("4", new float[]{0.22f, 0.4f, 0.22f, 0.5f, 0.31f, 0.4f, 0.31f, 0.5f,});
+        alphavit.put("w", new float[]{0.33f, 0.4f, 0.33f, 0.5f, 0.42f, 0.4f, 0.42f, 0.5f,});
+        alphavit.put("n", new float[]{0.448f, 0.4f, 0.448f, 0.5f, 0.53f, 0.4f, 0.53f, 0.5f,});
+        alphavit.put("e", new float[]{0.534f, 0.4f, 0.534f, 0.5f, 0.64f, 0.4f, 0.64f, 0.5f,});
     }
 
     @Override
@@ -67,34 +97,15 @@ public class TextWriter implements RenderCommandsForDynamicObjects{
         textBuffer.put(gObject).position(0);
     }
 
-    public void setText(String text, float fontSize, float[] coordinates){
-//        if(text.equals("9")){
-//            float[] buffer = alphavit.get("9");
-//            charVertices[3] = buffer[0];
-//            charVertices[4] = buffer[1];
-//            charVertices[8] = buffer[2];
-//            charVertices[9] = buffer[3];
-//            charVertices[13] = buffer[4];
-//            charVertices[14] = buffer[5];
-//            charVertices[18] = buffer[6];
-//            charVertices[19] = buffer[7];
-//
-//        }else{
-//            float[] buffer = alphavit.get("\"");
-//            charVertices[3] = buffer[0];
-//            charVertices[4] = buffer[1];
-//            charVertices[8] = buffer[2];
-//            charVertices[9] = buffer[3];
-//            charVertices[13] = buffer[4];
-//            charVertices[14] = buffer[5];
-//            charVertices[18] = buffer[6];
-//            charVertices[19] = buffer[7];
-//        }
-        float shift = 0f;
+    public void setText(String text, float signSize, float[] coordinates){
+        float shift = signSize;
         for(int i = 0; i <  text.length(); i++){
-
-                chars[i] = createSign(text.charAt(i), fontSize, coordinates, 0);
-
+            if(i != 0){
+                chars[i] = createSign(text.charAt(i), signSize, coordinates, shift);
+                shift += signSize;
+            } else {
+                chars[i] = createSign(text.charAt(i), signSize, coordinates, 0);
+            }
         }
     }
 
@@ -102,7 +113,7 @@ public class TextWriter implements RenderCommandsForDynamicObjects{
         float [] sign = new float[20];
         float [] textureCoordinates = alphavit.get(String.valueOf(charAt));
 
-        sign[0] = coordinates[0];
+        sign[0] = coordinates[0] + shift;
         sign[1] = coordinates[1];
         sign[2] = 0;
         sign[3] = textureCoordinates[0];
@@ -114,7 +125,7 @@ public class TextWriter implements RenderCommandsForDynamicObjects{
         sign[8] = textureCoordinates[2];
         sign[9] = textureCoordinates[3];
 
-        sign[10] = sign[0];
+        sign[10] = sign[0] ;
         sign[11] = sign[1] + size;
         sign[12] = 0;
         sign[13] = textureCoordinates[4];

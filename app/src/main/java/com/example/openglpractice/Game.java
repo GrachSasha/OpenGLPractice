@@ -201,35 +201,18 @@ class Game implements Runnable {
     public void run() {
         float fontSizeForSign = 0.3f;
         do {
-            textWriter.setText("\"", fontSizeForSign, new float[]{fontSizeForSign, -1f});
-            Log.i("MAINACTIVITY", "AFTER textWriter.setText(\")");
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            textWriter.setText("9", 1f, new float[]{-2f, -1f});
+            textWriter.setText("mudlo",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
+//            textWriter.setText("\"999\"", 0.33f, new float[]{-2f, -1f});
             Log.i("MAINACTIVITY", "AFTER textWriter.setText(9)");
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            textWriter.setText("\"9", 1f, new float[]{-2f, -1f});
-//            Log.i("MAINACTIVITY", "AFTER textWriter.setText(\")");
-//
-//            try {
-//                Thread.sleep(10000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-            fontSizeForSign += 0.3f;
+
         }
         while(true);
-//        textWriter.setText("191");
-//        Log.i("MAINACTIVITY","AFTER textWriter.setText(\")");
 
     }
 

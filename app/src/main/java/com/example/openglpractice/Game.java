@@ -1,5 +1,6 @@
 package com.example.openglpractice;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -199,10 +200,8 @@ class Game implements Runnable {
 
     @Override
     public void run() {
-        float fontSizeForSign = 0.3f;
         do {
             textWriter.setText("mudlo",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
-//            textWriter.setText("\"999\"", 0.33f, new float[]{-2f, -1f});
             Log.i("MAINACTIVITY", "AFTER textWriter.setText(9)");
 
             try {

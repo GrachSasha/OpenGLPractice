@@ -1,6 +1,5 @@
 package com.example.openglpractice;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -176,6 +175,7 @@ class Game implements Runnable {
         staticObject platform7 = new staticObject(platform7Vertices,"box");
         staticObject platform8 = new staticObject(platform8Vertices,"box");
         Log.i(GAME_LOG, "Platforms load");
+
         render.prepareGamePad(gamePadVertices);
     }
 

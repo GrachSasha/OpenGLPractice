@@ -13,15 +13,15 @@ public class playerController{
     }
 
     public void walkLeft(){
-        gObject.physic.doStepLeft();
+        gObject.doStepLeft();
     }
 
     public void walkRight(){
-        gObject.physic.doStepRight();
+        gObject.doStepRight();
     }
 
     public void jump(){
-        gObject.physic.doJump();
+        gObject.doJump();
     }
 
     public void openInventory(){gObject.openInventory();}

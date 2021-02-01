@@ -55,7 +55,7 @@ public class MainActivity extends Activity{
 
 //        assetManager =  this.getAssets();
 //========TEST PO===========
-        ResourceLoader.getResourceLoader(this).loadLevel("level1");
+//        ResourceLoader.getResourceLoader(this).loadLevel("level1");
 //========TEST PO===========
 
         DisplayMetrics displaymetrics = new DisplayMetrics();

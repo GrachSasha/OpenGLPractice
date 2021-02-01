@@ -407,20 +407,20 @@ public class gameRenderer implements Renderer {
     public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
         //todo create seacrh
             enemies[enemyCounter] = ByteBuffer
-                    .allocateDirect(gObject.physic.getObjVertices().length * 4)
+                    .allocateDirect(gObject.getObjVertices().length * 4)
                     .order(ByteOrder.nativeOrder())
                     .asFloatBuffer();
-            enemies[enemyCounter].put(gObject.physic.getObjVertices()).position(0);
+            enemies[enemyCounter].put(gObject.getObjVertices()).position(0);
             enemyCounter++;
     }
 
     public void changeDynamicModelsForEnemy(dynamicObject gObject) {
         //todo create seacrh
             enemies[0] = ByteBuffer
-                    .allocateDirect(gObject.physic.getObjVertices().length * 4)
+                    .allocateDirect(gObject.getObjVertices().length * 4)
                     .order(ByteOrder.nativeOrder())
                     .asFloatBuffer();
-            enemies[0].put(gObject.physic.getObjVertices()).position(0);
+            enemies[0].put(gObject.getObjVertices()).position(0);
     }
 
     public void prepareGamePad(float[] vertices){

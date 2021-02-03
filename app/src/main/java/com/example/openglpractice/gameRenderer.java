@@ -72,6 +72,7 @@ public class gameRenderer implements Renderer {
     private int scottPilgrim;
     private int stars;
     public int font;
+    private int button;
     //todo убрать хардкод
     //Map<String, Integer> texturesMap = new HashMap<>();
     //===текстуры==//
@@ -149,7 +150,6 @@ public class gameRenderer implements Renderer {
 
     private float xMatrixForInterface = 2.25f;
     private float yMatrixForInterface = -0.8f;
-
     //===проекции===//
 
     public gameRenderer(Context context, byte drawSelector, int screenWidth, int screenHeight) {
@@ -220,6 +220,7 @@ public class gameRenderer implements Renderer {
         scottPilgrim = TextureUtil.loadTexture(context, R.drawable.scott);
         stars = TextureUtil.loadTexture(context, R.drawable.starsky);
         font = TextureUtil.loadTexture(context, R.drawable.fontturned);
+        button = TextureUtil.loadTexture(context, R.drawable.button);
 //        font = TextureUtil.loadTexture(context, R.drawable.font);
 //        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
 
@@ -286,8 +287,6 @@ public class gameRenderer implements Renderer {
         if(drawSelector == 1){
             drawLevel();
         } else {
-            textWriter.setText("m",1f, new float[]{1,1});
-            createProjectionMatrixForMenu(width, height);
             menu.drawStaticObject(stars);
         }
     }
@@ -425,33 +424,6 @@ public class gameRenderer implements Renderer {
     }
     //===setups for menu===
 
-    public void changeDynamicModelsForEnemy(dynamicObject gObject) {
-        //todo create seacrh
-            enemies[0] = ByteBuffer
-                    .allocateDirect(gObject.getObjVertices().length * 4)
-                    .order(ByteOrder.nativeOrder())
-                    .asFloatBuffer();
-            enemies[0].put(gObject.getObjVertices()).position(0);
-    }
-
-    public void prepareGamePad(float[] vertices){
-        gamePad = ByteBuffer
-                .allocateDirect(vertices.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        gamePad.put(vertices).position(0);
-    }
-
-    public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
-        //todo create seacrh
-        enemies[enemyCounter] = ByteBuffer
-                .allocateDirect(gObject.getObjVertices().length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        enemies[enemyCounter].put(gObject.getObjVertices()).position(0);
-        enemyCounter++;
-    }
-
     //===sets matrix===
     public void setMatrixForDynamicObject() {
         Matrix.setIdentityM(mModelMatrix, 0);
@@ -464,6 +436,30 @@ public class gameRenderer implements Renderer {
     }
     //===sets matrix===
 
+    public void changeDynamicModelsForEnemy(dynamicObject gObject) {
+        //todo create seacrh
+        enemies[0] = ByteBuffer
+                .allocateDirect(gObject.getObjVertices().length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        enemies[0].put(gObject.getObjVertices()).position(0);
+    }
+    public void prepareGamePad(float[] vertices){
+        gamePad = ByteBuffer
+                .allocateDirect(vertices.length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        gamePad.put(vertices).position(0);
+    }
+    public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
+        //todo create seacrh
+        enemies[enemyCounter] = ByteBuffer
+                .allocateDirect(gObject.getObjVertices().length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        enemies[enemyCounter].put(gObject.getObjVertices()).position(0);
+        enemyCounter++;
+    }
 
     public void drawArraysForDynamicObject(int glTriangleStrip, int position, int count) {
         glDrawArrays(glTriangleStrip, position, count);

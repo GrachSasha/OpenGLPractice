@@ -1,14 +1,10 @@
 package com.example.openglpractice;
 
-import android.util.Log;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static com.example.openglpractice.Game.dynamicObjectPool;
-import static com.example.openglpractice.Game.gameObjectCounter;
 import static com.example.openglpractice.MainActivity.render;
 
 public class dynamicObjectInfo implements RenderCommandsForDynamicObjects {
@@ -41,7 +37,7 @@ public class dynamicObjectInfo implements RenderCommandsForDynamicObjects {
         render.setTexture(objectBuffer, texture, false);
         //работает и без этого render.setMatrixForDynamicObject();
         render.setMatrixForDynamicObject();
-        render.bindMatrix();
+        render.bindMatrixForLevel();
         render.drawArraysForDynamicObject(GL_TRIANGLE_STRIP, 0, 4);
     }
 

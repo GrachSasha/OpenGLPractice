@@ -43,10 +43,7 @@ public class staticObject implements RenderCommandsForStaticObjects{
         render.bindData(objectBuffer);
         render.setTexture(objectBuffer, texture, false);
         render.setMatrixForStaticObject();
-        render.bindMatrix();
-
-        //useful because using a textures
-//        glUniform4f(uColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+        render.bindMatrixForLevel();
         render.drawArraysForStaticObject(GL_TRIANGLE_STRIP,0,4);
     }
     @Override

@@ -72,18 +72,12 @@ public class TextWriter implements RenderCommandsForDynamicObjects{
 
     @Override
     public void drawDynamicObject(int texture) {
-//        render.setTexture(textBuffer, texture, false);
-//        //работает и без этого render.setMatrixForDynamicObject();
-//        render.setMatrixForText();
-//        render.bindMatrixForText();
-//        render.drawArraysForDynamicObject(GL_TRIANGLE_STRIP, 0, 4);
-
         for(int i = 0; i < chars.length; i++) {
             prepareCoordinatesAndConvert(chars[i]);
             render.bindData(textBuffer);
             render.setTexture(textBuffer, texture, false);
             render.setMatrixForStaticObject();
-            render.bindMatrix();
+            render.bindMatrixForLevel();
             render.drawArraysForStaticObject(GL_TRIANGLE_STRIP, 0, 4);
         }
     }

@@ -36,11 +36,20 @@ public class Menu extends AppCompatActivity implements RenderCommandsForStaticOb
 
     @Override
     public void drawStaticObject(int texture) {
+        //its works
+//        prepareCoordinatesAndConvert(menuVertices);
+//        render.bindData(menuBuffer);
+//        render.setTexture(menuBuffer, texture, false);
+//        render.setMatrixForStaticObject();
+//        render.bindMatrixForLevel();
+//        render.drawArraysForStaticObject(GL_TRIANGLE_STRIP,0,4);
+
+//        render.createProjectionMatrixForMenu(1,3);
         prepareCoordinatesAndConvert(menuVertices);
         render.bindData(menuBuffer);
         render.setTexture(menuBuffer, texture, false);
-        render.setMatrixForStaticObject();
-        render.bindMatrix();
+        render.setMatrixForMenu();
+        render.bindMatrixForMenu();
         render.drawArraysForStaticObject(GL_TRIANGLE_STRIP,0,4);
     }
 

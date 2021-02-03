@@ -202,7 +202,7 @@ class Game implements Runnable {
     public void run() {
         do {
             textWriter.setText("mudlo",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
-            Log.i("MAINACTIVITY", "AFTER textWriter.setText(9)");
+//            Log.i("MAINACTIVITY", "AFTER textWriter.setText(9)");
 
             try {
                 Thread.sleep(100);

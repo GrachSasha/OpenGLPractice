@@ -220,7 +220,7 @@ public class gameRenderer implements Renderer {
         scottPilgrim = TextureUtil.loadTexture(context, R.drawable.scott);
         stars = TextureUtil.loadTexture(context, R.drawable.starsky);
         font = TextureUtil.loadTexture(context, R.drawable.fontturned);
-        button = TextureUtil.loadTexture(context, R.drawable.button);
+        button = TextureUtil.loadTexture(context, R.drawable.start);
 //        font = TextureUtil.loadTexture(context, R.drawable.font);
 //        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
 
@@ -230,6 +230,10 @@ public class gameRenderer implements Renderer {
         //Works without fails
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+    }
+
+    private void turnOffBlend(){
+        glDisable(GL_BLEND);
     }
 
     //вызывается при создании/пересоздании surface
@@ -287,7 +291,8 @@ public class gameRenderer implements Renderer {
         if(drawSelector == 1){
             drawLevel();
         } else {
-            menu.drawStaticObject(stars);
+//            menu.drawStaticObject(stars);
+            menu.drawMenu(stars,button);
         }
     }
 

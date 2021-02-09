@@ -154,7 +154,7 @@ public class gameRenderer implements Renderer {
 
     public gameRenderer(Context context, byte drawSelector, int screenWidth, int screenHeight) {
         this.context = context; this.drawSelector = drawSelector;
-        menu = new Menu();
+//        menu = new Menu();
         width = screenWidth;
         height = screenHeight;
 
@@ -291,8 +291,9 @@ public class gameRenderer implements Renderer {
         if(drawSelector == 1){
             drawLevel();
         } else {
-//            menu.drawStaticObject(stars);
-            menu.drawMenu(stars,button);
+            if(menu != null) {
+                menu.drawMenu(stars, button);
+            }
         }
     }
 
@@ -439,8 +440,11 @@ public class gameRenderer implements Renderer {
     public void setMatrixForMenu() {
         Matrix.setIdentityM(mModelMatrixForMenu, 0);
     }
-    //===sets matrix===
+    public void setMenuInstance(Menu menu) {
+        this.menu = menu;
+    }
 
+    //===sets matrix===
     public void changeDynamicModelsForEnemy(dynamicObject gObject) {
         //todo create seacrh
         enemies[0] = ByteBuffer
@@ -456,6 +460,7 @@ public class gameRenderer implements Renderer {
                 .asFloatBuffer();
         gamePad.put(vertices).position(0);
     }
+
     public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
         //todo create seacrh
         enemies[enemyCounter] = ByteBuffer
@@ -469,10 +474,10 @@ public class gameRenderer implements Renderer {
     public void drawArraysForDynamicObject(int glTriangleStrip, int position, int count) {
         glDrawArrays(glTriangleStrip, position, count);
     }
-
     public void drawArraysForStaticObject(int glTriangleStrip, int position, int count) {
         glDrawArrays(glTriangleStrip, position, count);
     }
+
     //=====================================================================================//
 
     private void drawEnemies(FloatBuffer floatBuffer, int textureId) {
@@ -485,7 +490,5 @@ public class gameRenderer implements Renderer {
         glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
-
-
 
 }

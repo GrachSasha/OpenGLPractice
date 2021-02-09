@@ -36,7 +36,6 @@ public class MainActivity extends Activity{
     static int screenHeight;
     final String TEST_PO = "TEST_PO";
     public static AssetManager assetManager;
-    static Menu menu;
 
     //init render
     static gameRenderer render;
@@ -67,9 +66,6 @@ public class MainActivity extends Activity{
         //Контроллер
         controlHandler = new Handler();
 
-        //Инит рендера
-        menu = new Menu();
-
         //Инициализация рендера
         glSurfaceView = new GLSurfaceView(this);
         glSurfaceView.setEGLContextClientVersion(2);
@@ -81,7 +77,6 @@ public class MainActivity extends Activity{
         setContentView(glSurfaceView);
 
         game = new Game();
-        game.createMenu();
 
         renderThread = new Thread();
         renderThread.start();

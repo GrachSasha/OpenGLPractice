@@ -19,33 +19,16 @@ public class ResourceLoader{
     private final String RESOURCE_LOADER = "RESOURCE_LOADER";
 
     private Context resourceLoaderContext;
-    private static ResourceLoader resourceLoader;
 
-    private ResourceLoader(Context context){
+    public ResourceLoader(Context context){
         resourceLoaderContext = context;
     }
 
-    public static ResourceLoader getResourceLoader(Context context){
-        return resourceLoader = new ResourceLoader(context);
-    }
-
-    public void loadLevel(String lvl) {
+    public void loadResource(String lvl) {
         try {
-
-            resourceLoaderAssetManager = resourceLoaderContext.getAssets();
-
             String[] files = resourceLoaderAssetManager.list("levels");
             Log.i(RESOURCE_LOADER, files[0]);
             String level = "levels/ + " + lvl + " + .xml";
-
-//            InputStream inputStream = assetManager.open("levels/level1.xml");
-//            byte[] buffer = null;
-//            int size = inputStream.available();
-//            buffer = new byte[size];
-//            inputStream.read(buffer);
-//            inputStream.close();
-//            String dataFromXML = new String(buffer);
-//            Log.i(RESOURCE_LOADER, dataFromXML);
 
             // получаем фабрику
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -104,11 +87,11 @@ public class ResourceLoader{
 
 }
 
-//    final AssetManager assetManager = getApplicationContext().getAssets();
+//    final AssetManager resourceLoaderAssetManager = getApplicationContext().getAssets();
 //        try {
-//        String[] files = assetManager.list("levels");
+//        String[] files = resourceLoaderAssetManager.list("levels");
 //        Log.i(RESOURCE_LOADER, files[0]);
-//        InputStream inputStream = assetManager.open("levels/level1.xml");
+//        InputStream inputStream = resourceLoaderAssetManager.open("levels/level1.xml");
 //        byte[] buffer = null;
 //        int size = inputStream.available();
 //        buffer = new byte[size];

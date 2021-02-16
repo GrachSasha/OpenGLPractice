@@ -2,11 +2,16 @@ package com.example.openglpractice;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -16,25 +21,29 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.sql.SQLOutput;
 
 import utils.ResourceLoader;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static com.example.openglpractice.MainActivity.render;
+import static com.example.openglpractice.MainActivity.screenHeight;
 
 public class Menu extends AppCompatActivity implements RenderCommandsForStaticObjects {
 
     public static Menu menu = new Menu();
     GLSurfaceView glSurfaceView;
+    int screenWidth;
+    private String MENU = "MENU_LOG";
     float[] backgroundVertices = { -5f, -5f, 0f, 0, 0,
                                  5f, -5f, 0f, 0, 1,
                                   -5f, 5f, 0f, 1, 0,
                                     5f, 5f,  0f, 1, 1 };
 
     float[] newGameButtonVertices = {-3f, -1f, 1f, 0, 0,
-                                         -2.5f, -1f, 1f, 0, 1,
-                                            -3f, -0.5f, 1f, 1, 0,
-                                                -2.5f, -0.5f, 1f, 1, 1};
+                                         -1.5f, -1f, 1f, 0, 1,
+                                            -3f, 1f, 1f, 1, 0,
+                                                -1.5f, 1f, 1f, 1, 1};
 
     float menuObjectVertices[][] = new float[50][];
     private FloatBuffer menuBuffer;
@@ -46,6 +55,8 @@ public class Menu extends AppCompatActivity implements RenderCommandsForStaticOb
 //        loader = new ResourceLoader(this);
 //        loader.loadResource("level1.xml");
 //        menu.loadResources();
+        menuObjectVertices[0] = backgroundVertices;
+        menuObjectVertices[1] = newGameButtonVertices;
         render.setMenuInstance(menu);
         System.out.println("CONSTRUCTOR CALLS");
     }
@@ -122,6 +133,13 @@ public class Menu extends AppCompatActivity implements RenderCommandsForStaticOb
         setContentView(glSurfaceView);
         glSurfaceView.setRenderer(render);
 
+        //===toast===//
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        screenHeight = displaymetrics.heightPixels;
+        screenWidth = displaymetrics.widthPixels;
+        Toast.makeText(this, "WIDTH = " + screenWidth + "HEIGHT = " + screenHeight, Toast.LENGTH_LONG).show();
+        //===toast===//
     }
 
     @Override
@@ -135,6 +153,7 @@ public class Menu extends AppCompatActivity implements RenderCommandsForStaticOb
     }
 
     public void drawStaticObject(int texture, float [] vertices) {
+//            menuBuffer.reset();
             prepareCoordinatesAndConvert(vertices);
             render.bindData(menuBuffer);
             render.setTexture(menuBuffer, texture, false);
@@ -146,12 +165,26 @@ public class Menu extends AppCompatActivity implements RenderCommandsForStaticOb
     @Override
     public void prepareCoordinatesAndConvert(float[] gObject) {
         menuBuffer = ByteBuffer
-                .allocateDirect(backgroundVertices.length * 4)
+                .allocateDirect(gObject.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        menuBuffer.put(backgroundVertices).position(0);
+        menuBuffer.put(gObject).position(0);
 
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        System.out.println("CLICK");
+//        float sector = screenWidth/3;
+//        float cord = event.getX();
+//        if((cord > sector) && (cord < sector*2)) {
+//
+//        }
+        return true;
+    }
+
 
     public void drawMenu(int... textures){
         for(int i =0; i < textures.length; i++){

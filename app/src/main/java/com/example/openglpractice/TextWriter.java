@@ -91,6 +91,7 @@ public class TextWriter implements RenderCommandsForDynamicObjects{
 //        textBuffer.put(gObject).position(0);
     }
 
+    //todo add some interface
     public FloatBuffer prepareCoordinatesAndConvert2(float[] gObject) {
         FloatBuffer textBuffer;
         textBuffer =  ByteBuffer

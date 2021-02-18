@@ -5,9 +5,9 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static com.example.openglpractice.Game.staticObjectCounter;
-import static com.example.openglpractice.Game.staticObjectPool;
-import static com.example.openglpractice.Menu.render;
+import static com.example.openglpractice.Level.staticObjectCounter;
+import static com.example.openglpractice.Level.staticObjectPool;
+import static com.example.openglpractice.MenuActivity.render;
 
 public class staticObject implements RenderCommandsForStaticObjects{
 
@@ -61,6 +61,10 @@ public class staticObject implements RenderCommandsForStaticObjects{
             throw new ArrayIndexOutOfBoundsException("staticObjectPool full");
         }
         getStaticObjectPool()[staticObjectCounter++] = staticObject;
+    }
+
+    public void clearPool(){
+
     }
 
     public void delete(staticObject staticObject){

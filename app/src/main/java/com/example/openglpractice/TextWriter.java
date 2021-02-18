@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static com.example.openglpractice.Menu.render;
+import static com.example.openglpractice.MenuActivity.render;
 
 public class TextWriter implements RenderCommandsForDynamicObjects{
 
     //===fields===//
-    volatile FloatBuffer textBuffer;
+//    volatile FloatBuffer textBuffer;
 
     volatile private float[] charVertices = {
                 //x    y          //x     y
@@ -73,9 +73,9 @@ public class TextWriter implements RenderCommandsForDynamicObjects{
     @Override
     public void drawDynamicObject(int texture) {
         for(int i = 0; i < chars.length; i++) {
-            prepareCoordinatesAndConvert(chars[i]);
-            render.bindData(textBuffer);
-            render.setTexture(textBuffer, texture, false);
+            FloatBuffer buffer = prepareCoordinatesAndConvert2(chars[i]);
+            render.bindData(buffer);
+            render.setTexture(buffer, texture, false);
             render.setMatrixForStaticObject();
             render.bindMatrixForLevel();
             render.drawArraysForStaticObject(GL_TRIANGLE_STRIP, 0, 4);
@@ -84,11 +84,21 @@ public class TextWriter implements RenderCommandsForDynamicObjects{
 
     @Override
     public void prepareCoordinatesAndConvert(float[] gObject) {
+//        textBuffer =  ByteBuffer
+//                .allocateDirect(gObject.length * 4)
+//                .order(ByteOrder.nativeOrder())
+//                .asFloatBuffer();
+//        textBuffer.put(gObject).position(0);
+    }
+
+    public FloatBuffer prepareCoordinatesAndConvert2(float[] gObject) {
+        FloatBuffer textBuffer;
         textBuffer =  ByteBuffer
                 .allocateDirect(gObject.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
         textBuffer.put(gObject).position(0);
+        return textBuffer;
     }
 
     public void setText(String text, float signSize, float[] coordinates){

@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static com.example.openglpractice.Menu.render;
+import static com.example.openglpractice.MenuActivity.render;
 
 public class dynamicObjectInfo implements RenderCommandsForDynamicObjects {
 

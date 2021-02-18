@@ -4,11 +4,11 @@ import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import static com.example.openglpractice.Menu.render;
+import static com.example.openglpractice.MenuActivity.render;
 import static com.example.openglpractice.LevelActivity.screenWidth;
 
 //Thread для теста
-class Game implements Runnable {
+class Level implements Runnable {
     // треугольник
     // x    y   z
 
@@ -144,12 +144,12 @@ class Game implements Runnable {
 
     //===fields===//
     private Context gameContext;
-    static String GAME_LOG = " Game ";
+    static String GAME_LOG = " Level ";
     playerController playerController;
     Thread textWriterThread;
     //===fields===//
 
-    public Game() {
+    public Level() {
         //todo убрать загрузку уровня из конструктора
         createMenu();
         prepareModelsForLevel1();
@@ -159,6 +159,7 @@ class Game implements Runnable {
 
     public void prepareModelsForLevel1(){
         textWriter = new TextWriter();
+
         render.drawSelector = 1;
         dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
         Log.i(GAME_LOG, "Players load");
@@ -176,6 +177,7 @@ class Game implements Runnable {
         staticObject platform8 = new staticObject(platform8Vertices,"box");
         Log.i(GAME_LOG, "Platforms load");
 
+        textWriter.setText("mod",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
         render.prepareGamePad(gamePadVertices);
     }
 
@@ -200,18 +202,18 @@ class Game implements Runnable {
 
     @Override
     public void run() {
-        do {
-            textWriter.setText("mudlo",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
+//        do {
+
 //            Log.i("MAINACTIVITY", "AFTER textWriter.setText(9)");
-
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-        while(true);
+//
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//        while(true);
 
     }
 

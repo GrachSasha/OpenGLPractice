@@ -43,9 +43,9 @@ import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.GL_TEXTURE0;
-import static com.example.openglpractice.Game.dynamicObjectPool;
-import static com.example.openglpractice.Game.staticObjectPool;
-import static com.example.openglpractice.Game.textWriter;
+import static com.example.openglpractice.Level.dynamicObjectPool;
+import static com.example.openglpractice.Level.staticObjectPool;
+import static com.example.openglpractice.Level.textWriter;
 
 public class gameRenderer implements Renderer {
 
@@ -57,7 +57,7 @@ public class gameRenderer implements Renderer {
     byte drawSelector;
     private int enemyCounter = 0;
     private final String RENDER_LOG = "RENDER_LOG";
-    private Menu menu;
+    private MenuActivity menuActivity;
 
     //==буфферы для отрисовки===//
     private FloatBuffer gamePad;
@@ -154,7 +154,7 @@ public class gameRenderer implements Renderer {
 
     public gameRenderer(Context context, byte drawSelector, int screenWidth, int screenHeight) {
         this.context = context; this.drawSelector = drawSelector;
-//        menu = new Menu();
+//        menuActivity = new MenuActivity();
         width = screenWidth;
         height = screenHeight;
 
@@ -213,14 +213,16 @@ public class gameRenderer implements Renderer {
         uTextureUnitLocation = glGetUniformLocation(programId, "u_TextureUnit");
 
         //загружаем тестуру
+        //for level
         texture = TextureUtil.loadTexture(context, R.drawable.box);
         texture2 = TextureUtil.loadTexture(context, R.drawable.child_go);
-        menuTexture = TextureUtil.loadTexture(context, R.drawable.menu);
         null_texture = TextureUtil.loadTexture(context, R.drawable.null_texture);
         scottPilgrim = TextureUtil.loadTexture(context, R.drawable.scott);
         stars = TextureUtil.loadTexture(context, R.drawable.starsky);
         font = TextureUtil.loadTexture(context, R.drawable.fontturned);
+        //for menu
         button = TextureUtil.loadTexture(context, R.drawable.start);
+        menuTexture = TextureUtil.loadTexture(context, R.drawable.menu);
 //        font = TextureUtil.loadTexture(context, R.drawable.font);
 //        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
 
@@ -291,8 +293,8 @@ public class gameRenderer implements Renderer {
         if(drawSelector == 1){
             drawLevel();
         } else {
-            if(menu != null) {
-                menu.drawMenu(stars, button);
+            if(menuActivity != null) {
+                menuActivity.drawMenu(stars, button);
             }
         }
     }
@@ -300,15 +302,16 @@ public class gameRenderer implements Renderer {
     private void drawLevel(){
 
         //Камера для игрока
-        setCameraOnPlayer(dynamicObjectPool[0].getEyeX());
-
+        if(dynamicObjectPool[0] != null) {
+            setCameraOnPlayer(dynamicObjectPool[0].getEyeX());
+            //Игрок
+            dynamicObjectPool[0].drawDynamicObject(scottPilgrim);
+        }
         //Гейм - пад
         if(gamePad != null) {
             drawGamePad();
 
         }
-        //Игрок
-        dynamicObjectPool[0].drawDynamicObject(scottPilgrim);
 
         for(int i=0; i < staticObjectPool.length; i++){
             if(staticObjectPool[i] != null) {
@@ -381,7 +384,7 @@ public class gameRenderer implements Renderer {
     }
     //===setups for interface===
 
-    //===setups for menu===
+    //===setups for menuActivity===
     public void bindMatrixForMenu() {
         Matrix.multiplyMM(mMatrixForMenu, 0, mViewMatrixForMenu, 0, mModelMatrixForMenu, 0);
         Matrix.multiplyMM(mMatrixForMenu, 0, mProjectionMatrixForMenu, 0, mMatrixForMenu, 0);
@@ -397,7 +400,7 @@ public class gameRenderer implements Renderer {
         Matrix.orthoM(mProjectionMatrixForMenu, 0, leftForMenu, rightForMenu, bottomForMenu, topForMenu, nearForMenu, farForMenu);
 
     }
-    //===setups for menu===
+    //===setups for menuActivity===
 
     //===setups for level===
     public void bindMatrixForLevel() {
@@ -428,7 +431,7 @@ public class gameRenderer implements Renderer {
 //        Log.i(RENDER_LOG, "setCameraOnPlayer upZ" + upZ);
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, eyeX, centerY, centerZ, upX, upY, upZ);
     }
-    //===setups for menu===
+    //===setups for menuActivity===
 
     //===sets matrix===
     public void setMatrixForDynamicObject() {
@@ -440,8 +443,8 @@ public class gameRenderer implements Renderer {
     public void setMatrixForMenu() {
         Matrix.setIdentityM(mModelMatrixForMenu, 0);
     }
-    public void setMenuInstance(Menu menu) {
-        this.menu = menu;
+    public void setMenuInstance(MenuActivity menuActivity) {
+        this.menuActivity = menuActivity;
     }
 
     //===sets matrix===

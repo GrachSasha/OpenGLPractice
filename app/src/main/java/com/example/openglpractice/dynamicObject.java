@@ -2,8 +2,8 @@ package com.example.openglpractice;
 
 import android.util.Log;
 
-import static com.example.openglpractice.Game.dynamicObjectPool;
-import static com.example.openglpractice.Menu.render;
+import static com.example.openglpractice.Level.dynamicObjectPool;
+import static com.example.openglpractice.MenuActivity.render;
 
 class dynamicObject extends dynamicObjectInfo implements Runnable {
 

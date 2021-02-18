@@ -3,7 +3,7 @@ package com.example.openglpractice;
 import android.util.Log;
 
 import static com.example.openglpractice.Game.dynamicObjectPool;
-import static com.example.openglpractice.MainActivity.render;
+import static com.example.openglpractice.Menu.render;
 
 class dynamicObject extends dynamicObjectInfo implements Runnable {
 

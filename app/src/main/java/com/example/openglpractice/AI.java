@@ -1,6 +1,6 @@
 //package com.example.openglpractice;
 //
-//import static com.example.openglpractice.MainActivity.render;
+//import static com.example.openglpractice.LevelActivity.render;
 //
 //public class AI implements Runnable{
 //

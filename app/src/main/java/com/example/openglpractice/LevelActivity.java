@@ -24,8 +24,9 @@ import java.io.IOException;
 import utils.ResourceLoader;
 
 import static com.example.openglpractice.Game.textWriter;
+import static com.example.openglpractice.Menu.render;
 
-public class MainActivity extends Activity{
+public class LevelActivity extends Activity{
     //=================================================
     private GLSurfaceView glSurfaceView;
 
@@ -37,9 +38,6 @@ public class MainActivity extends Activity{
     final String TEST_PO = "TEST_PO";
     public static AssetManager assetManager;
 
-    //init render
-    static gameRenderer render;
-    Thread renderThread;
 //===================================================
 
     @Override
@@ -77,9 +75,6 @@ public class MainActivity extends Activity{
         setContentView(glSurfaceView);
 
         game = new Game();
-
-        renderThread = new Thread();
-        renderThread.start();
 
     }
 

@@ -7,7 +7,7 @@ import java.nio.FloatBuffer;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static com.example.openglpractice.Game.staticObjectCounter;
 import static com.example.openglpractice.Game.staticObjectPool;
-import static com.example.openglpractice.MainActivity.render;
+import static com.example.openglpractice.Menu.render;
 
 public class staticObject implements RenderCommandsForStaticObjects{
 

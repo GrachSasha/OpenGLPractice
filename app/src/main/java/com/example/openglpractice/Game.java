@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import static com.example.openglpractice.MainActivity.render;
-import static com.example.openglpractice.MainActivity.screenWidth;
+import static com.example.openglpractice.Menu.render;
+import static com.example.openglpractice.LevelActivity.screenWidth;
 
 //Thread для теста
 class Game implements Runnable {

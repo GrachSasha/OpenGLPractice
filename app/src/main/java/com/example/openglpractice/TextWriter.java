@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static com.example.openglpractice.MainActivity.render;
+import static com.example.openglpractice.Menu.render;
 
 public class TextWriter implements RenderCommandsForDynamicObjects{
 

@@ -134,7 +134,7 @@ public class MenuActivity extends AppCompatActivity implements RenderCommandsFor
         try {
             String[] files = assetManager.list("levels");
             Log.i(MENU, files[1]);
-            String level = "levels/ + " + lvl + " + .xml";
+            String level = "levels/" + lvl + ".xml";
 
             // получаем фабрику
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();

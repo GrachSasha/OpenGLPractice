@@ -5,21 +5,16 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
-import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
+
 import android.view.MotionEvent;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.IOException;
 import static com.example.openglpractice.MenuActivity.render;
 
 public class LevelActivity extends Activity{
@@ -70,6 +65,10 @@ public class LevelActivity extends Activity{
         glSurfaceView.setRenderer(render);
         setContentView(glSurfaceView);
 
+        Button b = new Button(this);
+        b.setText("Hello World");
+        this.addContentView(b,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
 

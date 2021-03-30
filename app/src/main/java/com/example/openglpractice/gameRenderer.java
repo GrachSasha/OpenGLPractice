@@ -224,7 +224,7 @@ public class gameRenderer implements Renderer {
         button = TextureUtil.loadTexture(context, R.drawable.start);
         menuTexture = TextureUtil.loadTexture(context, R.drawable.menu);
 //        font = TextureUtil.loadTexture(context, R.drawable.font);
-//        texture2 = TextureUtil.loadTexture(context, R.drawable.robo);
+        texture2 = TextureUtil.loadTexture(context, R.drawable.button);
 
     }
 
@@ -301,12 +301,27 @@ public class gameRenderer implements Renderer {
 
     private void drawLevel(){
 
-        //Камера для игрока
+
         if(dynamicObjectPool[0] != null) {
+            //Камера для игрока
             setCameraOnPlayer(dynamicObjectPool[0].getEyeX());
             //Игрок
             dynamicObjectPool[0].drawDynamicObject(scottPilgrim);
         }
+
+        if(dynamicObjectPool[1] != null) {
+            dynamicObjectPool[1].drawDynamicObject(texture2);
+        }
+
+//        for(int i =0; i<dynamicObjectPool.length; i++){
+//            if(dynamicObjectPool[i] != null) {
+//                if (dynamicObjectPool[i].isRealPlayer) {
+//                    setCameraOnPlayer(dynamicObjectPool[i].getEyeX());
+//                }
+//                dynamicObjectPool[i].drawDynamicObject(scottPilgrim);
+//            }
+//        }
+
         //Гейм - пад
         if(gamePad != null) {
             drawGamePad();
@@ -319,7 +334,8 @@ public class gameRenderer implements Renderer {
             }
         }
 
-        textWriter.drawDynamicObject(font);
+//        textWriter.drawDynamicObject(font);
+
     }
 
     private void drawGamePad() {
@@ -464,15 +480,6 @@ public class gameRenderer implements Renderer {
         gamePad.put(vertices).position(0);
     }
 
-    public void prepareDynamicModelsForEnemy(dynamicObject gObject) {
-        //todo create seacrh
-        enemies[enemyCounter] = ByteBuffer
-                .allocateDirect(gObject.getObjVertices().length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        enemies[enemyCounter].put(gObject.getObjVertices()).position(0);
-        enemyCounter++;
-    }
 
     public void drawArraysForDynamicObject(int glTriangleStrip, int position, int count) {
         glDrawArrays(glTriangleStrip, position, count);

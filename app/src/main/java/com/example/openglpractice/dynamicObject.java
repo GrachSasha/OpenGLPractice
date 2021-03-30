@@ -1,9 +1,7 @@
 package com.example.openglpractice;
-
 import android.util.Log;
-
 import static com.example.openglpractice.Level.dynamicObjectPool;
-import static com.example.openglpractice.MenuActivity.render;
+import static com.example.openglpractice.Level.gameObjectCounter;
 
 class dynamicObject extends dynamicObjectInfo implements Runnable {
 
@@ -21,7 +19,6 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
     //fields
     private Thread physicThread;
     private float[] objVertices;
-    private int gameObjectCounter = 0;
     private final String DYNAMIC_OBJECT_LOG = "Dynamic_Object";
 
 
@@ -69,9 +66,10 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
         objVertices[13] += 0.125f;
         objVertices[18] += 0.125f;
 
+//        if(this.isRealPlayer){this.prepareCoordinatesAndConvert(objVertices);} else
+//            {render.changeDynamicModelsForEnemy(this);}
         if(this.isRealPlayer){this.prepareCoordinatesAndConvert(objVertices);} else
-            {render.changeDynamicModelsForEnemy(this);}
-
+        {this.prepareCoordinatesAndConvertWithoutSetEye(objVertices);}
     }
     private void walkLeft(){
 
@@ -80,8 +78,10 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
         objVertices[10] += (-0.10f);
         objVertices[15] += (-0.10f);
 
+//        if(this.isRealPlayer){this.prepareCoordinatesAndConvert(objVertices);} else
+//        {render.changeDynamicModelsForEnemy(this);}
         if(this.isRealPlayer){this.prepareCoordinatesAndConvert(objVertices);} else
-        {render.changeDynamicModelsForEnemy(this);}
+        {this.prepareCoordinatesAndConvertWithoutSetEye(objVertices);}
     }
 
     private void jump(float coord) {
@@ -91,12 +91,13 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
             objVertices[11] += coord;
             objVertices[16] += coord;
 
-            if (this.isRealPlayer) {
-                this.prepareCoordinatesAndConvert(objVertices);
-            } else {
-                render.changeDynamicModelsForEnemy(this);
-            }
-
+//            if (this.isRealPlayer) {
+//                this.prepareCoordinatesAndConvert(objVertices);
+//            } else {
+//                render.changeDynamicModelsForEnemy(this);
+//            }
+            if(this.isRealPlayer){this.prepareCoordinatesAndConvert(objVertices);} else
+            {this.prepareCoordinatesAndConvertWithoutSetEye(objVertices);}
         }
     }
 
@@ -107,8 +108,11 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
             objVertices[11] += -0.05f;
             objVertices[16] += -0.05f;
 
+//            if(this.isRealPlayer){this.prepareCoordinatesAndConvert(objVertices);} else
+//            {render.changeDynamicModelsForEnemy(this);}
+
             if(this.isRealPlayer){this.prepareCoordinatesAndConvert(objVertices);} else
-            {render.changeDynamicModelsForEnemy(this);}
+            {this.prepareCoordinatesAndConvertWithoutSetEye(objVertices);}
 
         } else {falling = false;}
     }

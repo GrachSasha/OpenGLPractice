@@ -4,12 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -20,6 +25,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import utils.TextureUtil;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static com.example.openglpractice.LevelActivity.screenHeight;
@@ -75,7 +82,23 @@ public class MenuActivity extends AppCompatActivity implements RenderCommandsFor
         render.setMenuInstance(this);
         render.drawSelector = 2;
 
+        Button b = new Button(this);
+        b.setText("Start");
+        this.addContentView(b,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ImageButton imageButton = new ImageButton(this);
+//        imageButton.setImageResource(R.drawable.start);
+
+//        imageButton.setRotation(90);
+//        imageButton.setX(10);
+//        imageButton.setY(10);
+//        imageButton.setMaxHeight(5);
+//        imageButton.setMaxWidth(5);
+//        this.addContentView(imageButton,
+//        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
     }
+
 
     @Override
     public void drawStaticObject(int texture) {
@@ -107,15 +130,30 @@ public class MenuActivity extends AppCompatActivity implements RenderCommandsFor
 
     }
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         touchCount++;
+//        float touchX = event.getX();
+//        float touchY = event.getY();
+//
+//        Log.i(MENU, "x = " + touchX);
+//        Log.i(MENU, "y = " + touchY);
+
         if(touchCount > 2) {
+            //todo дорогая операция
+
+//
             float sector = screenWidth / 3;
             float cord = event.getX();
             if ((cord > sector) && (cord < sector * 2)) {
                 startActivity(new Intent(this, LevelActivity.class));
             }
+//            if(touchX > newGameButtonVertices[0] && touchX < newGameButtonVertices[5]){
+//                if(touchY > newGameButtonVertices[1] && touchX < newGameButtonVertices[11]){
+//                                    startActivity(new Intent(this, LevelActivity.class));
+//                }
+//            }
             touchCount = 0;
         }
 //        level.getTouchEvent(event);

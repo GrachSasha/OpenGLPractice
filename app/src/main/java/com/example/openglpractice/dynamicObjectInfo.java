@@ -53,6 +53,14 @@ public class dynamicObjectInfo implements RenderCommandsForDynamicObjects {
         eyeY = gObject[11];
     }
 
+    public void prepareCoordinatesAndConvertWithoutSetEye(float[] gObject) {
+        objectBuffer =  ByteBuffer
+                .allocateDirect(gObject.length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        objectBuffer.put(gObject).position(0);
+    }
+
     public String getName() {
         return TEXTURE_NAME;
     }

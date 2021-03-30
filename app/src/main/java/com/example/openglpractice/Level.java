@@ -20,29 +20,15 @@ class Level implements Runnable {
             -3f, -0.5f, 1f,     0.125f, 0.5f,
             -2.5f, -0.5f, 1f,   0, 0.5f,
 
-//            -3f, -1f, 0f,       0f, 0.5f,
-//            -2.5f, -1f, 0f,     0, 1f,
-//
-//            -3f, -0.5f, 0f,     0.125f, 1,
-//            -2.5f, -0.5f, 0f,   0.125f, 0.5f,
-
-
-
-
-//            -3f, -1f, 0f,       0, 0.5f,
-//            -2.5f, -1f, 0f,     0.125f, 0.5f,
-//
-//            -3f, -0.5f, 0f,     0, 1,
-//            -2.5f, -0.5f, 0f,   0.125f, 1,
     };
 
     private float[] enemyVertices = {
 
-            -3f, -2f, 0f,       0, 0,
-            -2.5f, -2f, 0f,     0, 1,
+            -3f, -2f, 1f,       0.125f, 1,
+            -2.5f, -2f, 1f,     0, 1,
 
-            -3f, -1.5f, 0f,     1, 0,
-            -2.5f, -1.5f, 0f,   1, 1,
+            -3f, -1.5f, 1f,     0.125f, 0.5f,
+            -2.5f, -1.5f, 1f,   0, 0.5f,
 
     };
 
@@ -144,29 +130,32 @@ class Level implements Runnable {
 
     //===fields===//
     private Context gameContext;
-    static String GAME_LOG = " Level ";
+    static String GAME_LOG = "GAME_LOG";
     playerController playerController;
     Thread textWriterThread;
     //===fields===//
 
     public Level() {
         //todo убрать загрузку уровня из конструктора
-        createMenu();
+//        createMenu();
         prepareModelsForLevel1();
-        textWriterThread = new Thread(this);
-        textWriterThread.start();
+//        textWriterThread = new Thread(this);
+//        textWriterThread.start();
     }
 
     public void prepareModelsForLevel1(){
-        textWriter = new TextWriter();
+//        textWriter = new TextWriter();
 
-        render.drawSelector = 1;
         dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
-        Log.i(GAME_LOG, "Players load");
-
+        player.prepareCoordinatesAndConvert(player.getObjVertices());
         playerController = new playerController(player);
-        Log.i(GAME_LOG, "Player controller load");
+        Log.i(GAME_LOG, "1. " + dynamicObjectPool[0].TEXTURE_NAME);
+
         //init объектов
+        dynamicObject enemy = new dynamicObject(enemyVertices, false, "button");
+        enemy.prepareCoordinatesAndConvert(enemy.getObjVertices());
+        Log.i(GAME_LOG, "2. " + dynamicObjectPool[1].TEXTURE_NAME);
+
         staticObject platform1 = new staticObject(platform1Vertices,"box");
         staticObject platform2 = new staticObject(platform2Vertices,"box");
         staticObject platform3 = new staticObject(platform3Vertices,"box");
@@ -177,20 +166,21 @@ class Level implements Runnable {
         staticObject platform8 = new staticObject(platform8Vertices,"box");
         Log.i(GAME_LOG, "Platforms load");
 
-        textWriter.setText("mod",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
+//        textWriter.setText("mod",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
         render.prepareGamePad(gamePadVertices);
     }
 
     public void getTouchEvent(MotionEvent event) {
         //todo привести в порядок вызов меню
-        render.drawSelector = 1;
+//        render.drawSelector = 1;
 //        prepareModelsForLevel1();
         float sector = screenWidth/3;
         float cord = event.getX();
         if(cord < sector){playerController.walkLeft();}
+        if((cord > sector*2) && (cord < sector*3)){playerController.walkRight();}
+
 //        if((cord > sector) && (cord < sector*2)){playerController.jump();}
 
-        if((cord > sector*2) && (cord < sector*3)){playerController.walkRight();}
 
     }
 

@@ -132,13 +132,18 @@ class Level implements Runnable {
     private Context gameContext;
     static String GAME_LOG = "GAME_LOG";
     playerController playerController;
+    playerController enemyController;
     Thread textWriterThread;
+    Thread enemyContrllerThread;
     //===fields===//
 
     public Level() {
         //todo убрать загрузку уровня из конструктора
 //        createMenu();
         prepareModelsForLevel1();
+
+        enemyContrllerThread = new Thread(this);
+        enemyContrllerThread.start();
 //        textWriterThread = new Thread(this);
 //        textWriterThread.start();
     }
@@ -154,6 +159,7 @@ class Level implements Runnable {
         //init объектов
         dynamicObject enemy = new dynamicObject(enemyVertices, false, "button");
         enemy.prepareCoordinatesAndConvert(enemy.getObjVertices());
+        enemyController = new playerController(enemy);
         Log.i(GAME_LOG, "2. " + dynamicObjectPool[1].TEXTURE_NAME);
 
         staticObject platform1 = new staticObject(platform1Vertices,"box");
@@ -192,19 +198,15 @@ class Level implements Runnable {
 
     @Override
     public void run() {
-//        do {
-
-//            Log.i("MAINACTIVITY", "AFTER textWriter.setText(9)");
-//
-//            try {
-//                Thread.sleep(100);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//        while(true);
-
+        do {
+            enemyController.walkLeft();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.i(GAME_LOG, "ENEMY STEP");
+        }while (true);
     }
 
     //TEST=====================================//

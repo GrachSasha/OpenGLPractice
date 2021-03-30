@@ -1,5 +1,6 @@
 package com.example.openglpractice;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class playerController{
@@ -7,6 +8,7 @@ public class playerController{
     dynamicObject gObject;
     Thread controlDeamon;
     MotionEvent eventPool[] = new MotionEvent[10];
+    private String PLAYER_CONTROLLER = "PLAYER_CONTROLLER";
 
     public playerController(dynamicObject gObject) {
         this.gObject = gObject;
@@ -14,10 +16,12 @@ public class playerController{
 
     public void walkLeft(){
         gObject.doStepLeft();
+        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walLeft");
     }
 
     public void walkRight(){
         gObject.doStepRight();
+        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walRight");
     }
 
     public void jump(){

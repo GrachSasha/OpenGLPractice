@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.List;
+
+import utils.ResourceLoader;
+
 import static com.example.openglpractice.MenuActivity.render;
 
 public class LevelActivity extends Activity{
@@ -33,7 +37,7 @@ public class LevelActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        level = new Level();
+
 
         if (!supportES2()) {
             Toast.makeText(this, "OpenGL ES 2.0 is not supported", Toast.LENGTH_LONG).show();
@@ -52,7 +56,6 @@ public class LevelActivity extends Activity{
         screenHeight = displaymetrics.heightPixels;
         Toast.makeText(this, "WIDTH = " + screenWidth + "HEIGHT = " + screenHeight, Toast.LENGTH_LONG).show();
 
-
         //Контроллер
         controlHandler = new Handler();
 
@@ -69,6 +72,10 @@ public class LevelActivity extends Activity{
         b.setText("Hello World");
         this.addContentView(b,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        List<String> resources=  new ResourceLoader(this).loadResource("level1");
+        level = new Level(resources);
+//        level = new Level();
     }
 
 

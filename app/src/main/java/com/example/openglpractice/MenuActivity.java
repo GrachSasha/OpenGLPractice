@@ -4,8 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
+
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -26,7 +24,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import utils.TextureUtil;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static com.example.openglpractice.LevelActivity.screenHeight;
@@ -86,7 +83,9 @@ public class MenuActivity extends AppCompatActivity implements RenderCommandsFor
         b.setText("Start");
         this.addContentView(b,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        ImageButton imageButton = new ImageButton(this);
+
+        //Работает, кнопка с рисунком, но кривая
+//        ImageButton imageButton = new ImageButton(this);
 //        imageButton.setImageResource(R.drawable.start);
 
 //        imageButton.setRotation(90);

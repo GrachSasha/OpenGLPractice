@@ -217,7 +217,8 @@ public class gameRenderer implements Renderer {
         texture = TextureUtil.loadTexture(context, R.drawable.box);
         texture2 = TextureUtil.loadTexture(context, R.drawable.child_go);
         null_texture = TextureUtil.loadTexture(context, R.drawable.null_texture);
-        scottPilgrim = TextureUtil.loadTexture(context, R.drawable.scott);
+//        scottPilgrim = TextureUtil.loadTexture(context, R.drawable.scott);
+        scottPilgrim = TextureUtil.loadTexture(context, R.drawable.sattelitev2);
         stars = TextureUtil.loadTexture(context, R.drawable.starsky);
         font = TextureUtil.loadTexture(context, R.drawable.fontturned);
         //for menu

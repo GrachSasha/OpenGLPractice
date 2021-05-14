@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 
 import java.util.List;
 
+import static com.example.openglpractice.LevelActivity.screenHeight;
 import static com.example.openglpractice.MenuActivity.render;
 import static com.example.openglpractice.LevelActivity.screenWidth;
 
@@ -14,13 +15,22 @@ class Level implements Runnable {
     // треугольник
     // x    y   z
 
+//    private float[] playerVertices = {
+//                                //x     y
+//            -3f, -1f, 1f,       0.125f, 1,
+//            -2.5f, -1f, 1f,     0, 1,
+//
+//            -3f, -0.5f, 1f,     0.125f, 0.5f,
+//            -2.5f, -0.5f, 1f,   0, 0.5f,
+//
+//    };
     private float[] playerVertices = {
                                 //x     y
-            -3f, -1f, 1f,       0.125f, 1,
+            -3f, -1f, 1f,       0, 0,
             -2.5f, -1f, 1f,     0, 1,
 
-            -3f, -0.5f, 1f,     0.125f, 0.5f,
-            -2.5f, -0.5f, 1f,   0, 0.5f,
+            -3f, -0.5f, 1f,     1, 0,
+            -2.5f, -0.5f, 1f,   1, 1,
 
     };
 
@@ -150,15 +160,17 @@ class Level implements Runnable {
 
     public void getTouchEvent(MotionEvent event) {
         //todo привести в порядок вызов меню
-//        render.drawSelector = 1;
-//        prepareDynamicModelsForLevel();
-        float sector = screenWidth/3;
-        float cord = event.getX();
-        if(cord < sector){playerController.walkLeft();}
-        if((cord > sector*2) && (cord < sector*3)){playerController.walkRight();}
 
-//        if((cord > sector) && (cord < sector*2)){playerController.jump();}
+        float sectorX = screenWidth/3;
+        float sectorY = screenHeight/2;
 
+        float cordX = event.getX();
+        float cordY = event.getY();
+
+        if(cordX < sectorX){playerController.walkLeft();}
+        if((cordX > sectorX*2) && (cordX < sectorX*3)){playerController.walkRight();}
+        if(cordY < sectorY){playerController.walkDown();}
+        if(cordY > sectorY){playerController.walkUp();}
     }
 
     public void createMenu() {

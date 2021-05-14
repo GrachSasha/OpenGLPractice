@@ -94,12 +94,13 @@ public class LevelActivity extends Activity{
         Runtime.getRuntime().freeMemory();
     }
 
+    //todo запилить норм управление
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        float sector = screenWidth/3;
-        float cord = event.getX();
-        if((cord > sector) && (cord < sector*2)) {
+        float sectorX = screenWidth/3;
+        float cordX = event.getX();
+        if((cordX > sectorX) && (cordX < sectorX*2)) {
             startActivity(new Intent(this, MenuActivity.class));
         }
         level.getTouchEvent(event);

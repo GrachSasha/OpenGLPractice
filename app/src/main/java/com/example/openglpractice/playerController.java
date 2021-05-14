@@ -24,6 +24,16 @@ public class playerController{
         Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walRight");
     }
 
+    public void walkUp(){
+        gObject.doStepRight();
+        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walUp");
+    }
+
+    public void walkDown(){
+        gObject.doStepRight();
+        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walDown");
+    }
+
     public void jump(){
         gObject.doJump();
     }

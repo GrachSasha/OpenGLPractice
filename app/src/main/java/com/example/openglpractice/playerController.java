@@ -25,12 +25,12 @@ public class playerController{
     }
 
     public void walkUp(){
-        gObject.doStepRight();
+        gObject.doStepUp();
         Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walUp");
     }
 
     public void walkDown(){
-        gObject.doStepRight();
+        gObject.doStepDown();
         Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walDown");
     }
 

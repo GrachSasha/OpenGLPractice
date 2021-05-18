@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class LevelActivity extends Activity{
     static int screenHeight;
     final String TEST_PO = "TEST_PO";
     private Button backToMenuButton;
+    private ImageButton navigationButton;
 //===================================================
 
     @Override
@@ -82,6 +84,11 @@ public class LevelActivity extends Activity{
             }
         };
         backToMenuButton.setOnClickListener(listener);
+//
+//        navigationButton = new ImageButton(this);
+//        navigationButton.setImageResource(R.drawable.button);
+//        this.addContentView(navigationButton,
+//        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         //buttons sets
 
         List<String> resources=  new ResourceLoader(this).loadResource("level1");

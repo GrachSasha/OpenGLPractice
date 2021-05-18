@@ -161,16 +161,28 @@ class Level implements Runnable {
     public void getTouchEvent(MotionEvent event) {
         //todo привести в порядок вызов меню
 
-        float sectorX = screenWidth/3;
+        Log.i(GAME_LOG,"X: " + event.getX() + "; " + "Y: " + event.getY());
+        float sectorX = screenWidth/2;
         float sectorY = screenHeight/2;
 
         float cordX = event.getX();
         float cordY = event.getY();
 
-        if(cordX < sectorX){playerController.walkLeft();}
-        if((cordX > sectorX*2) && (cordX < sectorX*3)){playerController.walkRight();}
-        if(cordY < sectorY){playerController.walkDown();}
-        if(cordY > sectorY){playerController.walkUp();}
+//        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
+//        playerController.walkDown();}
+//        if(cordX > sectorX){playerController.walkRight();}
+//Не спрашивай это дерьмо с экраном андроида, пляшем от координат телефона, приходится выкручиваться так
+        if((cordX > sectorX) && (cordY < sectorY)){playerController.walkRight();
+        playerController.walkUp();}
+
+        if((cordX > sectorX) && (cordY > sectorY)){playerController.walkRight();
+            playerController.walkDown();}
+
+        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
+            playerController.walkUp();}
+
+        if((cordX < sectorX) && (cordY > sectorY)){playerController.walkLeft();
+            playerController.walkDown();}
     }
 
     public void createMenu() {

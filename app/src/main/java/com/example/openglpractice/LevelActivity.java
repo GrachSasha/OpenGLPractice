@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ public class LevelActivity extends Activity{
     static int screenWidth;
     static int screenHeight;
     final String TEST_PO = "TEST_PO";
-
+    private Button backToMenuButton;
 //===================================================
 
     @Override
@@ -68,14 +69,23 @@ public class LevelActivity extends Activity{
         glSurfaceView.setRenderer(render);
         setContentView(glSurfaceView);
 
-        Button b = new Button(this);
-        b.setText("Hello World");
-        this.addContentView(b,
+        //buttons sets
+        backToMenuButton = new Button(this);
+        backToMenuButton.setText("Go to Menu");
+        this.addContentView(backToMenuButton,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LevelActivity.this, MenuActivity.class));
+                finish();
+            }
+        };
+        backToMenuButton.setOnClickListener(listener);
+        //buttons sets
 
         List<String> resources=  new ResourceLoader(this).loadResource("level1");
         level = new Level(resources);
-//        level = new Level();
     }
 
 
@@ -97,21 +107,22 @@ public class LevelActivity extends Activity{
     //todo запилить норм управление
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-        float sectorX = screenWidth/3;
-        float cordX = event.getX();
-        if((cordX > sectorX) && (cordX < sectorX*2)) {
-            startActivity(new Intent(this, MenuActivity.class));
-        }
         level.getTouchEvent(event);
         return true;
     }
+
+
 
     private boolean supportES2() {
         ActivityManager activityManager =
                 (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         return (configurationInfo.reqGlEsVersion >= 0x20000);
+    }
+
+    public void goToMenu(View view) {
+        startActivity(new Intent(this, MenuActivity.class));
+//        this.finish();
     }
 
 //    private void loadResource(String lvl) {

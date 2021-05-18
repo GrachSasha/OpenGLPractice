@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
@@ -50,7 +51,7 @@ public class MenuActivity extends AppCompatActivity implements RenderCommandsFor
 
     float menuObjectVertices[][] = new float[50][];
     private FloatBuffer menuBuffer;
-
+    private Button demoLevelButton;
     //todo сделать буффер для объектов, рисуется одинаково так один и тот же буффер
 
     @Override
@@ -79,10 +80,20 @@ public class MenuActivity extends AppCompatActivity implements RenderCommandsFor
         render.setMenuInstance(this);
         render.drawSelector = 2;
 
-        Button b = new Button(this);
-        b.setText("Start");
-        this.addContentView(b,
+        //buttons sets
+        demoLevelButton = new Button(this);
+        demoLevelButton.setText("Demo level");
+        this.addContentView(demoLevelButton,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, LevelActivity.class));
+                MenuActivity.this.finish();
+            }
+        };
+        demoLevelButton.setOnClickListener(listener);
+        //buttons sets
 
         //Работает, кнопка с рисунком, но кривая
 //        ImageButton imageButton = new ImageButton(this);
@@ -128,37 +139,6 @@ public class MenuActivity extends AppCompatActivity implements RenderCommandsFor
         menuBuffer.put(gObject).position(0);
 
     }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        touchCount++;
-//        float touchX = event.getX();
-//        float touchY = event.getY();
-//
-//        Log.i(MENU, "x = " + touchX);
-//        Log.i(MENU, "y = " + touchY);
-
-        if(touchCount > 2) {
-            //todo дорогая операция
-
-//
-            float sector = screenWidth / 3;
-            float cord = event.getX();
-            if ((cord > sector) && (cord < sector * 2)) {
-                startActivity(new Intent(this, LevelActivity.class));
-            }
-//            if(touchX > newGameButtonVertices[0] && touchX < newGameButtonVertices[5]){
-//                if(touchY > newGameButtonVertices[1] && touchX < newGameButtonVertices[11]){
-//                                    startActivity(new Intent(this, LevelActivity.class));
-//                }
-//            }
-            touchCount = 0;
-        }
-//        level.getTouchEvent(event);
-        return true;
-    }
-
 
     public void drawMenu(int... textures){
         for(int i =0; i < textures.length; i++){
@@ -227,6 +207,14 @@ public class MenuActivity extends AppCompatActivity implements RenderCommandsFor
             e.printStackTrace();
         }
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        touchCount++;
+        return true;
+    }
+
 
 }
 

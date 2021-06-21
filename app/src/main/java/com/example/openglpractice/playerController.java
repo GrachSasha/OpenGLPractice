@@ -16,22 +16,22 @@ public class playerController{
 
     public void walkLeft(){
         gObject.doStepLeft();
-        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walLeft");
+//        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walLeft");
     }
 
     public void walkRight(){
         gObject.doStepRight();
-        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walRight");
+//        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walRight");
     }
 
     public void walkUp(){
         gObject.doStepUp();
-        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walUp");
+//        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walUp");
     }
 
     public void walkDown(){
         gObject.doStepDown();
-        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walDown");
+//        Log.i(PLAYER_CONTROLLER,gObject.TEXTURE_NAME + "walDown");
     }
 
     public void jump(){

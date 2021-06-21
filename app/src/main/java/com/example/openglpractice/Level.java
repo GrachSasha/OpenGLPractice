@@ -109,6 +109,59 @@ class Level implements Runnable {
         Log.i(GAME_LOG, "Platforms load");
     }
 
+    public void prepareDynamicModelsForLevel(){
+//        textWriter = new TextWriter();
+
+        dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
+        player.prepareCoordinatesAndConvert(player.getObjVertices());
+        playerController = new playerController(player);
+        Log.i(GAME_LOG, "1. " + dynamicObjectPool[0].TEXTURE_NAME);
+
+        //init объектов
+        dynamicObject enemy = new dynamicObject(enemyVertices, false, "button");
+        enemy.prepareCoordinatesAndConvert(enemy.getObjVertices());
+        enemyController = new playerController(enemy);
+        Log.i(GAME_LOG, "2. " + dynamicObjectPool[1].TEXTURE_NAME);
+
+//        textWriter.setText("mod",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
+        //todo render do not call this method. Get out from render add some class for it
+        render.prepareGamePad(gamePadVertices);
+    }
+
+    public void getTouchEvent(MotionEvent event) {
+        //todo привести в порядок вызов меню
+
+        Log.i(GAME_LOG,"X: " + event.getX() + "; " + "Y: " + event.getY());
+        Log.i(GAME_LOG,"Raw X: " + event.getRawX() + "; " + "Raw Y: " + event.getRawY());
+        float sectorX = screenWidth/2;
+        float sectorY = screenHeight/2;
+
+        float cordX = event.getX();
+        float cordY = event.getY();
+
+
+//        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
+//        playerController.walkDown();}
+//        if(cordX > sectorX){playerController.walkRight();}
+//Не спрашивай это дерьмо с экраном андроида, пляшем от координат телефона, приходится выкручиваться так
+        if((cordX > sectorX) && (cordY < sectorY)){playerController.walkRight();
+        playerController.walkUp();}
+
+        if((cordX > sectorX) && (cordY > sectorY)){playerController.walkRight();
+            playerController.walkDown();}
+
+        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
+            playerController.walkUp();}
+
+        if((cordX < sectorX) && (cordY > sectorY)){playerController.walkLeft();
+            playerController.walkDown();}
+    }
+
+    public void createMenu() {
+        render.drawSelector = 0;
+  }
+
+
     private float[][] prepareResourcesForStaticObjects(List<String> rawResources) {
         int resSize = rawResources.size();
         platforms = new float[resSize][20];
@@ -139,57 +192,7 @@ class Level implements Runnable {
         rawSing = null;
         return platforms;
     }
-
-    public void prepareDynamicModelsForLevel(){
-//        textWriter = new TextWriter();
-
-        dynamicObject player = new dynamicObject(playerVertices, true, "child_go");
-        player.prepareCoordinatesAndConvert(player.getObjVertices());
-        playerController = new playerController(player);
-        Log.i(GAME_LOG, "1. " + dynamicObjectPool[0].TEXTURE_NAME);
-
-        //init объектов
-        dynamicObject enemy = new dynamicObject(enemyVertices, false, "button");
-        enemy.prepareCoordinatesAndConvert(enemy.getObjVertices());
-        enemyController = new playerController(enemy);
-        Log.i(GAME_LOG, "2. " + dynamicObjectPool[1].TEXTURE_NAME);
-
-//        textWriter.setText("mod",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
-        render.prepareGamePad(gamePadVertices);
-    }
-
-    public void getTouchEvent(MotionEvent event) {
-        //todo привести в порядок вызов меню
-
-        Log.i(GAME_LOG,"X: " + event.getX() + "; " + "Y: " + event.getY());
-        float sectorX = screenWidth/2;
-        float sectorY = screenHeight/2;
-
-        float cordX = event.getX();
-        float cordY = event.getY();
-
-//        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
-//        playerController.walkDown();}
-//        if(cordX > sectorX){playerController.walkRight();}
-//Не спрашивай это дерьмо с экраном андроида, пляшем от координат телефона, приходится выкручиваться так
-        if((cordX > sectorX) && (cordY < sectorY)){playerController.walkRight();
-        playerController.walkUp();}
-
-        if((cordX > sectorX) && (cordY > sectorY)){playerController.walkRight();
-            playerController.walkDown();}
-
-        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
-            playerController.walkUp();}
-
-        if((cordX < sectorX) && (cordY > sectorY)){playerController.walkLeft();
-            playerController.walkDown();}
-    }
-
-    public void createMenu() {
-        render.drawSelector = 0;
-  }
-
-  //TEST=====================================//
+    //TEST=====================================//
 
     @Override
     public void run() {

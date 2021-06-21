@@ -73,6 +73,8 @@ public class gameRenderer implements Renderer {
     private int stars;
     public int font;
     private int button;
+    private int mainFont;
+    private int earth;
     //todo убрать хардкод
     //Map<String, Integer> texturesMap = new HashMap<>();
     //===текстуры==//
@@ -121,10 +123,10 @@ public class gameRenderer implements Renderer {
     //===камера==//
 
     //===проекции===//
-    private float leftForLevel = -3;
-    private float rightForLevel  = 3;
-    private float bottomForLevel  = -3;
-    private float topForLevel  = 3;
+    private float leftForLevel = -10;
+    private float rightForLevel  = 10;
+    private float bottomForLevel  = -10;
+    private float topForLevel  = 10;
 
     private float nearForLevel  = 2;
     private float farForLevel  = 12;
@@ -150,6 +152,7 @@ public class gameRenderer implements Renderer {
 
     private float xMatrixForInterface = 2.25f;
     private float yMatrixForInterface = -0.8f;
+
     //===проекции===//
 
     public gameRenderer(Context context, byte drawSelector, int screenWidth, int screenHeight) {
@@ -159,6 +162,57 @@ public class gameRenderer implements Renderer {
         height = screenHeight;
 
         calculateValuesForProjections();
+    }
+
+    //вызывается при создании/пересоздании surface
+    @Override
+    public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
+
+        //чистит экран
+        glClearColor(0, 0, 100, 0f);
+
+        //разрешает проекции
+        //Почему-то с этим параметром тестуры не работают как надо
+//        glEnable(GL_DEPTH_TEST);
+
+        //todo создать нормальный инит!
+        createViewMatrixForMenu();
+        createViewMatrixForInterface();
+        createAndUseProgram();
+        getLocations();
+        turnOnBlend();
+
+    }
+
+    //вызывается при изменении размера surface
+    @Override
+    public void onSurfaceChanged(GL10 arg0, int width, int height) {
+        //full screen
+
+        glViewport(0, 0, width, height);
+        glClearColor(0, 0, 0, 0f);
+
+        this.width = width;
+        this.height = height;
+
+        Log.i(RENDER_LOG, "width" + width);
+        Log.i(RENDER_LOG, "height" + height);
+
+        //создает проекцию
+        createProjectionMatrixForLevel(width, height);
+        createProjectionMatrixForInterface(width, height);
+        createProjectionMatrixForMenu(width, height);
+
+        //биндит матрицу
+        bindMatrixForLevel();
+        bindMatrixForInterface();
+        bindMatrixForMenu();
+    }
+
+    @Override
+    public void onDrawFrame(GL10 arg0) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        drawSelector();
     }
 
     private void calculateValuesForProjections() {
@@ -226,68 +280,18 @@ public class gameRenderer implements Renderer {
         menuTexture = TextureUtil.loadTexture(context, R.drawable.menu);
 //        font = TextureUtil.loadTexture(context, R.drawable.font);
         texture2 = TextureUtil.loadTexture(context, R.drawable.button);
+        mainFont = TextureUtil.loadTexture(context, R.drawable.starsfont);
+        earth = TextureUtil.loadTexture(context, R.drawable.earth);
 
     }
 
-    private void turnOnBlend() {
+    public void turnOnBlend() {
         //Works without fails
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
     }
-
-    private void turnOffBlend(){
+    public void turnOffBlend(){
         glDisable(GL_BLEND);
-    }
-
-    //вызывается при создании/пересоздании surface
-    @Override
-    public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
-
-        //чистит экран
-        glClearColor(0, 0, 100, 0f);
-
-        //разрешает проекции
-        //Почему-то с этим параметром тестуры не работают как надо
-//        glEnable(GL_DEPTH_TEST);
-
-        //todo создать нормальный инит!
-        createViewMatrixForMenu();
-        createViewMatrixForInterface();
-        createAndUseProgram();
-        getLocations();
-        turnOnBlend();
-
-    }
-
-    //вызывается при изменении размера surface
-    @Override
-    public void onSurfaceChanged(GL10 arg0, int width, int height) {
-        //full screen
-
-        glViewport(0, 0, width, height);
-        glClearColor(0, 0, 100, 0f);
-
-        this.width = width;
-        this.height = height;
-
-        Log.i(RENDER_LOG, "width" + width);
-        Log.i(RENDER_LOG, "height" + height);
-
-        //создает проекцию
-        createProjectionMatrixForLevel(width, height);
-        createProjectionMatrixForInterface(width, height);
-        createProjectionMatrixForMenu(width, height);
-
-        //биндит матрицу
-        bindMatrixForLevel();
-        bindMatrixForInterface();
-        bindMatrixForMenu();
-    }
-
-    @Override
-    public void onDrawFrame(GL10 arg0) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        drawSelector();
     }
 
     private void drawSelector(){
@@ -314,14 +318,6 @@ public class gameRenderer implements Renderer {
             dynamicObjectPool[1].drawDynamicObject(texture2);
         }
 
-//        for(int i =0; i<dynamicObjectPool.length; i++){
-//            if(dynamicObjectPool[i] != null) {
-//                if (dynamicObjectPool[i].isRealPlayer) {
-//                    setCameraOnPlayer(dynamicObjectPool[i].getEyeX());
-//                }
-//                dynamicObjectPool[i].drawDynamicObject(scottPilgrim);
-//            }
-//        }
 
         //Гейм - пад
         if(gamePad != null) {
@@ -329,19 +325,20 @@ public class gameRenderer implements Renderer {
 
         }
 
-        for(int i=0; i < staticObjectPool.length; i++){
-            if(staticObjectPool[i] != null) {
-                staticObjectPool[i].drawStaticObject(texture);
-            }
+
+        if(staticObjectPool[0] != null) {
+            staticObjectPool[0].drawStaticObject(mainFont);
+        }
+        if(staticObjectPool[1]!= null) {
+            staticObjectPool[1].drawStaticObject(earth);
         }
 
-//        textWriter.drawDynamicObject(font);
 
     }
 
     private void drawGamePad() {
         bindData(gamePad);
-        glDisable(GL_TEXTURE0);
+//        glDisable(GL_TEXTURE0);
 //        setTexture(gamePad,0,false);
         //TODO скорее всего ошибка в матрице, поменять на mModelMatrix
         Matrix.setIdentityM(mModelMatrixForInterface, 0);

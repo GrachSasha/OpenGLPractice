@@ -34,6 +34,7 @@ public class LevelActivity extends Activity{
     static int screenHeight;
     final String TEST_PO = "TEST_PO";
     private Button backToMenuButton;
+    private Button changeView;
     private ImageButton navigationButton;
 //===================================================
 
@@ -84,6 +85,13 @@ public class LevelActivity extends Activity{
             }
         };
         backToMenuButton.setOnClickListener(listener);
+
+//        changeView = new Button(this);
+//        changeView.setText("Camera");
+//        this.addContentView(changeView,
+//                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        View.OnClickListener listener1 =
+
 //
 //        navigationButton = new ImageButton(this);
 //        navigationButton.setImageResource(R.drawable.button);
@@ -91,7 +99,8 @@ public class LevelActivity extends Activity{
 //        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         //buttons sets
 
-        List<String> resources=  new ResourceLoader(this).loadResource("level1");
+        //HERE STARTS LEVEL
+        List<String> resources=  new ResourceLoader(this).loadResource("intro");
         level = new Level(resources);
     }
 

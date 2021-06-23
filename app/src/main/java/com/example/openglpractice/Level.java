@@ -49,10 +49,10 @@ class Level implements Runnable {
             3.0f, -1.5f, 0.1f, 0,1,
             2.5f, -1.0f, 0.1f, 1,1,
 
-            2.0f, 3.0f, 0.1f, 0,0,
-            3.0f, 3.0f, 0.1f, 0,1,
-            2.0f, 3.5f, 0.1f, 1,0,
-            3.0f, 3.5f, 0.1f, 1,1,
+//            2.0f, 3.0f, 0.1f, 0,0,
+//            3.0f, 3.0f, 0.1f, 0,1,
+//            2.0f, 3.5f, 0.1f, 1,0,
+//            3.0f, 3.5f, 0.1f, 1,1,
 
 //            2.0f, -2.5f, 0.1f,  0,0,
 //            3.0f, -2.5f, 0.1f,  0,1,
@@ -73,6 +73,7 @@ class Level implements Runnable {
     public static volatile dynamicObject dynamicObjectPool[] = new dynamicObject[10];
     public static volatile  staticObject staticObjectPool[]= new staticObject[10];
     public static volatile TextWriter textWriter;
+    private Button buttonPool[] = new Button[10];
     //===pools===//
 
     //===fields===//
@@ -100,6 +101,11 @@ class Level implements Runnable {
     public Level(List<String> resources) {
         createStaticObjectsForLevel(prepareResourcesForStaticObjects(resources));
         prepareDynamicModelsForLevel();
+        prepareButtons();
+    }
+
+    private void prepareButtons() {
+
     }
 
     private void createStaticObjectsForLevel(float[][] verticesResources) {
@@ -132,13 +138,23 @@ class Level implements Runnable {
         //todo привести в порядок вызов меню
 
         Log.i(GAME_LOG,"X: " + event.getX() + "; " + "Y: " + event.getY());
-        Log.i(GAME_LOG,"Raw X: " + event.getRawX() + "; " + "Raw Y: " + event.getRawY());
+        //Log.i(GAME_LOG,"Raw X: " + event.getRawX() + "; " + "Raw Y: " + event.getRawY());
         float sectorX = screenWidth/2;
         float sectorY = screenHeight/2;
 
         float cordX = event.getX();
         float cordY = event.getY();
+//WORKS
+        float sceneX = ((cordX/screenWidth)*2.0f - 1.0f)*5f;
+        float sceneY = ((cordY/screenHeight)*-2.0f + 1.0f)*5f;
+        Log.i(GAME_LOG,"sceneX: " + sceneX + "; " + "sceneY: " + sceneY);
 
+        if((sceneX > gamePadVertices[0])
+                && (sceneX < gamePadVertices[5])
+                    &&(sceneY < gamePadVertices[11])
+                        &&(sceneY > gamePadVertices[1])){
+            Log.i(GAME_LOG, "Pressed");
+        }
 
 //        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
 //        playerController.walkDown();}

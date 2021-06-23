@@ -382,8 +382,8 @@ public class gameRenderer implements Renderer {
 
     //===setups for interface===
     private void bindMatrixForInterface() {
-        Matrix.translateM(mModelMatrixForInterface, 0, xMatrixForInterface, yMatrixForInterface, 1);
-        Matrix.scaleM(mModelMatrixForInterface, 0,1.25f, 1.25f, 0);
+//        Matrix.translateM(mModelMatrixForInterface, 0, xMatrixForInterface, yMatrixForInterface, 1);
+//        Matrix.scaleM(mModelMatrixForInterface, 0,1.25f, 1.25f, 0);
         Matrix.multiplyMM(mMatrixForInterface, 0, mViewMatrixForInterface, 0, mModelMatrixForInterface, 0);
         Matrix.multiplyMM(mMatrixForInterface, 0, mProjectionMatrixForInterface, 0, mMatrixForInterface, 0);
         glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrixForInterface, 0);

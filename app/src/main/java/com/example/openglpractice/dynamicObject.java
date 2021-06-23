@@ -7,8 +7,8 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
 
 
     //init?
-    private static final int MIN_GROUND = -3;
-    private static final int MAX_GROUND = 3;
+    private static final int MIN_GROUND = -10;
+    private static final int MAX_GROUND = 10;
 
     //flags
     private volatile boolean moveLeft = false;

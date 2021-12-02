@@ -15,24 +15,24 @@ class Level implements Runnable {
     // треугольник
     // x    y   z
 
-//    private float[] playerVertices = {
-//                                //x     y
-//            -3f, -1f, 1f,       0.125f, 1,
-//            -2.5f, -1f, 1f,     0, 1,
-//
-//            -3f, -0.5f, 1f,     0.125f, 0.5f,
-//            -2.5f, -0.5f, 1f,   0, 0.5f,
-//
-//    };
     private float[] playerVertices = {
                                 //x     y
-            -3f, -1f, 1f,       0, 0,
+            -3f, -1f, 1f,       0.125f, 1,
             -2.5f, -1f, 1f,     0, 1,
 
-            -3f, -0.5f, 1f,     1, 0,
-            -2.5f, -0.5f, 1f,   1, 1,
+            -3f, -0.5f, 1f,     0.125f, 0.5f,
+            -2.5f, -0.5f, 1f,   0, 0.5f,
 
     };
+//    private float[] playerVertices = {
+//                                //x     y
+//            -3f, -1f, 1f,       0, 0,
+//            -2.5f, -1f, 1f,     0, 1,
+//
+//            -3f, -0.5f, 1f,     1, 0,
+//            -2.5f, -0.5f, 1f,   1, 1,
+//
+//    };
 
     private float[] enemyVertices = {
 
@@ -155,7 +155,7 @@ class Level implements Runnable {
         Log.i(GAME_LOG, "2. " + dynamicObjectPool[1].TEXTURE_NAME);
 
 //        textWriter.setText("mod",0.5f, new float[]{dynamicObjectPool[0].getEyeX(), dynamicObjectPool[0].getEyeY()});
-        render.prepareGamePad(gamePadVertices);
+//        render.prepareGamePad(gamePadVertices);
     }
 
     public void getTouchEvent(MotionEvent event) {
@@ -168,21 +168,20 @@ class Level implements Runnable {
         float cordX = event.getX();
         float cordY = event.getY();
 
-//        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
-//        playerController.walkDown();}
-//        if(cordX > sectorX){playerController.walkRight();}
+        if((cordX < sectorX)){playerController.walkLeft();}
+        if(cordX > sectorX){playerController.walkRight();}
 //Не спрашивай это дерьмо с экраном андроида, пляшем от координат телефона, приходится выкручиваться так
-        if((cordX > sectorX) && (cordY < sectorY)){playerController.walkRight();
-        playerController.walkUp();}
-
-        if((cordX > sectorX) && (cordY > sectorY)){playerController.walkRight();
-            playerController.walkDown();}
-
-        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
-            playerController.walkUp();}
-
-        if((cordX < sectorX) && (cordY > sectorY)){playerController.walkLeft();
-            playerController.walkDown();}
+//        if((cordX > sectorX) && (cordY < sectorY)){playerController.walkRight();
+//        playerController.walkUp();}
+//
+//        if((cordX > sectorX) && (cordY > sectorY)){playerController.walkRight();
+//            playerController.walkDown();}
+//
+//        if((cordX < sectorX) && (cordY < sectorY)){playerController.walkLeft();
+//            playerController.walkUp();}
+//
+//        if((cordX < sectorX) && (cordY > sectorY)){playerController.walkLeft();
+//            playerController.walkDown();}
     }
 
     public void createMenu() {

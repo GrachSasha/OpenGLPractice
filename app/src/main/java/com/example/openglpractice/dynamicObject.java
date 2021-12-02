@@ -69,10 +69,10 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
         objVertices[15] += 0.10f;
 
         //движение текстуры
-//        objVertices[3] += 0.125f;
-//        objVertices[8] += 0.125f;
-//        objVertices[13] += 0.125f;
-//        objVertices[18] += 0.125f;
+        objVertices[3] += 0.125f;
+        objVertices[8] += 0.125f;
+        objVertices[13] += 0.125f;
+        objVertices[18] += 0.125f;
 
         if(this.isRealPlayer){this.prepareCoordinatesAndConvert(objVertices);} else
         {this.prepareCoordinatesAndConvertWithoutSetEye(objVertices);}
@@ -250,76 +250,7 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
         return true;
     }
 
-
-    @Override
-    public void run() {
-        do {
-            if (moveLeft) {
-                if(wallCheckLeft()) {
-                    walkLeft();
-                    moveLeft = false;
-                } else {
-                    moveLeft = false;
-                }
-            }
-
-            if (moveRight) {
-                if(wallCheckRight()) {
-                    walkRight();
-                    moveRight = false;
-                } else {
-                    moveRight = false;
-                }
-            }
-
-            if (moveDown) {
-                if(downCheck()) {
-                    walkDown();
-                    moveDown = false;
-                } else {
-                    moveDown = false;
-                }
-            }
-
-            if (moveUp) {
-                if(upCheck()) {
-                    walkUp();
-                    moveUp = false;
-                } else {
-                    moveUp = false;
-                }
-            }
-
-            if (jump){
-                if(!falling) {
-                    for (int i = 0; i < 10; i++) {
-                        if (upCheck()) {
-                            jump(0.1f);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                jump = false;
-                downCheck();
-            }
-
-//            if (falling){
-//                if(downCheck()) {
-//                    fall();
-//                }
-//            }
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        while (true);
-    }
-
-//todo Добавить настройки физики в ресурсы
-    //РАБОТАЕТ, основной
+//ДЛЯ СПУТНИКА
 //    @Override
 //    public void run() {
 //        do {
@@ -327,7 +258,6 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
 //                if(wallCheckLeft()) {
 //                    walkLeft();
 //                    moveLeft = false;
-//                    downCheck();
 //                } else {
 //                    moveLeft = false;
 //                }
@@ -337,9 +267,26 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
 //                if(wallCheckRight()) {
 //                    walkRight();
 //                    moveRight = false;
-//                    downCheck();
 //                } else {
 //                    moveRight = false;
+//                }
+//            }
+//
+//            if (moveDown) {
+//                if(downCheck()) {
+//                    walkDown();
+//                    moveDown = false;
+//                } else {
+//                    moveDown = false;
+//                }
+//            }
+//
+//            if (moveUp) {
+//                if(upCheck()) {
+//                    walkUp();
+//                    moveUp = false;
+//                } else {
+//                    moveUp = false;
 //                }
 //            }
 //
@@ -370,6 +317,59 @@ class dynamicObject extends dynamicObjectInfo implements Runnable {
 //        }
 //        while (true);
 //    }
+
+//todo Добавить настройки физики в ресурсы
+    //РАБОТАЕТ, основной
+    @Override
+    public void run() {
+        do {
+            if (moveLeft) {
+                if(wallCheckLeft()) {
+                    walkLeft();
+                    moveLeft = false;
+                    downCheck();
+                } else {
+                    moveLeft = false;
+                }
+            }
+
+            if (moveRight) {
+                if(wallCheckRight()) {
+                    walkRight();
+                    moveRight = false;
+                    downCheck();
+                } else {
+                    moveRight = false;
+                }
+            }
+
+            if (jump){
+                if(!falling) {
+                    for (int i = 0; i < 10; i++) {
+                        if (upCheck()) {
+                            jump(0.1f);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                jump = false;
+                downCheck();
+            }
+
+            if (falling){
+                if(downCheck()) {
+                    fall();
+                }
+            }
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        while (true);
+    }
 
     //    private void upCheck(){
 ////        UP_VECTOR[X1] = objVertices[6];
